@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils.ts";
-import type { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/hooks/use-auth.ts";
 

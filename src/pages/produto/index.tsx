@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import ProductCard from "@/components/ProductCard.tsx";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { type Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import {
   formatPrice,
   getDiscount,
