@@ -53,7 +53,8 @@ export default function CheckoutInner() {
   // Pricing
   const subtotal = getTotal();
   const discount = getDiscount();
-  const total = getFinalTotal() + shipping;
+  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shipping;
+  const total = getFinalTotal() + effectiveShipping;
 
   const {
     register,
@@ -155,7 +156,7 @@ export default function CheckoutInner() {
         })),
         subtotal,
         discount,
-        shipping,
+        shipping: effectiveShipping,
         total,
         couponCode: appliedCoupon?.code,
         address: {
@@ -494,8 +495,8 @@ export default function CheckoutInner() {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frete</span>
-                    <span className={shipping === 0 ? "text-green-600" : ""}>
-                      {shipping === 0 ? "Grátis" : formatPrice(shipping)}
+                    <span className={effectiveShipping === 0 ? "text-green-600" : ""}>
+                      {effectiveShipping === 0 ? "Grátis" : formatPrice(effectiveShipping)}
                     </span>
                   </div>
                 </div>

@@ -132,6 +132,7 @@ export default defineSchema({
     discountValue: v.number(),
     minOrderValue: v.number(),
     expiresAt: v.optional(v.string()),
+    freeShipping: v.optional(v.boolean()),
     isActive: v.boolean(),
   }).index("by_code", ["code"]),
 });

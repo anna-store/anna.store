@@ -340,6 +340,7 @@ export const createCoupon = mutation({
       discountValue: v.number(),
       minOrderValue: v.number(),
       expiresAt: v.optional(v.string()),
+      freeShipping: v.optional(v.boolean()),
       isActive: v.boolean(),
     }),
   },

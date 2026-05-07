@@ -89,7 +89,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   // Coupon Form States
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [couponForm, setCouponForm] = useState({
-    code: "", discountType: "percentage" as "percentage" | "fixed", discountValue: 0, minOrderValue: 0, isActive: true
+    code: "", discountType: "percentage" as "percentage" | "fixed", discountValue: 0, minOrderValue: 0, isActive: true, freeShipping: false
   });
 
   // Mutations
@@ -184,7 +184,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       await createCoupon({ callerId, coupon: couponForm });
       toast.success("Cupom criado!");
       setIsCouponModalOpen(false);
-      setCouponForm({ code: "", discountType: "percentage", discountValue: 0, minOrderValue: 0, isActive: true });
+      setCouponForm({ code: "", discountType: "percentage", discountValue: 0, minOrderValue: 0, isActive: true, freeShipping: false });
     } catch {
       toast.error("Erro ao criar cupom");
     }
@@ -573,6 +573,16 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 className="bg-white/5 border-white/10" 
               />
             </div>
+            <div className="flex items-center gap-3 pt-2">
+              <Switch 
+                checked={couponForm.freeShipping} 
+                onCheckedChange={(v: boolean) => setCouponForm({...couponForm, freeShipping: v})} 
+              />
+              <div className="space-y-0.5">
+                <Label className="text-[10px] uppercase font-black text-white/40">Frete Grátis</Label>
+                <p className="text-[9px] text-white/20">Zera o custo de entrega para este cupom</p>
+              </div>
+            </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setIsCouponModalOpen(false)}>Cancelar</Button>
               <Button type="submit" className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold px-8">Criar Cupom</Button>
@@ -824,6 +834,7 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
           </div>
           <p className="text-[10px] font-medium text-white/30 tracking-wider">
             {coupon.discountType === "percentage" ? `${coupon.discountValue}% OFF` : `R$ ${coupon.discountValue} OFF`}
+            {coupon.freeShipping && " · + Frete Grátis"}
             {coupon.minOrderValue > 0 && ` · Mínimo: ${fmt(coupon.minOrderValue)}`}
           </p>
         </div>

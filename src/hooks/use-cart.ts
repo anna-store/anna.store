@@ -18,6 +18,7 @@ type CartStore = {
     discountType: "percentage" | "fixed"; 
     discountValue: number;
     minOrderValue: number;
+    freeShipping?: boolean;
   } | null;
   addItem: (item: CartItem) => void;
   removeItem: (productId: string, size: string, color: string) => void;
@@ -109,7 +110,8 @@ export const useCartStore = create<CartStore>()(
           code: coupon.code,
           discountType: coupon.discountType,
           discountValue: coupon.discountValue,
-          minOrderValue: coupon.minOrderValue || 0
+          minOrderValue: coupon.minOrderValue || 0,
+          freeShipping: coupon.freeShipping
         } });
       },
       removeCoupon: () => set({ appliedCoupon: null }),
