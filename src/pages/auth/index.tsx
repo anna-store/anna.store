@@ -263,7 +263,7 @@ export default function AuthPage() {
                     </div>
                     <div className="space-y-2">
                       <p className="text-white text-sm font-black uppercase tracking-widest">E-mail Enviado</p>
-                      <p className="text-white/40 text-[11px] leading-relaxed">Verifique sua caixa de entrada.</p>
+                      <p className="text-white/40 text-[11px] leading-relaxed">Verifique sua caixa de entrada e também a pasta de <strong>Spam</strong>.</p>
                     </div>
                     <Button 
                       onClick={() => { setMode("auth"); setIsSuccess(false); }}

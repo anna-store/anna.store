@@ -41,10 +41,13 @@ export default function CheckoutRetornoPage() {
   const clearCart = useCartStore((state) => state.clearCart);
   const updateStatus = useMutation(api.orders.updateOrderStatus);
   const [params] = useSearchParams();
-  const status = (params.get("status") ?? "pending") as ReturnStatus;
-  const orderId = params.get("orderId") ?? "";
+  const rawStatus = params.get("status") ?? params.get("collection_status") ?? "pending";
+  const isSuccess = rawStatus === "success" || rawStatus === "approved";
+  const status: ReturnStatus = isSuccess ? "success" : (rawStatus === "failure" || rawStatus === "rejected") ? "failure" : "pending";
+  
+  const orderId = params.get("orderId") ?? params.get("external_reference") ?? "";
   const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
-  const [countdown, setCountdown] = useState(status === "success" ? 5 : null as number | null);
+  const [countdown, setCountdown] = useState(isSuccess ? 5 : null as number | null);
 
   useEffect(() => {
     if (status === "success") {

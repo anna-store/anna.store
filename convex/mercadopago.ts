@@ -95,12 +95,12 @@ export const createPreference = action({
       const payload = {
         items: mpItems,
         back_urls: {
-          success: `${args.appUrl}/checkout/retorno`,
-          failure: `${args.appUrl}/checkout/retorno`,
-          pending: `${args.appUrl}/checkout/retorno`,
+          success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
+          failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
+          pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
         },
         // auto_return: "approved", // Removido para evitar erro de validação
-        statement_descriptor: "ANNA STORE",
+        statement_descriptor: "ANNA SHOES",
         external_reference: orderId,
         metadata: {
           userId: args.userId,

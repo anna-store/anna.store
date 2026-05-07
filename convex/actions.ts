@@ -18,7 +18,7 @@ export const sendResetPasswordEmail = action({
     try {
       if (!resend) throw new Error("Resend not initialized");
       const { data, error } = await resend.emails.send({
-        from: "onboarding@resend.dev",
+        from: "Anna Shoes <contato@annashoes.com.br>",
         to: [args.email],
         subject: "Redefinição de Senha - Anna Shoes",
         html: `
