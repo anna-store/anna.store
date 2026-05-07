@@ -82,7 +82,8 @@ export default function ProdutoPage() {
       toast.error("Selecione um tamanho");
       return;
     }
-    if (!selectedColor) {
+    // Só valida a cor se o produto tiver cores cadastradas
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
       toast.error("Selecione uma cor");
       return;
     }
@@ -102,7 +103,7 @@ export default function ProdutoPage() {
 
   const handleBuyNow = () => {
     if (!selectedSize) { toast.error("Selecione um tamanho"); return; }
-    if (!selectedColor) { toast.error("Selecione uma cor"); return; }
+    if (product.colors && product.colors.length > 0 && !selectedColor) { toast.error("Selecione uma cor"); return; }
     handleAddToCart();
     navigate("/carrinho");
   };
@@ -226,28 +227,30 @@ export default function ProdutoPage() {
             </p>
           </div>
 
-          {/* Color selector */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold">Cor</span>
-              {selectedColor && <span className="text-sm text-muted-foreground">{selectedColor}</span>}
+          {/* Color selector - Só exibe se houver cores cadastradas */}
+          {product.colors && product.colors.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold">Cor</span>
+                {selectedColor && <span className="text-sm text-muted-foreground">{selectedColor}</span>}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all cursor-pointer ${
+                      selectedColor === color
+                        ? "border-[#ea3372] bg-[#ea3372]/5 text-[#ea3372]"
+                        : "border-border hover:border-[#ea3372]/50 text-foreground"
+                    }`}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {product.colors.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all cursor-pointer ${
-                    selectedColor === color
-                      ? "border-[#ea3372] bg-[#ea3372]/5 text-[#ea3372]"
-                      : "border-border hover:border-[#ea3372]/50 text-foreground"
-                  }`}
-                >
-                  {color}
-                </button>
-              ))}
-            </div>
-          </div>
+          )}
 
           {/* Size selector */}
           <div>

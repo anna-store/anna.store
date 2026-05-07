@@ -120,7 +120,10 @@ export const registerUser = mutation({
       tokenIdentifier: `local:${args.email}`,
       name: args.name,
       email: args.email,
+      password: args.password,
       isAdmin: false,
+      createdAt: Date.now(),
+      totalSpent: 0,
     });
   },
 });
@@ -131,18 +134,19 @@ export const registerUser = mutation({
 export const loginUser = mutation({
   args: { email: v.string(), password: v.string() },
   handler: async (ctx, args) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(args.email)) {
-      throw new Error("Formato de e-mail inválido.");
-    }
-
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("email"), args.email))
+      .withIndex("by_email", (q) => q.eq("email", args.email))
       .unique();
 
-    if (!user) throw new Error("Usuário não encontrado.");
-    // No ambiente de teste, aceitamos qualquer senha para facilitar o fluxo agora
+    if (!user) {
+      throw new Error("Usuário não encontrado. Por favor, cadastre-se.");
+    }
+
+    if (user.password !== args.password) {
+      throw new Error("E-mail ou senha incorretos.");
+    }
+
     return user;
   },
 });
@@ -207,7 +211,7 @@ export const loginWithSocial = mutation({
  * Gera um token e define uma expiração.
  */
 export const requestPasswordReset = mutation({
-  args: { email: v.string() },
+  args: { email: v.string(), appUrl: v.string() },
   handler: async (ctx, args) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(args.email)) {
@@ -224,7 +228,7 @@ export const requestPasswordReset = mutation({
       return { success: true };
     }
 
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const token = Math.random().toString(36).substring(2, 15);
     const expires = Date.now() + 3600000; // 1 hora
 
     await ctx.db.patch(user._id, {
@@ -232,7 +236,7 @@ export const requestPasswordReset = mutation({
       resetPasswordExpires: expires,
     });
 
-    const resetLink = `http://localhost:5174/auth?token=${token}`;
+    const resetLink = `${args.appUrl}/auth?token=${token}`;
 
     return { success: true, resetLink };
   },
@@ -250,15 +254,13 @@ export const resetPassword = mutation({
       .unique();
 
     if (!user || !user.resetPasswordExpires || user.resetPasswordExpires < Date.now()) {
-      throw new Error("Token inválido ou expirado.");
+      throw new Error("Link de redefinição inválido ou expirado.");
     }
 
-    // Em produção, aqui salvaríamos o hash da senha.
-    // No nosso ambiente de fallback, atualizamos o usuário e limpamos o token.
     await ctx.db.patch(user._id, {
+      password: args.newPassword,
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
-      // Se tivéssemos um campo de password hash, atualizaríamos aqui
     });
 
     return { success: true };

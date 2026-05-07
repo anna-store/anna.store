@@ -4,6 +4,11 @@ import { CheckCircle2, XCircle, Clock, Package, ShoppingBag } from "lucide-react
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button.tsx";
 
+import { useCartStore } from "@/hooks/use-cart.ts";
+
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api.js";
+
 type ReturnStatus = "success" | "failure" | "pending";
 
 const STATUS_CONFIG: Record<ReturnStatus, {
@@ -33,11 +38,22 @@ const STATUS_CONFIG: Record<ReturnStatus, {
 };
 
 export default function CheckoutRetornoPage() {
+  const clearCart = useCartStore((state) => state.clearCart);
+  const updateStatus = useMutation(api.orders.updateOrderStatus);
   const [params] = useSearchParams();
   const status = (params.get("status") ?? "pending") as ReturnStatus;
   const orderId = params.get("orderId") ?? "";
   const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
   const [countdown, setCountdown] = useState(status === "success" ? 5 : null as number | null);
+
+  useEffect(() => {
+    if (status === "success") {
+      clearCart();
+      if (orderId) {
+        updateStatus({ orderId: orderId as any, status: "confirmed" }).catch(console.error);
+      }
+    }
+  }, [status, orderId, clearCart, updateStatus]);
 
   useEffect(() => {
     if (countdown === null) return;

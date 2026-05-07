@@ -62,9 +62,9 @@ export default function PrazoDeEntrega() {
         </section>
 
         {[
-          { title: "Processamento do Pedido", content: "Após a confirmação do pagamento, seu pedido é preparado em até 2 dias úteis. Você receberá um e-mail com o código de rastreamento assim que o pedido for despachado." },
-          { title: "Rastreamento", content: "Todos os pedidos são rastreáveis. O código será enviado por e-mail após o despacho. Acompanhe pelo site dos Correios ou da transportadora." },
-          { title: "Atrasos", content: "Em períodos de alta demanda os prazos podem ser maiores. Em caso de atraso superior a 5 dias do prazo estimado, entre em contato pelo WhatsApp (31) 9 8284-7734." },
+          { title: "Processamento e Logística", content: "Trabalhamos com um modelo de Curadoria Premium (Logística Direta). Após a aprovação do seu pagamento, seu pedido é processado e faturado diretamente junto aos nossos fabricantes parceiros localizados em Minas Gerais e São Paulo. Esse processo leva de 3 a 5 dias úteis." },
+          { title: "Rastreamento", content: "Assim que o fabricante despachar seu par, você receberá o código de rastreamento por e-mail. Todos os pedidos possuem seguro e rastreio completo pelos Correios ou transportadoras parceiras." },
+          { title: "Origem do Envio", content: "Seus produtos são enviados de nossos centros de distribuição em MG ou SP, garantindo que você receba um item recém-saído da linha de produção, com o máximo de qualidade e frescor." },
         ].map((s) => (
           <section key={s.title} className="space-y-4">
             <h2 className="text-lg font-black uppercase tracking-widest text-[#38b6ff]">{s.title}</h2>

@@ -109,7 +109,8 @@ export default function AuthPage() {
     }
     setIsLoading(true);
     try {
-      const result = await requestReset({ email });
+      const appUrl = window.location.origin;
+      const result = await requestReset({ email, appUrl });
       if (result.resetLink) {
         const emailResult = await sendEmailAction({
           email: email,

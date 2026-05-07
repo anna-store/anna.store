@@ -1,12 +1,14 @@
 import { action, internalAction } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
+import { internal } from "./_generated/api";
 
 /**
  * Cria uma preferência de pagamento no Mercado Pago.
  */
 export const createPreference = action({
   args: {
+    userId: v.id("users"), // Requerido para criar o pedido
     items: v.array(
       v.object({
         productId: v.string(),
@@ -20,6 +22,7 @@ export const createPreference = action({
     discount: v.number(),
     shipping: v.number(),
     total: v.number(),
+    couponCode: v.optional(v.string()),
     address: v.object({
       street: v.string(),
       city: v.string(),
@@ -29,17 +32,29 @@ export const createPreference = action({
     appUrl: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
     if (!accessToken) {
-      console.warn("MERCADOPAGO_ACCESS_TOKEN não configurado. Retornando link de teste.");
+      console.warn("MERCADOPAGO_ACCESS_TOKEN não configurado.");
       return { initPoint: "https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=dummy" };
     }
 
     try {
-      console.log("Iniciando criação de preferência no Mercado Pago...");
-      
+      // 1. Cria o pedido no banco de dados com status "pending"
+      const orderId = await ctx.runMutation(internal.orders.internalCreateOrder, {
+        userId: args.userId,
+        items: args.items,
+        subtotal: args.subtotal,
+        discount: args.discount,
+        shipping: args.shipping,
+        total: args.total,
+        couponCode: args.couponCode,
+        address: args.address,
+      });
+
+      console.log(`Pedido ${orderId} criado como pendente.`);
+
+      // 2. Cria a preferência no Mercado Pago
       const payload = {
         items: args.items.map((item) => ({
           title: item.name,
@@ -49,16 +64,15 @@ export const createPreference = action({
           picture_url: item.image,
         })),
         back_urls: {
-          success: `${args.appUrl}/checkout/retorno`,
-          failure: `${args.appUrl}/checkout/retorno`,
-          pending: `${args.appUrl}/checkout/retorno`,
+          success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
+          failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
+          pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
         },
-        // Auto_return removido para evitar erros de validação com localhost
         statement_descriptor: "ANNA STORE",
-        external_reference: "ORDER_" + Date.now(),
+        external_reference: orderId, // Crucial para o Webhook
         metadata: {
-          userId: identity?.subject,
-          address: args.address,
+          userId: args.userId,
+          orderId: orderId,
         }
       };
 
@@ -74,11 +88,10 @@ export const createPreference = action({
       const data = await response.json();
       
       if (!response.ok) {
-        console.error("ERRO DETALHADO MERCADO PAGO:", JSON.stringify(data, null, 2));
+        console.error("ERRO MERCADO PAGO:", data);
         throw new Error(data.message || "Erro ao criar preferência");
       }
 
-      console.log("Preferência criada com sucesso!");
       return { initPoint: data.init_point };
     } catch (error: any) {
       console.error("Erro na Action Mercado Pago:", error.message);
@@ -99,6 +112,9 @@ export const handleWebhook = internalAction({
     try {
       const data = JSON.parse(args.body);
       console.log("Mercado Pago Webhook recebido:", data);
+      
+      // Aqui poderíamos processar o pagamento real via API de pagamentos do MP
+      // e atualizar o status do pedido para "confirmed".
     } catch (error) {
       console.error("Erro ao processar webhook:", error);
     }

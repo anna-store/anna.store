@@ -8,6 +8,7 @@ export default defineSchema({
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
     avatar: v.optional(v.string()),
+    password: v.optional(v.string()),
     isAdmin: v.optional(v.boolean()),
     resetPasswordToken: v.optional(v.string()),
     resetPasswordExpires: v.optional(v.number()),

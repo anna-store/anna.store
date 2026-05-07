@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { HelpCircle, ChevronRight, ShoppingBag, Search, CreditCard, Package } from "lucide-react";
 
 const STEPS = [
-  { icon: <Search className="size-6 text-[#ea3372]" />, title: "1. Escolha seu produto", desc: "Navegue pelo catálogo, filtre por categoria, tamanho ou cor. Clique no produto para ver detalhes, fotos e avaliações de outros clientes." },
-  { icon: <ShoppingBag className="size-6 text-[#ea3372]" />, title: "2. Adicione ao carrinho", desc: "Escolha o tamanho e a cor desejados e clique em 'Adicionar ao Carrinho'. Você pode continuar comprando e adicionar mais produtos." },
-  { icon: <CreditCard className="size-6 text-[#ea3372]" />, title: "3. Finalize o pagamento", desc: "Clique no carrinho, revise seus produtos e clique em 'Finalizar Compra'. Preencha o endereço e escolha a forma de pagamento. Aceitamos cartão, PIX e boleto." },
-  { icon: <Package className="size-6 text-[#ea3372]" />, title: "4. Acompanhe seu pedido", desc: "Após o pagamento aprovado, você receberá um e-mail de confirmação. Em até 2 dias úteis, seu pedido é despachado com código de rastreamento." },
+  { icon: <Search className="size-6 text-[#ea3372]" />, title: "1. Escolha seu produto", desc: "Navegue pelo catálogo e escolha o modelo que mais combina com você. Confira as medidas e fotos reais." },
+  { icon: <ShoppingBag className="size-6 text-[#ea3372]" />, title: "2. Adicione ao carrinho", desc: "Escolha o tamanho e cor. Como trabalhamos com envio direto de fábrica, garanta que seu tamanho está correto." },
+  { icon: <CreditCard className="size-6 text-[#ea3372]" />, title: "3. Pagamento e Curadoria", desc: "Após o pagamento, realizamos a curadoria e o faturamento do seu par diretamente com nossos fabricantes parceiros em MG ou SP." },
+  { icon: <Package className="size-6 text-[#ea3372]" />, title: "4. Envio Direto", desc: "Seu produto sai da fábrica direto para sua casa. Você recebe o rastreio em 3 a 5 dias úteis após a aprovação." },
 ];
 
 const FAQS = [

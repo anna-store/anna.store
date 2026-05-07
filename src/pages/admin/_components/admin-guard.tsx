@@ -33,7 +33,7 @@ export default function AdminGuard() {
 
   // Is admin — render dashboard
   if (activeUser?.isAdmin) {
-    return <AdminDashboard />;
+    return <AdminDashboard callerId={activeUser._id as string} />;
   }
 
   // Not admin — show bootstrap or forbidden

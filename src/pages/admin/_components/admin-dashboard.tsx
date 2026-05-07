@@ -4,57 +4,66 @@ import { Printer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
-import {
-  ShoppingBag, Users, TrendingUp, Clock, ChevronDown, Search,
-  LayoutDashboard, Package, UsersRound, Settings, ArrowRight, Activity, Globe, Share2,
-  MapPin, Tag, Trash2, CheckCircle2, XCircle, Plus, Edit2, Camera
+import { 
+  LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp, 
+  Share2, ArrowRight, Settings, Plus, Search, Filter, 
+  ChevronDown, CheckCircle2, XCircle, Clock, Trash2, 
+  MapPin, ShoppingCart, Tag
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import { Badge } from "@/components/ui/badge.tsx";
+import { 
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu.tsx";
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter 
+} from "@/components/ui/dialog.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { Checkbox } from "@/components/ui/checkbox.tsx";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog.tsx";
-import { Skeleton } from "@/components/ui/skeleton.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
-import { toast } from "sonner";
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from "@/components/ui/select.tsx";
+import { Switch } from "@/components/ui/switch.tsx";
 import { cn } from "@/lib/utils.ts";
+import { format } from "date-fns";
+import { toast } from "sonner";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import { motion, AnimatePresence } from "motion/react";
-import { useAuth } from "@/hooks/use-auth.ts";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type Tab = "overview" | "orders" | "users" | "products" | "exchanges" | "reviews" | "coupons";
-
-const STATUS_META: Record<string, { label: string; color: string; dot: string }> = {
-  pending:   { label: "Aguardando", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20", dot: "bg-yellow-500" },
-  confirmed: { label: "Confirmado", color: "bg-blue-500/10 text-blue-500 border-blue-500/20", dot: "bg-blue-500" },
-  shipped:   { label: "Enviado",    color: "bg-purple-500/10 text-purple-500 border-purple-500/20", dot: "bg-purple-500" },
-  delivered: { label: "Entregue",   color: "bg-green-500/10 text-green-500 border-green-500/20", dot: "bg-green-500" },
-  cancelled: { label: "Cancelado",  color: "bg-red-500/10 text-red-500 border-red-500/20", dot: "bg-red-500" },
-};
+type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges" | "reviews";
 
 const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
+
+const STATUS_META: Record<string, { label: string; color: string }> = {
+  pending:   { label: "Pendente",  color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/5" },
+  confirmed: { label: "Confirmado", color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
+  shipped:   { label: "Enviado",    color: "text-purple-500 border-purple-500/20 bg-purple-500/5" },
+  delivered: { label: "Entregue",   color: "text-green-500 border-green-500/20 bg-green-500/5" },
+  cancelled: { label: "Cancelado",  color: "text-red-500 border-red-500/20 bg-red-500/5" },
+  approved:  { label: "Aprovado",   color: "text-green-500 border-green-500/20 bg-green-500/5" },
+  rejected:  { label: "Rejeitado",  color: "text-red-500 border-red-500/20 bg-red-500/5" },
+  completed: { label: "Concluído",  color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
+};
 
 function fmt(n: number) {
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export default function AdminDashboard() {
-  const [tab, setTab] = useState<Tab>("overview");
+export default function AdminDashboard({ callerId }: { callerId: string }) {
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  
+  // Queries
+  const stats = useQuery(api.admin.getStats, { callerId });
+  const orders = useQuery(api.admin.getAllOrders, { callerId });
+  const products = useQuery(api.admin.getAllProducts, { callerId });
+  const users = useQuery(api.admin.getAllUsers, { callerId });
+  const coupons = useQuery(api.admin.getAllCoupons, { callerId });
+  const exchanges = useQuery(api.admin.getAllExchanges, { callerId });
+  const reviews = useQuery(api.admin.getAllReviews, { callerId });
+
+  // Filters
   const [orderSearch, setOrderSearch] = useState("");
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
   const [userSearch, setUserSearch] = useState("");
@@ -69,32 +78,22 @@ export default function AdminDashboard() {
   
   // Product Form States
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [productForm, setProductForm] = useState({
-    name: "", brand: "", category: "", price: 0, originalPrice: 0,
+    name: "", brand: "", category: "", price: 0, originalPrice: 0, 
     description: "", images: "", sizes: "", colors: "", tags: "",
-    inStock: true, isNew: false, isFeatured: false, isBestSeller: false
+    inStock: true, isNew: true, isFeatured: false, isBestSeller: false
   });
+
+  // Coupon Form States
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [couponForm, setCouponForm] = useState({
-    code: "", discountType: "percentage" as "percentage" | "fixed",
-    discountValue: 0, minOrderValue: 0, isActive: true
+    code: "", discountType: "percentage" as "percentage" | "fixed", discountValue: 0, minOrderValue: 0, isActive: true
   });
 
-  // Sessão local do usuário admin
-  const { user: localUser } = useAuth();
-  const callerId = localUser?._id;
-
-  const stats = useQuery(api.admin.getStats, callerId ? { callerId } : "skip");
-  const orders = useQuery(api.admin.getAllOrders, callerId ? { callerId, statusFilter: orderStatusFilter } : "skip");
-  const users = useQuery(api.admin.getAllUsers, callerId ? { callerId } : "skip");
-  const products = useQuery(api.admin.getAllProducts, callerId ? { callerId } : "skip");
-  const exchanges = useQuery(api.admin.getAllExchanges, callerId ? { callerId } : "skip");
-  const reviews = useQuery(api.admin.getAllReviews, callerId ? { callerId } : "skip");
-  const coupons = useQuery(api.admin.getAllCoupons, callerId ? { callerId } : "skip");
-
+  // Mutations
   const updateStatus = useMutation(api.admin.updateOrderStatus);
-  const toggleAdmin = useMutation(api.admin.toggleAdmin);
+  const toggleAdmin = useMutation(api.admin.toggleUserAdmin);
   const createProduct = useMutation(api.admin.createProduct);
   const updateProduct = useMutation(api.admin.updateProduct);
   const deleteProduct = useMutation(api.admin.deleteProduct);
@@ -200,236 +199,168 @@ export default function AdminDashboard() {
     { id: "reviews",  label: "Avaliações",  icon: <Share2 className="h-4 w-4" /> },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
-    exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
-  };
-
   return (
     <>
       {/* Componente de Recibo para Admin (Ordem de Entrega) */}
       <Receipt order={printingOrder} type="admin" />
 
       <div className="flex min-h-screen bg-[#050505] text-white relative overflow-hidden font-sans print:hidden">
-      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ea3372]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ea3372]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
-      <aside className="hidden md:flex flex-col w-64 bg-black/40 backdrop-blur-3xl border-r border-white/5 z-20">
-        <div className="px-8 py-10">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="size-10 bg-gradient-to-br from-[#ea3372] to-[#38b6ff] rounded-xl flex items-center justify-center shadow-lg shadow-[#ea3372]/20 group-hover:scale-110 transition-transform">
-              <Settings className="h-5 w-5 text-white" />
+        {/* Sidebar */}
+        <aside className="w-64 border-r border-white/5 bg-black/40 backdrop-blur-3xl p-6 flex flex-col gap-8 relative z-20">
+          <Link to="/" className="flex items-center gap-3 px-2 group">
+            <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] flex items-center justify-center shadow-lg shadow-[#ea3372]/20 group-hover:scale-105 transition-transform">
+              <span className="font-black text-white italic text-xl">A</span>
             </div>
-            <img 
-              src="https://hercules-cdn.com/file_MwBJp0asRxRHTEAr31k3LplG" 
-              alt="Anna Store Logo" 
-              className="h-20 w-auto brightness-0 invert"
-            />
-          </Link>
-        </div>
-
-        <nav className="flex-1 px-4 space-y-2">
-          {NAV.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => setTab(n.id)}
-              className={cn(
-                "w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all cursor-pointer group relative overflow-hidden",
-                tab === n.id
-                  ? "bg-white/5 text-white"
-                  : "text-white/30 hover:text-white hover:bg-white/[0.02]"
-              )}
-            >
-              {tab === n.id && (
-                <motion.div 
-                  layoutId="nav-active"
-                  className="absolute left-0 w-1 h-6 bg-[#ea3372] rounded-r-full" 
-                />
-              )}
-              <div className={cn("transition-colors", tab === n.id ? "text-[#ea3372]" : "group-hover:text-white")}>
-                {n.icon}
-              </div>
-              {n.label}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-6 border-t border-white/5">
-          <Link to="/" className="flex items-center gap-2 text-[10px] text-white/20 hover:text-white/60 transition-colors uppercase font-black tracking-widest">
-            <ArrowRight className="size-3 rotate-180" />
-            Sair do Terminal
-          </Link>
-        </div>
-      </aside>
-
-      <div className="flex-1 overflow-auto relative z-10 flex flex-col">
-        <header className="sticky top-0 z-30 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 px-8 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-gradient-to-b from-[#ea3372] to-transparent rounded-full" />
             <div>
-              <h1 className="text-xl font-black italic tracking-tighter uppercase leading-none">
-                {NAV.find((n) => n.id === tab)?.label}
-              </h1>
-              <div className="flex items-center gap-2 mt-1">
-                <Activity className="size-3 text-green-500" />
-                <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.2em]">Node Status: Online</span>
-              </div>
+              <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]">ST</span></p>
+              <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Admin Core</p>
+            </div>
+          </Link>
+
+          <nav className="flex flex-col gap-1">
+            {NAV.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                  activeTab === item.id 
+                    ? "bg-white/10 text-white shadow-lg shadow-black/50" 
+                    : "text-white/40 hover:bg-white/5 hover:text-white/60"
+                )}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="mt-auto">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-2">Sessão</p>
+              <p className="text-xs font-bold text-white/60 truncate">{callerId}</p>
             </div>
           </div>
-        </header>
+        </aside>
 
-        <div className="p-8 flex-1">
-          <AnimatePresence mode="wait">
-            {tab === "overview" && (
-              <motion.div 
-                key="overview"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="space-y-8"
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto relative z-10 flex flex-col">
+          <header className="h-20 border-b border-white/5 px-8 flex items-center justify-between bg-black/20 backdrop-blur-md sticky top-0 z-30">
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">Dashboard</h2>
+              <p className="text-xl font-black italic">{NAV.find(n => n.id === activeTab)?.label}</p>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {activeTab === "products" && (
+                <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
+                  <Plus className="size-4" /> Novo Produto
+                </Button>
+              )}
+              {activeTab === "coupons" && (
+                <Button onClick={() => setIsCouponModalOpen(true)} className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#38b6ff]/20">
+                  <Plus className="size-4" /> Novo Cupom
+                </Button>
+              )}
+            </div>
+          </header>
+
+          <div className="p-8 flex-1">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    { label: "Receita Total", value: stats ? fmt(stats.totalRevenue) : null, icon: TrendingUp, color: "#22c55e", bg: "bg-green-500/10" },
-                    { label: "Total Pedidos", value: stats?.totalOrders?.toString() ?? null, icon: ShoppingBag, color: "#ea3372", bg: "bg-[#ea3372]/10" },
-                    { label: "Usuários Ativos", value: stats?.totalUsers?.toString() ?? null, icon: Users, color: "#38b6ff", bg: "bg-[#38b6ff]/10" },
-                    { label: "Pendentes", value: stats?.pendingOrders?.toString() ?? null, icon: Clock, color: "#eab308", bg: "bg-yellow-500/10" },
-                  ].map((s) => (
-                    <Card key={s.label} className="glass border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all group border-t-white/10 shadow-2xl">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={cn("size-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110", s.bg)}>
-                            <s.icon className="size-5" style={{ color: s.color }} />
-                          </div>
-                          <div className="text-[10px] font-black text-white/20 uppercase tracking-widest">Real-time</div>
+                {activeTab === "overview" && stats && (
+                  <div className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {[
+                        { label: "Vendas Totais", value: fmt(stats.totalSales), icon: ShoppingBag, color: "text-[#ea3372]" },
+                        { label: "Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#38b6ff]" },
+                        { label: "Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-purple-500" },
+                        { label: "Média p/ Pedido", value: fmt(stats.avgOrderValue), icon: TrendingUp, color: "text-green-500" },
+                      ].map((s, i) => (
+                        <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-xl group hover:border-[#ea3372]/30 transition-all">
+                          <s.icon className={cn("size-6 mb-4", s.color)} />
+                          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">{s.label}</p>
+                          <p className="text-2xl font-black text-white italic">{s.value}</p>
                         </div>
-                        {s.value === null ? (
-                          <Skeleton className="h-8 w-24 bg-white/5" />
-                        ) : (
-                          <div className="text-3xl font-black tracking-tighter text-white">{s.value}</div>
-                        )}
-                        <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-1">{s.label}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                      ))}
+                    </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <Card className="lg:col-span-2 glass border-white/[0.05] bg-white/[0.02] border-t-white/10 shadow-2xl">
-                    <CardHeader className="flex flex-row items-center justify-between px-8 py-6 border-b border-white/5">
-                      <CardTitle className="text-sm font-black uppercase tracking-widest text-white/60">Análise de Receita</CardTitle>
-                      <Badge variant="outline" className="bg-[#ea3372]/10 text-[#ea3372] border-[#ea3372]/20 uppercase text-[9px] px-2">7 Dias</Badge>
-                    </CardHeader>
-                    <CardContent className="p-8">
-                      {!stats ? (
-                        <Skeleton className="h-64 w-full bg-white/5 rounded-2xl" />
-                      ) : (
-                        <ResponsiveContainer width="100%" height={260}>
-                          <BarChart data={stats.revenueByDay}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                            <XAxis 
-                              dataKey="date" 
-                              stroke="rgba(255,255,255,0.3)" 
-                              fontSize={10} 
-                              tickLine={false}
-                              axisLine={false}
-                              tickFormatter={(d: string) => format(new Date(d + "T12:00:00"), "dd/MM")}
-                            />
-                            <YAxis 
-                              stroke="rgba(255,255,255,0.3)" 
-                              fontSize={10} 
-                              tickLine={false}
-                              axisLine={false}
-                              tickFormatter={(v: number) => `R$${v}`}
-                            />
-                            <Tooltip 
-                              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                              contentStyle={{ backgroundColor: '#0b0b0b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px' }}
-                              itemStyle={{ color: '#ea3372', fontWeight: 'bold' }}
-                            />
-                            <Bar dataKey="revenue" fill="url(#colorRev)" radius={[6, 6, 0, 0]} />
-                            <defs>
-                              <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#ea3372" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#ea3372" stopOpacity={0.1}/>
-                              </linearGradient>
-                            </defs>
-                          </BarChart>
-                        </ResponsiveContainer>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  <Card className="glass border-white/[0.05] bg-white/[0.02] border-t-white/10 shadow-2xl">
-                    <CardHeader className="px-8 py-6 border-b border-white/5">
-                      <CardTitle className="text-sm font-black uppercase tracking-widest text-white/60">Últimos Pedidos</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      {!stats ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
+                          <Package className="size-4" /> Pedidos Recentes
+                        </h3>
                         <div className="space-y-4">
-                          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-14 w-full bg-white/5" />)}
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {stats.recentOrders.map((o) => {
-                            const meta = STATUS_META[o.status] || STATUS_META.pending;
-                            return (
-                              <div key={o._id} className="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-2 rounded-xl transition-colors">
-                                <div className="flex items-center gap-3">
-                                  <div className="size-8 rounded-full bg-white/5 flex items-center justify-center font-bold text-[10px] border border-white/10">
-                                    {o.userName?.charAt(0) ?? "C"}
-                                  </div>
-                                  <div>
-                                    <p className="text-[11px] font-bold text-white leading-none mb-1">{o.userName || "Cliente"}</p>
-                                    <p className="text-[9px] text-white/30 uppercase tracking-wider">{format(new Date(o.createdAt), "dd MMM")}</p>
-                                  </div>
+                          {orders?.slice(0, 5).map(o => (
+                            <div key={o._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03]">
+                              <div className="flex items-center gap-4">
+                                <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center font-black text-[#ea3372] italic border border-white/10">
+                                  {o.userName?.charAt(0) || "C"}
                                 </div>
-                                <div className="text-right">
-                                  <p className="text-[11px] font-black text-white">{fmt(o.total)}</p>
-                                  <div className="flex items-center justify-end gap-1.5 mt-1">
-                                    <div className={cn("size-1 rounded-full", meta.dot)} />
-                                    <span className="text-[8px] font-black uppercase tracking-widest text-white/40">{meta.label}</span>
-                                  </div>
+                                <div>
+                                  <p className="text-xs font-black text-white">{o.userName}</p>
+                                  <p className="text-[10px] text-white/20 font-mono">#{o._id.slice(-6).toUpperCase()}</p>
                                 </div>
                               </div>
-                            );
-                          })}
+                              <p className="text-xs font-black text-[#38b6ff]">{fmt(o.total)}</p>
+                            </div>
+                          ))}
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </motion.div>
-            )}
+                      </div>
 
-            {(tab === "orders" || tab === "users" || tab === "products" || tab === "exchanges" || tab === "reviews" || tab === "coupons") && (
-              <motion.div
-                key={tab}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="space-y-6"
-              >
-                <Card className="glass border-white/[0.05] bg-white/[0.01] shadow-2xl overflow-hidden">
-                  <div className="p-8 space-y-6">
-                    <div className="flex flex-col md:flex-row gap-4 items-center">
-                      <div className="relative flex-1 group w-full">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20 group-focus-within:text-[#ea3372] transition-colors" />
+                      <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
+                          <TrendingUp className="size-4" /> Performance de Cupons
+                        </h3>
+                        <div className="space-y-4">
+                          {coupons?.map(c => (
+                            <div key={c._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03]">
+                              <div className="flex items-center gap-4">
+                                <div className={cn("size-10 rounded-xl flex items-center justify-center", c.isActive ? "bg-green-500/10 text-green-500" : "bg-white/5 text-white/20")}>
+                                  <Tag className="size-4" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-black text-white tracking-widest">{c.code}</p>
+                                  <p className="text-[10px] text-white/20">{c.discountType === "percentage" ? `${c.discountValue}% OFF` : `R$ ${c.discountValue} OFF`}</p>
+                                </div>
+                              </div>
+                              <Badge className={c.isActive ? "bg-green-500/10 text-green-500" : "bg-white/5 text-white/20"}>
+                                {c.isActive ? "Ativo" : "Inativo"}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "orders" && (
+                  <div className="space-y-6">
+                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/[0.02] p-6 rounded-3xl border border-white/5">
+                      <div className="relative flex-1 w-full max-w-md">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
                         <Input 
-                          className="bg-white/[0.03] border-white/10 h-12 pl-12 focus:border-[#ea3372]/40 text-sm" 
-                          placeholder={`Buscar em ${NAV.find(n => n.id === tab)?.label}...`}
-                          value={tab === "orders" ? orderSearch : userSearch}
-                          onChange={(e) => tab === "orders" ? setOrderSearch(e.target.value) : setUserSearch(e.target.value)}
+                          placeholder="Buscar por ID ou Cliente..." 
+                          className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl focus:border-[#ea3372]/40"
+                          value={orderSearch}
+                          onChange={e => setOrderSearch(e.target.value)}
                         />
                       </div>
-                      
-                      {tab === "orders" && (
+                      <div className="flex items-center gap-3 w-full sm:w-auto">
                         <Select value={orderStatusFilter} onValueChange={setOrderStatusFilter}>
-                          <SelectTrigger className="w-full md:w-56 bg-white/[0.03] border-white/10 h-12">
-                            <SelectValue placeholder="Filtrar por Status" />
+                          <SelectTrigger className="w-full sm:w-48 bg-black/40 border-white/5 h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+                            <Filter className="size-3 mr-2 text-white/40" />
+                            <SelectValue placeholder="Status" />
                           </SelectTrigger>
                           <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
                             <SelectItem value="all">Todos os Status</SelectItem>
@@ -438,261 +369,156 @@ export default function AdminDashboard() {
                             ))}
                           </SelectContent>
                         </Select>
-                      )}
-
-                      {tab === "products" && (
-                        <Button 
-                          onClick={() => openProductModal()}
-                          className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-12 px-8 gap-2 shadow-lg shadow-[#ea3372]/20"
-                        >
-                          <Plus className="size-4" /> Novo Produto
-                        </Button>
-                      )}
-
-                      {tab === "coupons" && (
-                        <Button 
-                          onClick={() => setIsCouponModalOpen(true)}
-                          className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold h-12 px-8 gap-2 shadow-lg shadow-[#38b6ff]/20"
-                        >
-                          <Plus className="size-4" /> Novo Cupom
-                        </Button>
-                      )}
+                      </div>
                     </div>
 
-                    {/* Data List */}
                     <div className="space-y-4">
-                      {tab === "orders" && (
-                        !orders ? <SkeletonList /> : orders.map(o => (
+                      {!orders ? <SkeletonList /> : orders
+                        .filter(o => 
+                          (orderStatusFilter === "all" || o.status === orderStatusFilter) &&
+                          (o.userName.toLowerCase().includes(orderSearch.toLowerCase()) || o._id.toLowerCase().includes(orderSearch.toLowerCase()))
+                        )
+                        .map(o => (
                           <OrderRow key={o._id} order={o} onStatusChange={handleStatusChange} onPrint={() => handlePrint(o)} />
                         ))
-                      )}
-                      {tab === "users" && (
-                        !users ? <SkeletonList /> : users.map(u => (
-                          <UserRow key={u._id} user={u} onToggleAdmin={handleToggleAdmin} />
-                        ))
-                      )}
-                      {tab === "products" && (
-                        !products ? <SkeletonList /> : products.map(p => (
-                          <ProductRow 
-                            key={p._id} 
-                            product={p} 
-                            onEdit={() => openProductModal(p)}
-                            onDelete={async () => {
-                              if (confirm("Excluir produto?")) {
-                                await deleteProduct({ callerId, productId: p._id });
-                                toast.success("Produto removido");
-                              }
-                            }} 
-                          />
-                        ))
-                      )}
-                      {tab === "coupons" && (
-                        !coupons ? <SkeletonList /> : coupons.map(c => (
-                          <CouponRow 
-                            key={c._id} 
-                            coupon={c} 
-                            onToggle={async (active) => {
-                              await toggleCoupon({ callerId, couponId: c._id, isActive: active });
-                              toast.success(active ? "Cupom ativado" : "Cupom desativado");
-                            }}
-                            onDelete={async () => {
-                              if (confirm("Excluir cupom?")) {
-                                await deleteCoupon({ callerId, couponId: c._id });
-                                toast.success("Cupom removido");
-                              }
-                            }}
-                          />
-                        ))
-                      )}
-                      {tab === "exchanges" && (
-                        !exchanges ? <SkeletonList /> : exchanges.map(e => (
-                          <ExchangeRow key={e._id} exchange={e} onStatusChange={async (status) => {
-                            await updateExchange({ callerId, exchangeId: e._id, status });
-                            toast.success("Status de troca atualizado");
-                          }} />
-                        ))
-                      )}
-                      {tab === "reviews" && (
-                        !reviews ? <SkeletonList /> : reviews.map(r => (
-                          <ReviewRow key={r._id} review={r} onDelete={async () => {
-                            if (confirm("Remover avaliação?")) {
-                              await deleteReview({ callerId, reviewId: r._id });
-                              toast.success("Avaliação removida");
-                            }
-                          }} />
-                        ))
-                      )}
+                      }
                     </div>
                   </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                )}
 
-        <footer className="p-8 border-t border-white/5 text-[9px] text-white/10 font-black uppercase tracking-[0.4em] text-center">
-          AnnaSt Terminal Core System &bull; Version 4.0.0-PRO
-        </footer>
+                {activeTab === "products" && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4">
+                      {!products ? <SkeletonList /> : products.map(p => (
+                        <ProductRow key={p._id} product={p} onEdit={() => openProductModal(p)} onDelete={() => deleteProduct({ callerId, productId: p._id })} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "users" && (
+                  <div className="space-y-6">
+                    <div className="relative max-w-md">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
+                      <Input 
+                        placeholder="Buscar por Email ou Nome..." 
+                        className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl"
+                        value={userSearch}
+                        onChange={e => setUserSearch(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-4">
+                      {!users ? <SkeletonList /> : users
+                        .filter(u => u.email.toLowerCase().includes(userSearch.toLowerCase()) || (u.name?.toLowerCase().includes(userSearch.toLowerCase())))
+                        .map(u => (
+                          <UserRow key={u._id} user={u} onToggleAdmin={handleToggleAdmin} />
+                        ))
+                      }
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "coupons" && (
+                  <div className="grid grid-cols-1 gap-4">
+                    {!coupons ? <SkeletonList /> : coupons.map(c => (
+                      <CouponRow key={c._id} coupon={c} onToggle={(v: boolean) => toggleCoupon({ callerId, couponId: c._id, isActive: v })} onDelete={() => deleteCoupon({ callerId, couponId: c._id })} />
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === "exchanges" && (
+                  <div className="space-y-4">
+                    {!exchanges ? <SkeletonList /> : exchanges.map(e => (
+                      <ExchangeRow key={e._id} exchange={e} onStatusChange={(s: any) => updateExchange({ callerId, exchangeId: e._id, status: s })} />
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === "reviews" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {!reviews ? <SkeletonList /> : reviews.map(r => (
+                      <ReviewRow key={r._id} review={r} onDelete={() => deleteReview({ callerId, reviewId: r._id })} />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <footer className="p-8 border-t border-white/5 text-[9px] text-white/10 font-black uppercase tracking-[0.4em] text-center">
+            AnnaSt Terminal Core System &bull; Version 4.0.0-PRO
+          </footer>
+        </div>
       </div>
 
       {/* Product Modal */}
       <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
-        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-auto">
+        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-auto custom-scrollbar">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">
-              {editingProduct ? "Editar Produto" : "Novo Produto"}
-            </DialogTitle>
+            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
-          
           <form onSubmit={handleProductSubmit} className="space-y-6 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Nome do Produto</Label>
-                <Input 
-                  required
-                  value={productForm.name} 
-                  onChange={e => setProductForm({...productForm, name: e.target.value})}
-                  className="bg-white/5 border-white/10" 
-                />
+                <Input required value={productForm.name} onChange={e => setProductForm({...productForm, name: e.target.value})} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Marca</Label>
-                <Input 
-                  required
-                  value={productForm.brand} 
-                  onChange={e => setProductForm({...productForm, brand: e.target.value})}
-                  className="bg-white/5 border-white/10" 
-                />
+                <Input required value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="bg-white/5 border-white/10" />
               </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Categoria</Label>
-                <Select 
-                  value={productForm.category} 
-                  onValueChange={v => setProductForm({...productForm, category: v})}
-                >
-                  <SelectTrigger className="bg-white/5 border-white/10">
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
-                    <SelectItem value="Tênis Masculino">Tênis Masculino</SelectItem>
-                    <SelectItem value="Tênis Feminino">Tênis Feminino</SelectItem>
-                    <SelectItem value="Casual">Casual</SelectItem>
-                    <SelectItem value="Esportivo">Esportivo</SelectItem>
-                    <SelectItem value="Infantil">Infantil</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input required value={productForm.category} onChange={e => setProductForm({...productForm, category: e.target.value})} className="bg-white/5 border-white/10" />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase font-black text-white/40">Preço (R$)</Label>
-                  <Input 
-                    type="number" step="0.01" required
-                    value={productForm.price} 
-                    onChange={e => setProductForm({...productForm, price: parseFloat(e.target.value)})}
-                    className="bg-white/5 border-white/10" 
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase font-black text-white/40">Preço Orig. (R$)</Label>
-                  <Input 
-                    type="number" step="0.01"
-                    value={productForm.originalPrice} 
-                    onChange={e => setProductForm({...productForm, originalPrice: parseFloat(e.target.value)})}
-                    className="bg-white/5 border-white/10" 
-                  />
-                </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] uppercase font-black text-white/40">Preço (R$)</Label>
+                <Input type="number" required value={productForm.price} onChange={e => setProductForm({...productForm, price: parseFloat(e.target.value)})} className="bg-white/5 border-white/10" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] uppercase font-black text-white/40">Preço Original (R$)</Label>
+                <Input type="number" value={productForm.originalPrice} onChange={e => setProductForm({...productForm, originalPrice: parseFloat(e.target.value)})} className="bg-white/5 border-white/10" />
               </div>
             </div>
-
-            <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Imagens (URLs separadas por vírgula)</Label>
-              <Textarea 
-                required
-                value={productForm.images} 
-                onChange={e => setProductForm({...productForm, images: e.target.value})}
-                className="bg-white/5 border-white/10 h-20" 
-                placeholder="https://imagem1.jpg, https://imagem2.jpg"
-              />
-            </div>
-
             <div className="space-y-1">
               <Label className="text-[10px] uppercase font-black text-white/40">Descrição</Label>
-              <Textarea 
-                required
-                value={productForm.description} 
-                onChange={e => setProductForm({...productForm, description: e.target.value})}
-                className="bg-white/5 border-white/10 h-24" 
-              />
+              <Textarea required value={productForm.description} onChange={e => setProductForm({...productForm, description: e.target.value})} className="bg-white/5 border-white/10 min-h-24" />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label className="text-[10px] uppercase font-black text-white/40">Imagens (URLs separadas por vírgula)</Label>
+              <Input required value={productForm.images} onChange={e => setProductForm({...productForm, images: e.target.value})} className="bg-white/5 border-white/10" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Tamanhos (separados por vírgula)</Label>
-                <Input 
-                  value={productForm.sizes} 
-                  onChange={e => setProductForm({...productForm, sizes: e.target.value})}
-                  className="bg-white/5 border-white/10" 
-                />
+                <Input required value={productForm.sizes} onChange={e => setProductForm({...productForm, sizes: e.target.value})} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Cores (separadas por vírgula)</Label>
-                <Input 
-                  value={productForm.colors} 
-                  onChange={e => setProductForm({...productForm, colors: e.target.value})}
-                  className="bg-white/5 border-white/10" 
-                />
+                <Input value={productForm.colors} onChange={e => setProductForm({...productForm, colors: e.target.value})} className="bg-white/5 border-white/10" />
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-6 p-4 bg-white/[0.02] rounded-xl border border-white/5">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="inStock" 
-                  checked={productForm.inStock} 
-                  onCheckedChange={(v: boolean) => setProductForm({...productForm, inStock: v})}
-                />
-                <Label htmlFor="inStock" className="text-xs">Em Estoque</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="isNew" 
-                  checked={productForm.isNew} 
-                  onCheckedChange={(v: boolean) => setProductForm({...productForm, isNew: v})}
-                />
-                <Label htmlFor="isNew" className="text-xs">Novo</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="isFeatured" 
-                  checked={productForm.isFeatured} 
-                  onCheckedChange={(v: boolean) => setProductForm({...productForm, isFeatured: v})}
-                />
-                <Label htmlFor="isFeatured" className="text-xs">Destaque</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="isBestSeller" 
-                  checked={productForm.isBestSeller} 
-                  onCheckedChange={(v: boolean) => setProductForm({...productForm, isBestSeller: v})}
-                />
-                <Label htmlFor="isBestSeller" className="text-xs">Mais Vendido</Label>
-              </div>
+            <div className="grid grid-cols-4 gap-4 pt-2">
+              {[
+                { id: "inStock", label: "Em Estoque" },
+                { id: "isNew", label: "Novidade" },
+                { id: "isFeatured", label: "Destaque" },
+                { id: "isBestSeller", label: "Mais Vendido" },
+              ].map(opt => (
+                <div key={opt.id} className="flex items-center gap-2">
+                  <Switch 
+                    checked={(productForm as any)[opt.id]} 
+                    onCheckedChange={(v: boolean) => setProductForm({...productForm, [opt.id]: v})} 
+                  />
+                  <Label className="text-[9px] uppercase font-black text-white/40">{opt.label}</Label>
+                </div>
+              ))}
             </div>
-
-            <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Tags (separadas por vírgula)</Label>
-              <Input 
-                value={productForm.tags} 
-                onChange={e => setProductForm({...productForm, tags: e.target.value})}
-                className="bg-white/5 border-white/10" 
-              />
-            </div>
-
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setIsProductModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold px-8">
-                {editingProduct ? "Salvar Alterações" : "Criar Produto"}
-              </Button>
+              <Button type="submit" className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold px-8">Salvar Produto</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -753,7 +579,6 @@ export default function AdminDashboard() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
     </>
   );
 }

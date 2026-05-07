@@ -37,7 +37,7 @@ export default function PoliticaPrivacidade() {
           },
           {
             title: "3. Compartilhamento de Dados",
-            content: `Seus dados podem ser compartilhados apenas com parceiros essenciais para operação da loja: serviços de pagamento (Mercado Pago), serviços de entrega (Correios e transportadoras), e serviços de tecnologia que hospedam nossa plataforma. Todos seguem rígidas políticas de privacidade.`
+            content: `Seus dados podem ser compartilhados apenas com parceiros essenciais para a operação da nossa curadoria: fabricantes parceiros em MG e SP (para faturamento e envio do seu pedido), serviços de pagamento (Mercado Pago), e transportadoras. Todos seguem rígidas políticas de segurança.`
           },
           {
             title: "4. Segurança",

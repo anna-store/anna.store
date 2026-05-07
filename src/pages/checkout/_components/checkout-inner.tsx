@@ -139,6 +139,7 @@ export default function CheckoutInner() {
     try {
       const appUrl = window.location.origin;
       const { initPoint } = await createPreference({
+        userId: currentUser._id,
         items: items.map((i) => ({
           productId: i.productId,
           name: i.name,

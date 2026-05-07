@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 
 /**
  * Busca os pedidos do usuário logado via sessão local.
@@ -16,7 +16,7 @@ export const getMyOrders = query({
         .collect();
     }
 
-    // Fallback: tenta auth identity (Hercules, quando disponível)
+    // Fallback: tenta auth identity
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) return [];
     const user = await ctx.db
@@ -53,9 +53,10 @@ export const getOrderById = query({
 });
 
 /**
- * Cria um novo pedido para o usuário.
+ * Cria um novo pedido (Mutação Interna).
+ * Chamada pelo backend durante o checkout.
  */
-export const createOrder = mutation({
+export const internalCreateOrder = internalMutation({
   args: {
     userId: v.id("users"),
     items: v.array(
@@ -80,12 +81,9 @@ export const createOrder = mutation({
     }),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db.get(args.userId);
-    if (!user) throw new ConvexError({ code: "NOT_FOUND", message: "User not found" });
-
     return await ctx.db.insert("orders", {
       userId: args.userId,
-      status: "confirmed",
+      status: "pending",
       items: args.items,
       subtotal: args.subtotal,
       discount: args.discount,
@@ -95,5 +93,15 @@ export const createOrder = mutation({
       address: args.address,
       createdAt: new Date().toISOString(),
     });
+  },
+});
+
+/**
+ * Atualiza o status de um pedido.
+ */
+export const updateOrderStatus = mutation({
+  args: { orderId: v.id("orders"), status: v.string() },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.orderId, { status: args.status });
   },
 });
