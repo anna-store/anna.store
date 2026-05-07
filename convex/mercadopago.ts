@@ -109,12 +109,41 @@ export const createPreference = action({
 export const handleWebhook = internalAction({
   args: { body: v.string() },
   handler: async (ctx, args) => {
+    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+    if (!accessToken) return;
+
     try {
-      const data = JSON.parse(args.body);
-      console.log("Mercado Pago Webhook recebido:", data);
-      
-      // Aqui poderíamos processar o pagamento real via API de pagamentos do MP
-      // e atualizar o status do pedido para "confirmed".
+      const payload = JSON.parse(args.body);
+      console.log("MP Webhook Payload:", payload);
+
+      // Verificamos se a notificação é de um pagamento
+      if (payload.type === "payment" || payload.action === "payment.created" || payload.action === "payment.updated") {
+        const paymentId = payload.data?.id || payload.id;
+        if (!paymentId) return;
+
+        // 1. Consulta os detalhes do pagamento no MP
+        const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (!response.ok) return;
+        const payment = await response.json();
+
+        const orderId = payment.external_reference as Id<"orders">;
+        const status = payment.status;
+
+        console.log(`Pagamento ${paymentId} para pedido ${orderId}: status ${status}`);
+
+        // 2. Se aprovado, atualiza o pedido para "confirmed"
+        if (status === "approved" && orderId) {
+          await ctx.runMutation(internal.orders.internalUpdateStatus, {
+            orderId,
+            status: "confirmed",
+            mpPaymentId: String(paymentId),
+          });
+          console.log(`Pedido ${orderId} CONFIRMADO via Webhook.`);
+        }
+      }
     } catch (error) {
       console.error("Erro ao processar webhook:", error);
     }

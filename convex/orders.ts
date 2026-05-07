@@ -99,9 +99,24 @@ export const internalCreateOrder = internalMutation({
 /**
  * Atualiza o status de um pedido.
  */
-export const updateOrderStatus = mutation({
-  args: { orderId: v.id("orders"), status: v.string() },
+/**
+ * Atualiza o status de um pedido (Interno).
+ */
+export const internalUpdateStatus = internalMutation({
+  args: { 
+    orderId: v.id("orders"), 
+    status: v.union(
+      v.literal("pending"),
+      v.literal("confirmed"),
+      v.literal("shipped"),
+      v.literal("delivered"),
+      v.literal("cancelled"),
+    ),
+    mpPaymentId: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.orderId, { status: args.status });
+    const patch: any = { status: args.status };
+    if (args.mpPaymentId) patch.mpPaymentId = args.mpPaymentId;
+    await ctx.db.patch(args.orderId, patch);
   },
 });
