@@ -76,6 +76,8 @@ export default function PainelInner() {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const updatePassword = useMutation(api.users.updatePassword);
 
@@ -418,23 +420,43 @@ export default function PainelInner() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-xl border animate-in slide-in-from-top-2 duration-200">
                 <div className="space-y-1">
                   <Label htmlFor="new-password">Nova Senha</Label>
-                  <Input 
-                    id="new-password" 
-                    type="password" 
-                    value={newPassword} 
-                    onChange={(e) => setNewPassword(e.target.value)} 
-                    placeholder="Mínimo 6 caracteres"
-                  />
+                  <div className="relative">
+                    <Input 
+                      id="new-password" 
+                      type={showNewPassword ? "text" : "password"} 
+                      value={newPassword} 
+                      onChange={(e) => setNewPassword(e.target.value)} 
+                      placeholder="Mínimo 6 caracteres"
+                      className="pr-10"
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="confirm-password">Confirmar Senha</Label>
-                  <Input 
-                    id="confirm-password" 
-                    type="password" 
-                    value={confirmPassword} 
-                    onChange={(e) => setConfirmPassword(e.target.value)} 
-                    placeholder="Repita a nova senha"
-                  />
+                  <div className="relative">
+                    <Input 
+                      id="confirm-password" 
+                      type={showConfirmPassword ? "text" : "password"} 
+                      value={confirmPassword} 
+                      onChange={(e) => setConfirmPassword(e.target.value)} 
+                      placeholder="Repita a nova senha"
+                      className="pr-10"
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div className="sm:col-span-2">
                   <Button 

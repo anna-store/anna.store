@@ -490,14 +490,24 @@ export default function AuthPage() {
                             </div>
                             <div className="space-y-3">
                               <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Definir Senha</Label>
-                              <Input 
-                                type="password"
-                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
-                                placeholder="••••••••"
-                                autoComplete="new-password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                              />
+                              <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#38b6ff] transition-colors" />
+                                <Input 
+                                  type={showPassword ? "text" : "password"}
+                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#38b6ff]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  placeholder="••••••••"
+                                  autoComplete="new-password"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <button 
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
+                                >
+                                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                </button>
+                              </div>
                             </div>
                           </div>
 

@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const sendResetPasswordEmail = action({
   args: {
@@ -16,6 +16,7 @@ export const sendResetPasswordEmail = action({
     }
 
     try {
+      if (!resend) throw new Error("Resend not initialized");
       const { data, error } = await resend.emails.send({
         from: "onboarding@resend.dev",
         to: [args.email],
