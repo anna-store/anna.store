@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
-import { Package, ArrowLeft } from "lucide-react";
+import { Package, ArrowLeft, Printer } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useState } from "react";
+import Receipt from "@/components/Receipt.tsx";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pending: { label: "Aguardando", color: "bg-yellow-500/10 text-yellow-600 border-yellow-200" },
@@ -19,9 +21,22 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 export default function PedidosInner() {
   const orders = useQuery(api.orders.getMyOrders);
+  const [printingOrder, setPrintingOrder] = useState<any>(null);
+
+  const handlePrint = (order: any) => {
+    setPrintingOrder(order);
+    // Pequeno timeout para o React renderizar o componente antes de abrir o print
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+    <>
+      {/* Componente de Recibo (visível apenas no Print) */}
+      <Receipt order={printingOrder} type="customer" />
+      
+      <div className="max-w-3xl mx-auto px-4 py-10 space-y-6 print:hidden">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
           <Link to="/painel"><ArrowLeft className="h-4 w-4" /></Link>
@@ -63,7 +78,18 @@ export default function PedidosInner() {
                         {order.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                       </p>
                     </div>
-                    <Badge variant="outline" className={s.color}>{s.label}</Badge>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8 text-xs gap-2 font-bold cursor-pointer"
+                        onClick={() => handlePrint(order)}
+                      >
+                        <Printer className="h-3 w-3" />
+                        Gerar Recibo
+                      </Button>
+                      <Badge variant="outline" className={s.color}>{s.label}</Badge>
+                    </div>
                   </div>
                   {/* Items */}
                   <div className="px-5 py-4 space-y-3">
@@ -94,6 +120,6 @@ export default function PedidosInner() {
           })}
         </div>
       )}
-    </div>
+    </>
   );
 }

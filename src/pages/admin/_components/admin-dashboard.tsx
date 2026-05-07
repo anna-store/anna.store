@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Receipt from "@/components/Receipt.tsx";
+import { Printer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
@@ -56,6 +58,14 @@ export default function AdminDashboard() {
   const [orderSearch, setOrderSearch] = useState("");
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
   const [userSearch, setUserSearch] = useState("");
+  const [printingOrder, setPrintingOrder] = useState<any>(null);
+
+  const handlePrint = (order: any) => {
+    setPrintingOrder(order);
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
   
   // Product Form States
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -197,7 +207,11 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-white relative overflow-hidden font-sans">
+    <>
+      {/* Componente de Recibo para Admin (Ordem de Entrega) */}
+      <Receipt order={printingOrder} type="admin" />
+
+      <div className="flex min-h-screen bg-[#050505] text-white relative overflow-hidden font-sans print:hidden">
       <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ea3372]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
@@ -449,7 +463,7 @@ export default function AdminDashboard() {
                     <div className="space-y-4">
                       {tab === "orders" && (
                         !orders ? <SkeletonList /> : orders.map(o => (
-                          <OrderRow key={o._id} order={o} onStatusChange={handleStatusChange} />
+                          <OrderRow key={o._id} order={o} onStatusChange={handleStatusChange} onPrint={() => handlePrint(o)} />
                         ))
                       )}
                       {tab === "users" && (
@@ -740,6 +754,7 @@ export default function AdminDashboard() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }
 
@@ -753,7 +768,7 @@ function SkeletonList() {
   );
 }
 
-function OrderRow({ order, onStatusChange }: { order: any; onStatusChange: any }) {
+function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChange: any; onPrint: any }) {
   const meta = STATUS_META[order.status] || STATUS_META.pending;
   const [expanded, setExpanded] = useState(false);
 
@@ -779,6 +794,16 @@ function OrderRow({ order, onStatusChange }: { order: any; onStatusChange: any }
             <p className="text-lg font-black text-white leading-none">{fmt(order.total)}</p>
           </div>
           
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="bg-white/5 border-white/10 hover:bg-[#ea3372]/10 hover:text-[#ea3372] text-[10px] font-black uppercase tracking-widest h-10 px-4 gap-2 cursor-pointer transition-all"
+            onClick={onPrint}
+          >
+            <Printer className="size-3" />
+            Guia de Envio
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-[10px] font-black uppercase tracking-widest h-10 px-4">
