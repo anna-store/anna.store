@@ -16,7 +16,7 @@ import {
   User, Package, Heart, LogOut, Pencil, Check, X,
   ChevronDown, ChevronUp, MapPin, ShoppingBag, Clock, Truck, CircleCheck, Ban,
   RefreshCw, AlertTriangle, Info, CheckSquare, Square,
-  Star, StarOff, MessageSquareText
+  Star, StarOff, MessageSquareText, Eye, EyeOff
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
