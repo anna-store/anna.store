@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, Search, Menu, X, User } from "lucide-react";
+import { ShoppingCart, Heart, Search, Menu, X, User, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -22,7 +22,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
@@ -122,12 +122,48 @@ export default function Navbar() {
             </Button>
           </Link>
 
-          {/* Account Link */}
-          <Link to={isAuthenticated ? "/painel" : "/auth"}>
-            <Button variant="ghost" size="icon" className="text-white/70 hover:text-white cursor-pointer">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+          {/* Account — Login ou Avatar */}
+          {isAuthenticated ? (
+            <Link to="/painel">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white/70 hover:text-white cursor-pointer relative"
+                title="Minha conta"
+              >
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name ?? "Perfil"}
+                    className="h-7 w-7 rounded-full object-cover ring-2 ring-[#ea3372]"
+                  />
+                ) : (
+                  <div className="h-7 w-7 rounded-full bg-[#ea3372] flex items-center justify-center text-white text-xs font-black">
+                    {(user?.name ?? user?.email ?? "A").charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/auth">
+              {/* Desktop: botão com texto */}
+              <Button
+                size="sm"
+                className="hidden md:flex bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold px-4 gap-2 cursor-pointer"
+              >
+                <LogIn className="h-4 w-4" />
+                Entrar
+              </Button>
+              {/* Mobile: apenas ícone */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden text-white/70 hover:text-[#ea3372] cursor-pointer"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
 
           {/* Mobile menu */}
           <Button
@@ -154,9 +190,18 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link to="/painel" className="block text-sm font-medium text-white/80 hover:text-[#ea3372] py-1">
-            Minha Conta
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/painel" className="block text-sm font-medium text-white/80 hover:text-[#ea3372] py-1" onClick={() => setMobileOpen(false)}>
+              Minha Conta
+            </Link>
+          ) : (
+            <Link to="/auth" className="block" onClick={() => setMobileOpen(false)}>
+              <Button className="w-full bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold gap-2">
+                <LogIn className="h-4 w-4" />
+                Fazer Login
+              </Button>
+            </Link>
+          )}
         </div>
       )}
     </header>
