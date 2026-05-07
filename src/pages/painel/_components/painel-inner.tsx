@@ -44,6 +44,15 @@ export default function PainelInner() {
   const createExchange = useMutation(api.exchanges.createExchange);
   const createReview = useMutation(api.reviews.createReview);
 
+  if (userId && currentUser === undefined) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Card><CardContent className="py-10"><Skeleton className="h-32 w-full" /></CardContent></Card>
+      </div>
+    );
+  }
+
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
