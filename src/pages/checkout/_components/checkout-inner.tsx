@@ -134,8 +134,14 @@ export default function CheckoutInner() {
   };
 
   const onPay = async () => {
-    const address = getValues();
     setSubmitting(true);
+    if (!currentUser?._id) {
+      toast.error("Usuário não carregado. Tente novamente em instantes.");
+      setSubmitting(false);
+      return;
+    }
+
+    const address = getValues();
     try {
       const appUrl = window.location.origin;
       const { initPoint } = await createPreference({

@@ -55,21 +55,46 @@ export const createPreference = action({
       console.log(`Pedido ${orderId} criado como pendente.`);
 
       // 2. Cria a preferência no Mercado Pago
-      const payload = {
-        items: args.items.map((item) => ({
-          title: item.name,
-          unit_price: Number(item.price.toFixed(2)),
-          quantity: item.quantity,
+      const mpItems = args.items.map((item) => ({
+        title: item.name,
+        unit_price: Number(item.price.toFixed(2)),
+        quantity: item.quantity,
+        currency_id: "BRL",
+        picture_url: item.image,
+      }));
+
+      // Adiciona Frete como item se houver
+      if (args.shipping > 0) {
+        mpItems.push({
+          title: "Frete",
+          unit_price: Number(args.shipping.toFixed(2)),
+          quantity: 1,
           currency_id: "BRL",
-          picture_url: item.image,
-        })),
+          picture_url: "https://cdn-icons-png.flaticon.com/512/709/709790.png",
+        });
+      }
+
+      // Adiciona Desconto como item negativo se houver
+      if (args.discount > 0) {
+        mpItems.push({
+          title: "Desconto",
+          unit_price: -Number(args.discount.toFixed(2)),
+          quantity: 1,
+          currency_id: "BRL",
+          picture_url: "https://cdn-icons-png.flaticon.com/512/1625/1625048.png",
+        });
+      }
+
+      const payload = {
+        items: mpItems,
         back_urls: {
           success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
           failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
           pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
         },
+        auto_return: "approved",
         statement_descriptor: "ANNA STORE",
-        external_reference: orderId, // Crucial para o Webhook
+        external_reference: orderId,
         metadata: {
           userId: args.userId,
           orderId: orderId,
