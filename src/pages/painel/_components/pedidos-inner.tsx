@@ -21,9 +21,9 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 export default function PedidosInner() {
   const orders = useQuery(api.orders.getMyOrders);
-  const [printingOrder, setPrintingOrder] = useState<any>(null);
+  const [printingOrder, setPrintingOrder] = useState<unknown>(null);
 
-  const handlePrint = (order: any) => {
+  const handlePrint = (order: unknown) => {
     setPrintingOrder(order);
     setTimeout(() => {
       window.print();
@@ -32,7 +32,6 @@ export default function PedidosInner() {
 
   return (
     <>
-      {/* Componente de Recibo (visível apenas no Print) */}
       <Receipt order={printingOrder} type="customer" />
       
       <div className="max-w-3xl mx-auto px-4 py-10 space-y-6 print:hidden">
