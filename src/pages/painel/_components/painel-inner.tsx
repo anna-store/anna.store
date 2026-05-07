@@ -71,6 +71,38 @@ export default function PainelInner() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [reviewLoading, setReviewLoading] = useState(false);
+  
+  // Password change state
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const updatePassword = useMutation(api.users.updatePassword);
+
+  const handleUpdatePassword = async () => {
+    if (!userId) return;
+    if (newPassword.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("As senhas não coincidem");
+      return;
+    }
+    
+    setPasswordLoading(true);
+    try {
+      await updatePassword({ userId, newPassword });
+      toast.success("Senha alterada com sucesso!");
+      setShowPasswordForm(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch {
+      toast.error("Erro ao alterar senha");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
 
   const handleZipLookup = async (cep: string) => {
     const clean = cep.replace(/\D/g, "");
@@ -362,6 +394,60 @@ export default function PainelInner() {
               </div>
             </div>
           )}
+          
+          <Separator className="my-6" />
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 text-primary" />
+                <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Segurança</p>
+              </div>
+              {!showPasswordForm ? (
+                <Button variant="outline" size="sm" onClick={() => setShowPasswordForm(true)} className="text-xs gap-2 cursor-pointer">
+                  <Pencil className="h-3 w-3" /> Alterar Senha
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" onClick={() => setShowPasswordForm(false)} className="text-xs cursor-pointer">
+                  Cancelar
+                </Button>
+              )}
+            </div>
+            
+            {showPasswordForm && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-xl border animate-in slide-in-from-top-2 duration-200">
+                <div className="space-y-1">
+                  <Label htmlFor="new-password">Nova Senha</Label>
+                  <Input 
+                    id="new-password" 
+                    type="password" 
+                    value={newPassword} 
+                    onChange={(e) => setNewPassword(e.target.value)} 
+                    placeholder="Mínimo 6 caracteres"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="confirm-password">Confirmar Senha</Label>
+                  <Input 
+                    id="confirm-password" 
+                    type="password" 
+                    value={confirmPassword} 
+                    onChange={(e) => setConfirmPassword(e.target.value)} 
+                    placeholder="Repita a nova senha"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Button 
+                    onClick={handleUpdatePassword} 
+                    disabled={passwordLoading || !newPassword || !confirmPassword}
+                    className="w-full sm:w-auto h-10 px-8 gap-2 bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold"
+                  >
+                    {passwordLoading ? "Atualizando..." : "Confirmar Nova Senha"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 

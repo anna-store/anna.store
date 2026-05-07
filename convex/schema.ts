@@ -19,6 +19,8 @@ export default defineSchema({
     city: v.optional(v.string()),
     state: v.optional(v.string()),
     zip: v.optional(v.string()),
+    createdAt: v.optional(v.number()),
+    totalSpent: v.optional(v.number()),
   }).index("by_token", ["tokenIdentifier"])
     .index("by_email", ["email"])
     .index("by_reset_token", ["resetPasswordToken"]),

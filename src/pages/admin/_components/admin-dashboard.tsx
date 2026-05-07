@@ -47,7 +47,8 @@ const STATUS_META: Record<string, { label: string; color: string }> = {
   completed: { label: "Concluído",  color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
 };
 
-function fmt(n: number) {
+function fmt(n: number | undefined | null) {
+  if (n === undefined || n === null) return "R$ 0,00";
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 

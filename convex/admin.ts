@@ -374,3 +374,46 @@ export const _setAdmin = internalMutation({
     await ctx.db.patch(args.userId, { isAdmin: true });
   },
 });
+
+/**
+ * Configura o administrador único do sistema.
+ * Remove privilégios de qualquer outro usuário.
+ */
+export const setupMainAdmin = mutation({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    // 1. Busca todos os admins atuais e remove
+    const allAdmins = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("isAdmin"), true))
+      .collect();
+
+    for (const admin of allAdmins) {
+      if (admin.email !== args.email) {
+        await ctx.db.patch(admin._id, { isAdmin: false });
+      }
+    }
+
+    // 2. Busca ou cria o novo admin principal
+    const target = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .unique();
+
+    if (target) {
+      await ctx.db.patch(target._id, { isAdmin: true });
+      return { status: "updated", id: target._id };
+    } else {
+      const id = await ctx.db.insert("users", {
+        email: args.email,
+        name: args.email.split("@")[0],
+        isAdmin: true,
+        tokenIdentifier: `local:${args.email}`,
+        createdAt: Date.now(),
+        totalSpent: 0,
+        password: "admin_annast_2025", 
+      });
+      return { status: "created", id };
+    }
+  },
+});
