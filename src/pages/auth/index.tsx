@@ -392,59 +392,66 @@ export default function AuthPage() {
                         exit={{ opacity: 0, x: 10 }}
                         className="space-y-8"
                       >
-                        <div className="space-y-6">
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 ml-1">E-mail de Membro</Label>
-                            <div className="relative group">
-                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
-                              <Input 
-                                className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
-                                placeholder="exemplo@annast.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-center px-1">
-                              <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">Sua Senha</Label>
-                              <button 
-                                onClick={() => setMode("forgot")}
-                                className="text-[9px] font-bold text-[#ea3372] uppercase tracking-[0.3em] hover:brightness-125 transition-all italic"
-                              >
-                                Esqueci a senha?
-                              </button>
-                            </div>
-                            <div className="relative group">
-                              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
-                              <Input 
-                                type={showPassword ? "text" : "password"}
-                                className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                              />
-                              <button 
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
-                              >
-                                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Button 
-                          onClick={handleSignIn}
-                          disabled={isLoading}
-                          className="w-full h-16 bg-white text-black hover:bg-[#ea3372] hover:text-white font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-white/5"
+                        <form
+                          onSubmit={(e) => { e.preventDefault(); handleSignIn(); }}
+                          className="space-y-6"
                         >
-                          {isLoading ? "Validando..." : "Entrar na Boutique"}
-                          {!isLoading && <ArrowRight className="ml-2 size-4" />}
-                        </Button>
+                          <div className="space-y-6">
+                            <div className="space-y-3">
+                              <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 ml-1">E-mail de Membro</Label>
+                              <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
+                                <Input 
+                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  placeholder="exemplo@annast.com"
+                                  type="email"
+                                  autoComplete="email"
+                                  value={email}
+                                  onChange={(e) => setEmail(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">Sua Senha</Label>
+                                <button 
+                                  type="button"
+                                  onClick={() => setMode("forgot")}
+                                  className="text-[9px] font-bold text-[#ea3372] uppercase tracking-[0.3em] hover:brightness-125 transition-all italic"
+                                >
+                                  Esqueci a senha?
+                                </button>
+                              </div>
+                              <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
+                                <Input 
+                                  type={showPassword ? "text" : "password"}
+                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  placeholder="••••••••"
+                                  autoComplete="current-password"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <button 
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
+                                >
+                                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
 
-
+                          <Button 
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full h-16 bg-white text-black hover:bg-[#ea3372] hover:text-white font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-white/5"
+                          >
+                            {isLoading ? "Validando..." : "Entrar na Boutique"}
+                            {!isLoading && <ArrowRight className="ml-2 size-4" />}
+                          </Button>
+                        </form>
                       </motion.div>
                     ) : (
                       <motion.div
@@ -454,44 +461,53 @@ export default function AuthPage() {
                         exit={{ opacity: 0, x: -10 }}
                         className="space-y-8"
                       >
-                        <div className="space-y-6">
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Nome Completo</Label>
-                            <Input 
-                              className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
-                              placeholder="Nome Completo"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">E-mail</Label>
-                            <Input 
-                              className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
-                              placeholder="email@exemplo.com"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Definir Senha</Label>
-                            <Input 
-                              type="password"
-                              className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
-                              placeholder="••••••••"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                            />
-                          </div>
-                        </div>
-
-                        <Button 
-                          onClick={handleRegister}
-                          disabled={isLoading}
-                          className="w-full h-16 bg-[#38b6ff] text-white hover:bg-[#38b6ff]/80 font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-[#38b6ff]/10"
+                        <form
+                          onSubmit={(e) => { e.preventDefault(); handleRegister(); }}
+                          className="space-y-6"
                         >
-                          {isLoading ? "Processando..." : "Criar Acesso VIP"}
-                        </Button>
+                          <div className="space-y-6">
+                            <div className="space-y-3">
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Nome Completo</Label>
+                              <Input 
+                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
+                                placeholder="Nome Completo"
+                                autoComplete="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                              />
+                            </div>
+                            <div className="space-y-3">
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">E-mail</Label>
+                              <Input 
+                                type="email"
+                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
+                                placeholder="email@exemplo.com"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                              />
+                            </div>
+                            <div className="space-y-3">
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Definir Senha</Label>
+                              <Input 
+                                type="password"
+                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
+                                placeholder="••••••••"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                              />
+                            </div>
+                          </div>
+
+                          <Button 
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full h-16 bg-[#38b6ff] text-white hover:bg-[#38b6ff]/80 font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-[#38b6ff]/10"
+                          >
+                            {isLoading ? "Processando..." : "Criar Acesso VIP"}
+                          </Button>
+                        </form>
                       </motion.div>
                     )}
                   </AnimatePresence>
