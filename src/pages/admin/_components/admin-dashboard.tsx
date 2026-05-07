@@ -2,13 +2,13 @@ import { useState } from "react";
 import Receipt from "@/components/Receipt.tsx";
 import { Printer } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { 
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp, 
   Share2, ArrowRight, Settings, Plus, Search, Filter, 
   ChevronDown, CheckCircle2, XCircle, Clock, Trash2, 
-  MapPin, ShoppingCart, Tag
+  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -53,6 +53,7 @@ function fmt(n: number | undefined | null) {
 }
 
 export default function AdminDashboard({ callerId }: { callerId: string }) {
+  const convex = useConvex();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   
   // Queries
@@ -103,6 +104,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const createCoupon = useMutation(api.admin.createCoupon);
   const toggleCoupon = useMutation(api.admin.toggleCoupon);
   const deleteCoupon = useMutation(api.admin.deleteCoupon);
+  const generateUploadUrl = useMutation(api.admin.generateUploadUrl);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleStatusChange = async (orderId: Id<"orders">, status: typeof ORDER_STATUSES[number]) => {
     try {
@@ -178,6 +181,46 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const currentImgs = productForm.images.split(",").map(i => i.trim()).filter(Boolean);
+      const newImages = [...currentImgs];
+      
+      for (const file of Array.from(files)) {
+        const postUrl = await generateUploadUrl({ callerId });
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        const { storageId } = await result.json();
+        
+        // Get the real URL from Convex
+        const imageUrl = await convex.query(api.admin.getImageUrl, { storageId });
+        if (imageUrl) {
+          newImages.push(imageUrl);
+        }
+      }
+      
+      setProductForm({ ...productForm, images: newImages.join(", ") });
+      toast.success("Imagens enviadas!");
+    } catch (err) {
+      toast.error("Erro ao enviar imagens");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const imgs = productForm.images.split(",").map(i => i.trim()).filter(Boolean);
+    imgs.splice(index, 1);
+    setProductForm({ ...productForm, images: imgs.join(", ") });
+  };
+
   const handleCouponSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -216,7 +259,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               <span className="font-black text-white italic text-xl">A</span>
             </div>
             <div>
-              <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]">ST</span></p>
+              <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> SHOES</span></p>
               <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Admin Core</p>
             </div>
           </Link>
@@ -447,7 +490,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
           </div>
 
           <footer className="p-8 border-t border-white/5 text-[9px] text-white/10 font-black uppercase tracking-[0.4em] text-center">
-            AnnaSt Terminal Core System &bull; Version 4.0.0-PRO
+            Anna Shoes Terminal Core System &bull; Version 4.0.0-PRO
           </footer>
         </div>
       </div>
@@ -487,9 +530,50 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               <Label className="text-[10px] uppercase font-black text-white/40">Descrição</Label>
               <Textarea required value={productForm.description} onChange={e => setProductForm({...productForm, description: e.target.value})} className="bg-white/5 border-white/10 min-h-24" />
             </div>
-            <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Imagens (URLs separadas por vírgula)</Label>
-              <Input required value={productForm.images} onChange={e => setProductForm({...productForm, images: e.target.value})} className="bg-white/5 border-white/10" />
+            <div className="space-y-3">
+              <Label className="text-[10px] uppercase font-black text-white/40">Imagens do Produto</Label>
+              
+              <div className="grid grid-cols-4 gap-4">
+                {productForm.images.split(",").map(i => i.trim()).filter(Boolean).map((img, idx) => (
+                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                    <img src={img} className="size-full object-cover" />
+                    <button 
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-1 right-1 size-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="size-3 text-white" />
+                    </button>
+                  </div>
+                ))}
+                
+                <label className={cn(
+                  "aspect-square rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#ea3372]/40 hover:bg-[#ea3372]/5 transition-all",
+                  isUploading && "opacity-50 cursor-wait"
+                )}>
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                  />
+                  {isUploading ? (
+                    <Loader2 className="size-6 text-[#ea3372] animate-spin" />
+                  ) : (
+                    <>
+                      <ImagePlus className="size-6 text-white/20" />
+                      <span className="text-[8px] font-black uppercase text-white/20">Upload</span>
+                    </>
+                  )}
+                </label>
+              </div>
+              
+              <div className="space-y-1">
+                <Label className="text-[9px] text-white/20 uppercase font-black">URLs Manuais (Opcional)</Label>
+                <Input value={productForm.images} onChange={e => setProductForm({...productForm, images: e.target.value})} className="bg-white/5 border-white/10 text-[10px]" placeholder="Cole URLs separadas por vírgula se preferir" />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">

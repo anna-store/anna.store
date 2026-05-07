@@ -134,11 +134,6 @@ export default function Index() {
                   <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/catalogo?promo=true">
-                <Button size="lg" variant="ghost" className="glass text-white border-white/5 hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[11px] px-10 h-16 rounded-xl transition-all duration-500 cursor-pointer">
-                  Ofertas VIP
-                </Button>
-              </Link>
             </motion.div>
 
             {/* Premium Stats Container */}
@@ -410,7 +405,7 @@ export default function Index() {
       {/* Branding Footer Signal */}
       <div className="py-20 text-center">
          <p className="text-[8px] text-white/5 font-black uppercase tracking-[1em]">
-           AnnaSt Boutique &bull; Defining Digital Luxury &bull; Est. 2026
+           Anna Shoes &bull; Defining Digital Luxury &bull; Est. 2026
          </p>
       </div>
     </div>

@@ -203,6 +203,22 @@ export const bootstrapAdmin = mutation({
   },
 });
 
+// ─── Files ───────────────────────────────────────────────────────────────────
+export const generateUploadUrl = mutation({
+  args: { callerId: v.optional(v.id("users")) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.callerId);
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+export const getImageUrl = query({
+  args: { storageId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
+  },
+});
+
 // ─── Products ────────────────────────────────────────────────────────────────
 export const getAllProducts = query({
   args: { callerId: v.optional(v.id("users")) },

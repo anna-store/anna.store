@@ -53,7 +53,8 @@ export default function CarrinhoPage() {
 
   const subtotal = getTotal();
   const discount = getDiscount();
-  const shipping = 19.90; // Fixed shipping for now
+  const isFreeShipping = appliedCoupon?.freeShipping === true;
+  const shipping = isFreeShipping ? 0 : 19.90; 
   const total = getFinalTotal() + shipping;
 
   const handleApplyCoupon = async () => {

@@ -2,6 +2,7 @@ import { action, internalAction } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import { internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 
 /**
  * Cria uma preferência de pagamento no Mercado Pago.
@@ -41,7 +42,7 @@ export const createPreference = action({
 
     try {
       // 1. Cria o pedido no banco de dados com status "pending"
-      const orderId = await ctx.runMutation(internal.orders.internalCreateOrder, {
+      const orderId: Id<"orders"> = await ctx.runMutation(internal.orders.internalCreateOrder, {
         userId: args.userId,
         items: args.items,
         subtotal: args.subtotal,
@@ -85,14 +86,20 @@ export const createPreference = action({
         });
       }
 
+      console.log("MP Payload back_urls:", {
+        success: `${args.appUrl}/checkout/retorno`,
+        failure: `${args.appUrl}/checkout/retorno`,
+        pending: `${args.appUrl}/checkout/retorno`,
+      });
+
       const payload = {
         items: mpItems,
         back_urls: {
-          success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
-          failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
-          pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
+          success: `${args.appUrl}/checkout/retorno`,
+          failure: `${args.appUrl}/checkout/retorno`,
+          pending: `${args.appUrl}/checkout/retorno`,
         },
-        auto_return: "approved",
+        // auto_return: "approved", // Removido para evitar erro de validação
         statement_descriptor: "ANNA STORE",
         external_reference: orderId,
         metadata: {
@@ -101,7 +108,7 @@ export const createPreference = action({
         }
       };
 
-      const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+      const response: Response = await fetch("https://api.mercadopago.com/checkout/preferences", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -110,7 +117,7 @@ export const createPreference = action({
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data: any = await response.json();
       
       if (!response.ok) {
         console.error("ERRO MERCADO PAGO:", data);
@@ -147,15 +154,15 @@ export const handleWebhook = internalAction({
         if (!paymentId) return;
 
         // 1. Consulta os detalhes do pagamento no MP
-        const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+        const response: Response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         if (!response.ok) return;
-        const payment = await response.json();
+        const payment: any = await response.json();
 
-        const orderId = payment.external_reference as Id<"orders">;
-        const status = payment.status;
+        const orderId: Id<"orders"> = payment.external_reference as Id<"orders">;
+        const status: string = payment.status;
 
         console.log(`Pagamento ${paymentId} para pedido ${orderId}: status ${status}`);
 

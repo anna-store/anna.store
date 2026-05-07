@@ -69,7 +69,10 @@ export default function AuthPage() {
       toast.success(`Bem-vindo, ${user.name}!`);
       window.location.href = "/";
     } catch (err: any) {
-      toast.error(err.message || "Credenciais inválidas");
+      toast.error("Acesso Negado", {
+        description: "Suas credenciais não foram reconhecidas.",
+        className: "bg-[#050505] border-white/5 text-white font-sans",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +94,10 @@ export default function AuthPage() {
       setMode("auth");
       setActiveTab("login");
     } catch (err: any) {
-      toast.error(err.message || "Erro ao cadastrar");
+      toast.error("Falha no Cadastro", {
+        description: err.message || "Não foi possível criar sua conta agora.",
+        className: "bg-[#050505] border-white/5 text-white font-sans",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +161,10 @@ export default function AuthPage() {
       setMode("auth");
       setActiveTab("login");
     } catch (err: any) {
-      toast.error(err.message || "Erro ao redefinir senha");
+      toast.error("Erro na Redefinição", {
+        description: err.message || "Link expirado ou inválido.",
+        className: "bg-[#050505] border-white/5 text-white font-sans",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +183,7 @@ export default function AuthPage() {
         >
           <img
             src="/luxury_fashion_auth_bg_1778003172409.png"
-            alt="Anna Store Luxury"
+            alt="Anna Shoes Luxury"
             className="w-full h-full object-cover opacity-70 grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
@@ -204,9 +213,9 @@ export default function AuthPage() {
         <div className="absolute top-12 left-12 z-10">
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="https://hercules-cdn.com/file_MwBJp0asRxRHTEAr31k3LplG"
-              alt="Anna Store Logo"
-              className="h-24 w-auto brightness-0 invert"
+              src="/logo.png"
+              alt="Anna Shoes Logo"
+              className="h-32 w-auto"
             />
           </Link>
         </div>
@@ -404,7 +413,7 @@ export default function AuthPage() {
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
                                 <Input 
                                   className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
-                                  placeholder="exemplo@annast.com"
+                                  placeholder="exemplo@annashoes.com"
                                   type="email"
                                   autoComplete="email"
                                   value={email}
@@ -516,7 +525,7 @@ export default function AuthPage() {
                             disabled={isLoading}
                             className="w-full h-16 bg-[#38b6ff] text-white hover:bg-[#38b6ff]/80 font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-[#38b6ff]/10"
                           >
-                            {isLoading ? "Processando..." : "Criar Acesso VIP"}
+                            {isLoading ? "Processando..." : "Tornar-se Membro"}
                           </Button>
                         </form>
                       </motion.div>
@@ -528,7 +537,7 @@ export default function AuthPage() {
           </AnimatePresence>
 
           <p className="text-center text-[9px] text-white/10 font-black uppercase tracking-[0.4em] pt-8">
-            AnnaSt Boutique &copy; 2026 &bull; Todos os direitos reservados
+            Anna Shoes &copy; 2026 &bull; Todos os direitos reservados
           </p>
         </div>
       </div>

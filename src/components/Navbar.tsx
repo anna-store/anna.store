@@ -42,13 +42,13 @@ export default function Navbar() {
         ✨ NOVIDADES SEMANAIS • USE O CUPOM: <strong>QUERO10</strong> e ganhe 10% na primeira compra
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 h-32 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img
-            src="https://hercules-cdn.com/file_MwBJp0asRxRHTEAr31k3LplG"
-            alt="Store Logo"
-            className="h-24 w-auto brightness-0 invert"
+            src="/logo.png"
+            alt="Anna Shoes Logo"
+            className="h-28 w-auto"
           />
         </Link>
 

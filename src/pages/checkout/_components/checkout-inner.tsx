@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { api } from "@/convex/_generated/api.js";
+import { useAuth } from "@/hooks/use-auth.ts";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { formatPrice } from "@/lib/products-data.ts";
 import { Button } from "@/components/ui/button.tsx";
@@ -42,8 +43,9 @@ type AddressForm = z.infer<typeof addressSchema>;
 // ─── Component ─────────────────────────────────────────────────────────────
 export default function CheckoutInner() {
   const navigate = useNavigate();
+  const { user: localUser } = useAuth();
   const { items, clearCart, getTotal, getDiscount, getFinalTotal, appliedCoupon } = useCartStore();
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const currentUser = useQuery(api.users.getCurrentUser, { userId: localUser?._id });
   const createPreference = useAction(api.mercadopago.createPreference);
 
   const [step, setStep] = useState<"address" | "confirm">("address");

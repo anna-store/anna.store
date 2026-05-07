@@ -134,16 +134,19 @@ export const registerUser = mutation({
 export const loginUser = mutation({
   args: { email: v.string(), password: v.string() },
   handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
+    const password = args.password.trim();
+
     const user = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .unique();
 
     if (!user) {
       throw new Error("Usuário não encontrado. Por favor, cadastre-se.");
     }
 
-    if (user.password !== args.password) {
+    if (user.password !== password) {
       throw new Error("E-mail ou senha incorretos.");
     }
 

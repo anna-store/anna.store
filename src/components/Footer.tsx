@@ -11,9 +11,9 @@ export default function Footer() {
         {/* Brand */}
         <div className="space-y-4">
           <img
-            src="https://hercules-cdn.com/file_MwBJp0asRxRHTEAr31k3LplG"
-            alt="Store Logo"
-            className="h-24 w-auto brightness-0 invert"
+            src="/logo.png"
+            alt="Anna Shoes Logo"
+            className="h-32 w-auto"
           />
           <p className="text-white/60 text-sm leading-relaxed">
             Os melhores calçados com qualidade premium e entrega rápida para todo o Brasil.
@@ -125,7 +125,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10 py-4 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-white/40">
-          <p>© {year} Anna Store Calçados. Todos os direitos reservados.</p>
+          <p>© {year} Anna Shoes. Todos os direitos reservados.</p>
           <p>Desenvolvido com ❤ para nossos clientes</p>
         </div>
       </div>
