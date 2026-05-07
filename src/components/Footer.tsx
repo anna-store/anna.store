@@ -62,16 +62,16 @@ export default function Footer() {
           <h4 className="font-semibold text-sm uppercase tracking-widest text-white/40 mb-4">Informações</h4>
           <ul className="space-y-2">
             {[
-              "Política de Privacidade",
-              "Termos de Uso",
-              "Política de Trocas",
-              "Prazo de Entrega",
-              "Como Comprar",
-            ].map((label) => (
-              <li key={label}>
-                <a href="#" className="text-sm text-white/60 hover:text-[#38b6ff] transition-colors cursor-pointer">
-                  {label}
-                </a>
+              { label: "Política de Privacidade", href: "/politica-de-privacidade" },
+              { label: "Termos de Uso", href: "/termos-de-uso" },
+              { label: "Política de Trocas", href: "/politica-de-trocas" },
+              { label: "Prazo de Entrega", href: "/prazo-de-entrega" },
+              { label: "Como Comprar", href: "/como-comprar" },
+            ].map((l) => (
+              <li key={l.href}>
+                <Link to={l.href} className="text-sm text-white/60 hover:text-[#38b6ff] transition-colors">
+                  {l.label}
+                </Link>
               </li>
             ))}
           </ul>

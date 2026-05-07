@@ -15,6 +15,11 @@ import PedidosPage from "@/pages/painel/pedidos";
 import AuthCallback from "@/pages/auth/callback";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
+import PoliticaPrivacidade from "@/pages/info/politica-privacidade";
+import TermosDeUso from "@/pages/info/termos-de-uso";
+import PoliticaTrocas from "@/pages/info/politica-trocas";
+import PrazoDeEntrega from "@/pages/info/prazo-entrega";
+import ComoComprar from "@/pages/info/como-comprar";
 
 export default function App() {
   return (
@@ -31,6 +36,11 @@ export default function App() {
           <Route path="/painel" element={<PainelPage />} />
           <Route path="/painel/pedidos" element={<PedidosPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+          <Route path="/termos-de-uso" element={<TermosDeUso />} />
+          <Route path="/politica-de-trocas" element={<PoliticaTrocas />} />
+          <Route path="/prazo-de-entrega" element={<PrazoDeEntrega />} />
+          <Route path="/como-comprar" element={<ComoComprar />} />
         </Route>
 
         <Route path="/auth" element={<AuthPage />} />
