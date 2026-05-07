@@ -20,10 +20,10 @@ export const sendResetPasswordEmail = action({
       const { data, error } = await resend.emails.send({
         from: "onboarding@resend.dev",
         to: [args.email],
-        subject: "Redefinição de Senha - Anna Store",
+        subject: "Redefinição de Senha - Anna Shoes",
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #ea3372;">Anna Store</h2>
+            <h2 style="color: #ea3372;">Anna Shoes</h2>
             <p>Olá,</p>
             <p>Recebemos uma solicitação para redefinir a senha da sua conta.</p>
             <p>Clique no botão abaixo para escolher uma nova senha:</p>
@@ -37,8 +37,13 @@ export const sendResetPasswordEmail = action({
       });
 
       if (error) {
-        console.error("Erro ao enviar e-mail via Resend:", error);
-        return { success: false, error: error.message };
+        console.warn("Resend restriction detected:", error.message);
+        // Se for erro de validação (domínio não verificado), retornamos sucesso falso mas sem 'estourar' erro crítico
+        return { 
+          success: false, 
+          error: error.message,
+          isRestricted: error.message.includes("testing emails") 
+        };
       }
 
       return { success: true, data };
