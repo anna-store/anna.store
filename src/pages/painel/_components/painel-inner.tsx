@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth.ts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import { Button } from "@/components/ui/button.tsx";
@@ -84,7 +85,9 @@ export default function PainelInner() {
           setState(data.uf);
           toast.success("Endereço localizado!");
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Erro ao buscar CEP:", e);
+      }
     }
   };
 
@@ -154,7 +157,11 @@ export default function PainelInner() {
 
   const toggleExchangeItem = (idx: number) => {
     const next = new Set(exchangeItems);
-    next.has(idx) ? next.delete(idx) : next.add(idx);
+    if (next.has(idx)) {
+      next.delete(idx);
+    } else {
+      next.add(idx);
+    }
     setExchangeItems(next);
   };
 
@@ -169,7 +176,7 @@ export default function PainelInner() {
     const selectedItems = Array.from(exchangeItems).map((i) => order.items[i]);
     setExchangeLoading(true);
     try {
-      await createExchange({ userId, orderId: exchangeOrderId as any, items: selectedItems, reason: exchangeReason.trim(), resolution: exchangeResolution });
+      await createExchange({ userId, orderId: exchangeOrderId as Id<"orders">, items: selectedItems, reason: exchangeReason.trim(), resolution: exchangeResolution });
       toast.success("Solicitação de troca enviada!");
       setExchangeOrderId(null);
     } catch (err: any) {
@@ -196,7 +203,7 @@ export default function PainelInner() {
     try {
       await createReview({
         userId,
-        orderId: reviewOrderId as any,
+        orderId: reviewOrderId as Id<"orders">,
         productId: reviewProductId,
         rating: reviewRating,
         comment: reviewComment.trim(),

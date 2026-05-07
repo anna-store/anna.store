@@ -70,7 +70,7 @@ export default function ProdutoPage() {
     );
   }
 
-  const isWishlisted = has(product._id as any);
+  const isWishlisted = has(product._id as string);
   const discount = product.originalPrice ? getDiscount(product.price, product.originalPrice) : 0;
   const related = allProducts
     .filter((p) => p.category === product.category && p._id !== product._id)
@@ -326,7 +326,7 @@ export default function ProdutoPage() {
             <Button
               variant="secondary"
               size="icon"
-              onClick={() => { toggle(product._id as any); toast(isWishlisted ? "Removido dos favoritos" : "Adicionado aos favoritos!"); }}
+              onClick={() => { toggle(product._id as string); toast(isWishlisted ? "Removido dos favoritos" : "Adicionado aos favoritos!"); }}
               className={`h-12 w-12 cursor-pointer ${isWishlisted ? "bg-[#ea3372] text-white hover:bg-[#c9295f]" : ""}`}
             >
               <Heart className="h-5 w-5" fill={isWishlisted ? "currentColor" : "none"} />
