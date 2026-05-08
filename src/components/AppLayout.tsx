@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "@/components/navbar.tsx";
-import Footer from "@/components/footer.tsx";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
 import AccessibilityMenu from "@/components/AccessibilityMenu.tsx";
 import MobileNav from "@/components/MobileNav.tsx";
 import InstallPrompt from "@/components/InstallPrompt.tsx";
