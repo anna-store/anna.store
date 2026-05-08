@@ -31,6 +31,9 @@ import { toast } from "sonner";
 import type { Id } from "@/convex/_generated/dataModel";
 import { motion, AnimatePresence } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { useEffect, useRef } from "react";
+
+const NOTIFICATION_SOUND = "https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"; // Cha-ching sound
 
 type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges" | "reviews";
 
@@ -118,6 +121,64 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const deleteUser = useMutation(api.admin.deleteUser);
   const changePassword = useMutation(api.admin.changeUserPassword);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Sales Notification Logic
+  const prevOrdersCount = useRef<number | null>(null);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  useEffect(() => {
+    // Check permission on load
+    if ("Notification" in window && Notification.permission === "granted") {
+      setNotificationsEnabled(true);
+    }
+  }, []);
+
+  const requestNotificationPermission = async () => {
+    if (!("Notification" in window)) return;
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      setNotificationsEnabled(true);
+      toast.success("Notificações ativadas!");
+    }
+  };
+
+  useEffect(() => {
+    if (!orders) return;
+
+    // Initialize the count on first load
+    if (prevOrdersCount.current === null) {
+      prevOrdersCount.current = orders.length;
+      return;
+    }
+
+    // If a new order arrived
+    if (orders.length > prevOrdersCount.current) {
+      const newOrder = orders[0]; // Assuming orders are sorted by date desc
+
+      // Only notify for approved/paid orders
+      if (newOrder.status === "approved" || newOrder.status === "confirmed" || newOrder.status === "pending") {
+        // Play Sound
+        const audio = new Audio(NOTIFICATION_SOUND);
+        audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
+
+        // Toast
+        toast.success(`🎉 NOVA VENDA! ${fmt(newOrder.total)} de ${newOrder.userName}`, {
+          duration: 10000,
+          description: "Um novo pedido foi realizado na loja."
+        });
+
+        // Browser Notification
+        if (Notification.permission === "granted") {
+          new Notification("💰 Nova Venda Realizada!", {
+            body: `${newOrder.userName} acabou de comprar: ${fmt(newOrder.total)}`,
+            icon: "/logo.png"
+          });
+        }
+      }
+    }
+
+    prevOrdersCount.current = orders.length;
+  }, [orders]);
 
   const handleStatusChange = async (orderId: Id<"orders">, status: typeof ORDER_STATUSES[number]) => {
     try {
@@ -344,6 +405,15 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             </div>
 
             <div className="flex items-center gap-4">
+              {!notificationsEnabled && (
+                <Button 
+                  onClick={requestNotificationPermission}
+                  variant="outline" 
+                  className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 h-10 px-4 rounded-xl gap-2 text-[10px] font-black uppercase"
+                >
+                  <TrendingUp className="size-3" /> Ativar Alertas
+                </Button>
+              )}
               {activeTab === "products" && (
                 <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
                   <Plus className="size-4" /> Novo Produto

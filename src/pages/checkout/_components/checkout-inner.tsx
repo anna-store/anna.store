@@ -50,12 +50,13 @@ export default function CheckoutInner() {
 
   const [step, setStep] = useState<"address" | "confirm">("address");
   const [submitting, setSubmitting] = useState(false);
-  const [shipping, setShipping] = useState(19.90);
+  const [shipping, setShipping] = useState<number | null>(null);
 
   // Pricing
   const subtotal = getTotal();
   const discount = getDiscount();
-  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shipping;
+  const hasShipping = shipping !== null;
+  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : (shipping ?? 0);
   const total = getFinalTotal() + effectiveShipping;
 
   const {
@@ -497,8 +498,15 @@ export default function CheckoutInner() {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frete</span>
-                    <span className={effectiveShipping === 0 ? "text-green-600" : ""}>
-                      {effectiveShipping === 0 ? "Grátis" : formatPrice(effectiveShipping)}
+                    <span className={cn(
+                      effectiveShipping === 0 && hasShipping ? "text-green-600 font-bold" : "",
+                      !hasShipping && !appliedCoupon?.freeShipping ? "text-muted-foreground italic text-[10px]" : ""
+                    )}>
+                      {appliedCoupon?.freeShipping 
+                        ? "Grátis" 
+                        : hasShipping 
+                          ? formatPrice(effectiveShipping) 
+                          : "A calcular"}
                     </span>
                   </div>
                 </div>
@@ -507,7 +515,9 @@ export default function CheckoutInner() {
 
                 <div className="flex justify-between font-black text-lg">
                   <span>Total</span>
-                  <span className="text-[#ea3372]">{formatPrice(total)}</span>
+                  <span className="text-[#ea3372]">
+                    {hasShipping || appliedCoupon?.freeShipping ? formatPrice(total) : "—"}
+                  </span>
                 </div>
               </CardContent>
             </Card>

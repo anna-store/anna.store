@@ -3,8 +3,7 @@ import { Accessibility, Sun, Moon, Type, Languages, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button.tsx";
 
-export default function AccessibilityMenu() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AccessibilityMenu({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (v: boolean) => void }) {
   const [contrast, setContrast] = useState(false);
   const [fontSize, setFontSize] = useState(100);
 
@@ -22,24 +21,14 @@ export default function AccessibilityMenu() {
 
   return (
     <>
-      {/* Botão Flutuante Principal */}
-      <div className="fixed left-6 bottom-24 z-[9999] print:hidden">
-        <Button
-          onClick={() => setIsOpen(!isOpen)}
-          className="size-12 rounded-full bg-[#38b6ff] hover:bg-[#2d93cf] text-white shadow-2xl shadow-[#38b6ff]/20 p-0 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-          aria-label="Abrir menu de acessibilidade"
-        >
-          {isOpen ? <X className="size-6" /> : <Accessibility className="size-6" />}
-        </Button>
-
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: -20, scale: 0.9 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -20, scale: 0.9 }}
-              className="absolute bottom-16 left-0 w-64 bg-[#0b0b0b] border border-white/10 rounded-2xl shadow-2xl p-4 space-y-4 backdrop-blur-xl"
-            >
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            className="fixed top-32 left-4 md:left-auto md:right-4 w-[calc(100%-32px)] md:w-72 bg-[#0b0b0b] border border-white/10 rounded-2xl shadow-2xl p-5 space-y-5 backdrop-blur-2xl z-[60]"
+          >
               <div className="pb-2 border-b border-white/5">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Acessibilidade</p>
               </div>
@@ -92,9 +81,8 @@ export default function AccessibilityMenu() {
                 </p>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         .high-contrast {

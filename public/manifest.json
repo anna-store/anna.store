@@ -1,0 +1,17 @@
+{
+  "name": "Anna Shoes | Premium Store",
+  "short_name": "Anna Shoes",
+  "description": "A melhor curadoria de calçados e acessórios premium.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#ea3372",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/512/sneakers.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

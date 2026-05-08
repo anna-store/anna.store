@@ -60,7 +60,7 @@ export default function Index() {
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#050505]">
         {/* Cinematic Background with Parallax effect simulation */}
         <div className="absolute inset-0 z-0">
-          <motion.div 
+          <motion.div
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.7 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
@@ -69,19 +69,33 @@ export default function Index() {
             <img
               src="/hero-anna-shoes.png"
               alt="Anna Shoes Collection Wall"
-              className="w-full h-full object-cover brightness-[0.5] contrast-[1.2] object-center" 
+              className="w-full h-full object-cover brightness-[0.5] contrast-[1.2] object-center"
             />
           </motion.div>
-          
+
           {/* Advanced Atmosphere Overlays */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent z-10" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay z-10 pointer-events-none" />
-          
+
           {/* Animated Light Rays */}
           <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ea3372]/5 blur-[180px] rounded-full animate-pulse pointer-events-none" />
           <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
         </div>
+
+        {/* Side Branding - Nova Coleção */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="absolute left-10 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-10 z-20"
+        >
+          <div className="w-[1px] h-32 bg-gradient-to-t from-white/20 to-transparent" />
+          <span className="text-[10px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] rotate-180">
+            Nova Coleção
+          </span>
+          <div className="w-[1px] h-32 bg-gradient-to-b from-white/20 to-transparent" />
+        </motion.div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-6 py-24 w-full">
           <div className="max-w-4xl">
@@ -95,7 +109,7 @@ export default function Index() {
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="size-6 rounded-full border-2 border-[#050505] bg-muted overflow-hidden">
-                    <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" className="w-full h-full object-cover" />
+                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
@@ -120,13 +134,13 @@ export default function Index() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-6xl md:text-8xl lg:text-[110px] font-black text-white leading-[0.95] tracking-tight uppercase mb-10"
+              className="text-6xl md:text-8xl lg:text-[90px] font-black text-white leading-[0.95] tracking-tight uppercase mb-10"
               style={{ fontFamily: "'Outfit', sans-serif" }}
             >
-              Defina seu<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-[#ea3372] italic pr-4">Legado</span>
+              Pise com<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-[#ea3372] italic pr-4">Estilo</span>
               <span className="text-[#38b6ff] relative inline-block">
-                Agora
+                Único
                 <span className="absolute -bottom-2 left-0 w-full h-1.5 bg-[#38b6ff] rounded-full blur-[2px] opacity-50" />
               </span>
             </motion.h1>
@@ -135,9 +149,9 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white/50 text-base md:text-lg font-medium tracking-wide mb-12 max-w-2xl leading-relaxed uppercase"
+              className="text-white/50 text-sm md:text-base font-medium tracking-wide mb-12 max-w-xl leading-relaxed uppercase"
             >
-              Onde a alta costura encontra a cultura urbana. Uma curadoria impecável de peças limitadas que transformam cada passo em uma declaração de poder e exclusividade.
+              A curadoria exclusiva de sneakers e calçados premium que une conforto absoluto e o design das ruas.
             </motion.p>
 
             <motion.div
@@ -148,15 +162,15 @@ export default function Index() {
             >
               <Link to="/catalogo">
                 <Button size="lg" className="bg-[#ea3372] text-white hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(234,51,114,0.3)] group cursor-pointer" aria-label="Ver catálogo completo de produtos">
-                  Ver Catálogo
+                  Explorar Catálago
                   <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/catalogo?new=true">
-                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer" aria-label="Ver lançamentos e novidades">
-                  Ver Novidades
+              <a href="#mais-vendidos">
+                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer" aria-label="Mais vendidos">
+                  Mais Vendidos
                 </Button>
-              </Link>
+              </a>
             </motion.div>
 
             {/* Enhanced Stats */}
@@ -192,45 +206,38 @@ export default function Index() {
           transition={{ delay: 1.2 }}
         >
           <div className="flex flex-col items-center gap-3 group cursor-pointer">
-             <span className="text-[9px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] group-hover:text-[#ea3372] transition-colors">
-               Explore
-             </span>
-             <motion.div 
-               animate={{ y: [0, 15, 0] }}
-               transition={{ duration: 2, repeat: Infinity }}
-               className="w-[1px] h-24 bg-gradient-to-b from-[#ea3372] via-[#ea3372]/50 to-transparent" 
-             />
+            <span className="text-[9px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] group-hover:text-[#ea3372] transition-colors">
+              Explore
+            </span>
+            <motion.div
+              animate={{ y: [0, 15, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-[1px] h-24 bg-gradient-to-b from-[#ea3372] via-[#ea3372]/50 to-transparent"
+            />
           </div>
         </motion.div>
       </section>
 
-      {/* Floating Benefits Bar */}
-      <div className="relative z-30 -mt-12 px-6">
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          className="max-w-7xl mx-auto glass p-8 rounded-[2rem] border-white/5 shadow-2xl grid grid-cols-2 md:grid-cols-4 gap-8"
-        >
-          {BENEFITS.map((b, i) => (
-            <motion.div 
-              key={b.title} 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-5 group"
-            >
-              <div className="size-14 rounded-2xl flex items-center justify-center shrink-0 glass border-white/10 group-hover:bg-white group-hover:text-black transition-all duration-500 shadow-xl">
-                <b.icon className="size-6" />
+      {/* Infinite Scrolling Ticker Section */}
+      <section className="relative z-30 -mt-10 overflow-hidden">
+        {/* Tier: Benefits Marquee (Pink) */}
+        <div className="bg-[#ea3372] py-4 flex whitespace-nowrap overflow-hidden shadow-[0_0_50px_rgba(234,51,114,0.3)] border-y border-white/10">
+          <motion.div 
+            animate={{ x: [-1500, 0] }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="flex items-center gap-20 pr-20"
+          >
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex items-center gap-12 font-black uppercase tracking-[0.2em] text-[9px] text-white">
+                <div className="flex items-center gap-2"><Truck className="size-3" /> Entrega para todo Brasil</div>
+                <div className="flex items-center gap-2"><Shield className="size-3" /> Compra 100% segura</div>
+                <div className="flex items-center gap-2"><RotateCcw className="size-3" /> 30 dias para troca</div>
+                <div className="flex items-center gap-2"><Star className="size-3" /> Produtos originais</div>
               </div>
-              <div className="space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">{b.title}</p>
-                <p className="text-[9px] text-white/40 font-medium uppercase tracking-wider">{b.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* Abandoned Cart Recovery Banner */}
       {items.length > 0 && (
@@ -241,9 +248,9 @@ export default function Index() {
             className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#ea3372] to-[#ea3372]/80 p-8 md:p-12 shadow-2xl"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10">
-               <ShoppingCart className="size-40 rotate-12" />
+              <ShoppingCart className="size-40 rotate-12" />
             </div>
-            
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="space-y-4 text-center md:text-left">
                 <Badge className="bg-white/20 text-white border-none hover:bg-white/30 px-4 py-1">Ainda dá tempo!</Badge>
@@ -254,7 +261,7 @@ export default function Index() {
                   Notamos que você deixou alguns produtos no carrinho. Finalize sua compra agora e garanta seus novos pares!
                 </p>
               </div>
-              
+
               <Link to="/carrinho">
                 <Button size="lg" className="bg-white text-[#ea3372] hover:bg-black hover:text-white h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-xl transition-all duration-500">
                   Finalizar Pedido Agora
@@ -279,7 +286,7 @@ export default function Index() {
             </h2>
           </div>
           <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-white font-black uppercase tracking-[0.4em] hover:text-[#ea3372] transition-colors">
-            Ver Todo o Acervo 
+            Ver Todo o Acervo
             <div className="size-10 rounded-full glass border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <ChevronRight className="size-4" />
             </div>
@@ -294,20 +301,20 @@ export default function Index() {
               className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden group cursor-pointer border border-white/5 shadow-2xl"
             >
               <div className="absolute inset-0 z-0">
-                <img 
-                  src={cat.image} 
+                <img
+                  src={cat.image}
                   alt={cat.name}
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-60"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
               <div className="absolute inset-0 glass opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
-              
+
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 z-30">
-                 <span className="text-[10px] font-black text-[#ea3372] uppercase tracking-[0.5em] mb-4 transition-all group-hover:mb-6">0{i+1}</span>
-                 <h3 className="text-sm font-black text-white uppercase tracking-widest text-center group-hover:scale-110 transition-transform duration-700">{cat.name}</h3>
+                <span className="text-[10px] font-black text-[#ea3372] uppercase tracking-[0.5em] mb-4 transition-all group-hover:mb-6">0{i + 1}</span>
+                <h3 className="text-sm font-black text-white uppercase tracking-widest text-center group-hover:scale-110 transition-transform duration-700">{cat.name}</h3>
               </div>
-              
+
               <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#ea3372] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
             </Link>
           ))}
@@ -341,7 +348,7 @@ export default function Index() {
 
 
       {/* Best Sellers & Quick Filters */}
-      <section className="max-w-7xl mx-auto px-6 py-40">
+      <section id="mais-vendidos" className="max-w-7xl mx-auto px-6 py-40">
         <div className="flex flex-col md:flex-row items-center justify-between mb-24 gap-12">
           <div className="text-center md:text-left">
             <p className="text-[10px] text-[#38b6ff] font-black uppercase tracking-[0.5em] mb-4">Elite Sales</p>
@@ -349,14 +356,14 @@ export default function Index() {
               Mais Vendidos<span className="text-white/10">.</span>
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-auto">
             {[
               { cat: "Infantil", price: "79,90", color: "#38b6ff" },
               { cat: "Casual", price: "129,90", color: "#ea3372" },
               { cat: "Sport", price: "189,90", color: "#38b6ff" }
             ].map((item) => (
-              <motion.div 
+              <motion.div
                 key={item.cat}
                 whileHover={{ y: -5 }}
                 className="glass p-6 rounded-2xl border-white/5 flex flex-col items-center text-center group cursor-pointer"
@@ -430,12 +437,12 @@ export default function Index() {
           </motion.div>
         </div>
       </section>
-      
+
       {/* Branding Footer Signal */}
       <div className="py-20 text-center">
-         <p className="text-[8px] text-white/5 font-black uppercase tracking-[1em]">
-           Anna Shoes &bull; Defining Digital Luxury &bull; Est. 2026
-         </p>
+        <p className="text-[8px] text-white/5 font-black uppercase tracking-[1em]">
+          Anna Shoes &bull; Defining Digital Luxury &bull; Est. 2026
+        </p>
       </div>
     </div>
   );
