@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, Search, Menu, X, User, LogIn } from "lucide-react";
+import { ShoppingCart, Heart, Search, Menu, X, User, LogIn, Package, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { useWishlistStore } from "@/hooks/use-wishlist.ts";
 import { useAuth } from "@/hooks/use-auth.ts";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu.tsx";
 
 const NAV_LINKS = [
   { label: "Início", href: "/" },
@@ -22,7 +31,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, signout } = useAuth();
 
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
@@ -122,28 +131,74 @@ export default function Navbar() {
             </Button>
           </Link>
 
-          {/* Account — Login ou Avatar */}
+          {/* Account — Dropdown Menu */}
           {isAuthenticated ? (
-            <Link to="/painel">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white/70 hover:text-white cursor-pointer relative"
-                title="Minha conta"
-              >
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name ?? "Perfil"}
-                    className="h-7 w-7 rounded-full object-cover ring-2 ring-[#ea3372]"
-                  />
-                ) : (
-                  <div className="h-7 w-7 rounded-full bg-[#ea3372] flex items-center justify-center text-white text-xs font-black">
-                    {(user?.name ?? user?.email ?? "A").charAt(0).toUpperCase()}
-                  </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white/70 hover:text-white cursor-pointer relative outline-none"
+                >
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name ?? "Perfil"}
+                      className="h-7 w-7 rounded-full object-cover ring-2 ring-[#ea3372]"
+                    />
+                  ) : (
+                    <div className="h-7 w-7 rounded-full bg-[#ea3372] flex items-center justify-center text-white text-xs font-black">
+                      {(user?.name ?? user?.email ?? "A").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-[#0b0b0b] border-white/10 text-white">
+                {/* Cabeçalho com nome e email */}
+                <DropdownMenuLabel className="pb-1">
+                  <p className="font-bold text-sm">{user?.name ?? "Usuário"}</p>
+                  <p className="text-[11px] text-white/40 font-normal truncate">{user?.email}</p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+
+                {/* Conta */}
+                <DropdownMenuItem className="cursor-pointer hover:bg-white/5 focus:bg-white/5" asChild>
+                  <Link to="/painel" className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-white/60" /> Meu Perfil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer hover:bg-white/5 focus:bg-white/5" asChild>
+                  <Link to="/painel/pedidos" className="flex items-center gap-2">
+                    <Package className="h-4 w-4 text-white/60" /> Meus Pedidos
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer hover:bg-white/5 focus:bg-white/5" asChild>
+                  <Link to="/favoritos" className="flex items-center gap-2">
+                    <Heart className="h-4 w-4 text-white/60" /> Favoritos
+                  </Link>
+                </DropdownMenuItem>
+
+                {/* Admin — só aparece se for admin */}
+                {user?.role === "admin" && (
+                  <>
+                    <DropdownMenuSeparator className="bg-white/10" />
+                    <DropdownMenuItem className="cursor-pointer hover:bg-white/5 focus:bg-white/5" asChild>
+                      <Link to="/admin" className="flex items-center gap-2 text-[#ea3372]">
+                        <ShoppingCart className="h-4 w-4" /> Painel Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
                 )}
-              </Button>
-            </Link>
+
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem 
+                  className="cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-500/5 focus:bg-red-500/5 flex items-center gap-2"
+                  onClick={() => signout()}
+                >
+                  <LogOut className="h-4 w-4" /> Sair da Conta
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/auth">
               {/* Desktop: botão com texto */}

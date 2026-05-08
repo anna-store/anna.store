@@ -122,8 +122,23 @@ export const internalUpdateStatus = internalMutation({
 });
 
 /**
- * Exclui um pedido pendente.
+ * Confirma o pagamento de um pedido via retorno do Mercado Pago.
+ * Usado como fallback na página de retorno, caso o webhook demore.
  */
+export const confirmOrderPayment = mutation({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    const order = await ctx.db.get(args.orderId);
+    if (!order) return; // Pedido não encontrado, ignora silenciosamente
+
+    // Só confirma se ainda estiver pendente (evita sobrescrever status avançados)
+    if (order.status === "pending") {
+      await ctx.db.patch(args.orderId, { status: "confirmed" });
+      console.log(`Pedido ${args.orderId} confirmado via retorno do cliente.`);
+    }
+  },
+});
+
 export const deleteOrder = mutation({
   args: { orderId: v.id("orders"), userId: v.id("users") },
   handler: async (ctx, args) => {

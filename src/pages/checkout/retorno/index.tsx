@@ -39,7 +39,7 @@ const STATUS_CONFIG: Record<ReturnStatus, {
 
 export default function CheckoutRetornoPage() {
   const clearCart = useCartStore((state) => state.clearCart);
-  const updateStatus = useMutation(api.orders.updateOrderStatus);
+  const confirmPayment = useMutation(api.orders.confirmOrderPayment);
   const [params] = useSearchParams();
   const rawStatus = params.get("status") ?? params.get("collection_status") ?? "pending";
   const isSuccess = rawStatus === "success" || rawStatus === "approved";
@@ -53,10 +53,11 @@ export default function CheckoutRetornoPage() {
     if (status === "success") {
       clearCart();
       if (orderId) {
-        updateStatus({ orderId: orderId as any, status: "confirmed" }).catch(console.error);
+        // Fallback: confirma o pedido no client-side caso o webhook demore
+        confirmPayment({ orderId: orderId as any }).catch(console.error);
       }
     }
-  }, [status, orderId, clearCart, updateStatus]);
+  }, [status, orderId, clearCart, confirmPayment]);
 
   useEffect(() => {
     if (countdown === null) return;

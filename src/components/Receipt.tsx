@@ -27,7 +27,7 @@ export default function Receipt({ order, type }: ReceiptProps) {
           <div className="text-right">
             <p className="text-xl font-black tracking-tighter uppercase">Pedido #{order._id.slice(-6).toUpperCase()}</p>
             <p className="text-sm">
-              {format(new Date(order.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+              {order.createdAt ? format(new Date(order.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "Data não disponível"}
             </p>
           </div>
         </div>

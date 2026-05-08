@@ -57,58 +57,77 @@ export default function Index() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-[#050505]">
-        {/* Cinematic Background */}
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#050505]">
+        {/* Cinematic Background with Parallax effect simulation */}
         <div className="absolute inset-0 z-0">
           <motion.div 
-            initial={{ scale: 1.15, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.6 }}
-            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.7 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
             className="w-full h-full"
           >
             <img
-              src="/luxury_fashion_hero_bg_1778080704577.png"
-              alt="Elite Sneaker Culture"
-              className="w-full h-full object-cover grayscale-[20%] brightness-[0.7]" 
+              src="/hero-anna-shoes.png"
+              alt="Anna Shoes Collection Wall"
+              className="w-full h-full object-cover brightness-[0.5] contrast-[1.2] object-center" 
             />
           </motion.div>
           
-          {/* Atmosphere Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/70 to-transparent z-10" />
+          {/* Advanced Atmosphere Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent z-10" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
-          <div className="absolute inset-0 bg-noise opacity-[0.03] z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay z-10 pointer-events-none" />
           
-          {/* Floating Light Orbs */}
-          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#ea3372]/10 blur-[150px] rounded-full animate-pulse pointer-events-none" />
-          <div className="absolute bottom-[-10%] left-[10%] w-[500px] h-[500px] bg-[#38b6ff]/5 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "2s" }} />
+          {/* Animated Light Rays */}
+          <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ea3372]/5 blur-[180px] rounded-full animate-pulse pointer-events-none" />
+          <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-6 py-24 w-full">
-          <div className="max-w-3xl">
+          <div className="max-w-4xl">
+            {/* Exclusive Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass border-white/10 mb-10"
+            >
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="size-6 rounded-full border-2 border-[#050505] bg-muted overflow-hidden">
+                    <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <span className="text-[9px] text-white/70 font-black uppercase tracking-[0.2em]">
+                +2.5k clientes satisfeitos este mês
+              </span>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-4 mb-8"
+              className="flex items-center gap-4 mb-6"
             >
-              <div className="h-[1px] w-12 bg-[#ea3372]/50" />
-              <span className="text-[10px] text-[#ea3372] font-black uppercase tracking-[0.6em] whitespace-nowrap">
-                Luxury Sneaker Boutique
+              <div className="h-[1px] w-12 bg-[#ea3372]" />
+              <span className="text-[11px] text-[#ea3372] font-black uppercase tracking-[0.6em] whitespace-nowrap">
+                Premium Footwear Concept
               </span>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-6xl md:text-8xl lg:text-[100px] font-black text-white leading-[1.1] tracking-tight uppercase mb-10"
+              transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-6xl md:text-8xl lg:text-[110px] font-black text-white leading-[0.95] tracking-tight uppercase mb-10"
               style={{ fontFamily: "'Outfit', sans-serif" }}
             >
-              Caminhe com<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-[#ea3372] italic px-2">Estilo</span> e<br />
-              <span className="text-[#38b6ff] relative">
-                Atitude
-                <span className="absolute -bottom-2 left-0 w-1/3 h-1 bg-[#38b6ff]/30 rounded-full" />
+              Defina seu<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-[#ea3372] italic pr-4">Legado</span>
+              <span className="text-[#38b6ff] relative inline-block">
+                Agora
+                <span className="absolute -bottom-2 left-0 w-full h-1.5 bg-[#38b6ff] rounded-full blur-[2px] opacity-50" />
               </span>
             </motion.h1>
 
@@ -116,43 +135,47 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white/40 text-sm md:text-base font-medium tracking-wide mb-12 max-w-lg leading-relaxed uppercase"
+              className="text-white/50 text-base md:text-lg font-medium tracking-wide mb-12 max-w-2xl leading-relaxed uppercase"
             >
-              Curadoria de calçados extraordinários para quem não aceita o comum. 
-              Qualidade premium, design disruptivo e entrega global.
+              Onde a alta costura encontra a cultura urbana. Uma curadoria impecável de peças limitadas que transformam cada passo em uma declaração de poder e exclusividade.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap gap-6 items-center"
+              className="flex flex-wrap gap-5 items-center"
             >
               <Link to="/catalogo">
-                <Button size="lg" className="bg-white text-black hover:bg-[#ea3372] hover:text-white font-black uppercase tracking-[0.2em] text-[11px] px-10 h-16 rounded-xl transition-all duration-500 shadow-2xl group cursor-pointer">
-                  Explorar Catálogo
-                  <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
+                <Button size="lg" className="bg-[#ea3372] text-white hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(234,51,114,0.3)] group cursor-pointer">
+                  Shop Collection
+                  <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/catalogo">
+                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer">
+                  Ver Lookbook
                 </Button>
               </Link>
             </motion.div>
 
-            {/* Premium Stats Container */}
+            {/* Enhanced Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-3 gap-12 mt-20 pt-10 border-t border-white/5 max-w-xl"
+              className="grid grid-cols-3 gap-16 mt-24 pt-12 border-t border-white/10 max-w-2xl"
             >
               {[
-                { value: "10K+", label: "Clients VIP" },
-                { value: "500+", label: "Drops Exclusivos" },
-                { value: "4.9★", label: "Global Rating" }
+                { value: "15k+", label: "Elite Members", color: "#ea3372" },
+                { value: "120+", label: "Global Brands", color: "#38b6ff" },
+                { value: "100%", label: "Authentic Only", color: "#fff" }
               ].map((stat) => (
-                <div key={stat.label} className="space-y-1">
-                  <p className="text-2xl md:text-3xl font-black text-white tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <div key={stat.label} className="space-y-2">
+                  <p className="text-3xl md:text-4xl font-black text-white tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {stat.value}
                   </p>
-                  <p className="text-[9px] text-white/30 font-black uppercase tracking-[0.3em]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: `${stat.color}80` }}>
                     {stat.label}
                   </p>
                 </div>
@@ -161,17 +184,23 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Cinematic Scroll Indicator */}
+        {/* Scroll Interaction Indicator */}
         <motion.div
-          className="absolute bottom-10 left-10 hidden lg:flex flex-col items-center gap-4 z-20"
+          className="absolute bottom-10 right-10 hidden lg:flex flex-col items-center gap-6 z-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
+          transition={{ delay: 1.2 }}
         >
-          <span className="text-[8px] text-white/20 font-black uppercase tracking-[0.8em] rotate-90 origin-left translate-x-1 mb-8">
-            Scroll
-          </span>
-          <div className="w-[1px] h-20 bg-gradient-to-t from-[#ea3372] to-transparent" />
+          <div className="flex flex-col items-center gap-3 group cursor-pointer">
+             <span className="text-[9px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] group-hover:text-[#ea3372] transition-colors">
+               Explore
+             </span>
+             <motion.div 
+               animate={{ y: [0, 15, 0] }}
+               transition={{ duration: 2, repeat: Infinity }}
+               className="w-[1px] h-24 bg-gradient-to-b from-[#ea3372] via-[#ea3372]/50 to-transparent" 
+             />
+          </div>
         </motion.div>
       </section>
 

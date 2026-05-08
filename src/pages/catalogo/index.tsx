@@ -23,7 +23,12 @@ import {
 } from "@/components/ui/select.tsx";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { CATEGORIES, formatPrice } from "@/lib/products-data.ts";
+import {
+  CATEGORIES,
+  formatPrice,
+  getDiscount,
+  type Product
+} from "@/lib/products-data.ts";
 import { useWishlistStore } from "@/hooks/use-wishlist.ts";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { toast } from "sonner";

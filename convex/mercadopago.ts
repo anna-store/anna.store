@@ -136,6 +136,69 @@ export const createPreference = action({
 });
 
 /**
+ * Gera um link de pagamento para um pedido já existente.
+ */
+export const createPayment = action({
+  args: {
+    orderId: v.id("orders"),
+    items: v.array(
+      v.object({
+        productId: v.string(),
+        name: v.string(),
+        image: v.string(),
+        price: v.number(),
+        quantity: v.number(),
+      })
+    ),
+    appUrl: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+    if (!accessToken) {
+      throw new Error("MERCADOPAGO_ACCESS_TOKEN não configurado.");
+    }
+
+    const mpItems = args.items.map((item) => ({
+      title: item.name,
+      unit_price: Number(item.price.toFixed(2)),
+      quantity: item.quantity,
+      currency_id: "BRL",
+      picture_url: item.image,
+    }));
+
+    const payload = {
+      items: mpItems,
+      back_urls: {
+        success: `${args.appUrl}/checkout/retorno?status=success&orderId=${args.orderId}`,
+        failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${args.orderId}`,
+        pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${args.orderId}`,
+      },
+      statement_descriptor: "ANNA SHOES",
+      external_reference: args.orderId,
+      metadata: {
+        userId: args.userId,
+        orderId: args.orderId,
+      }
+    };
+
+    const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Erro ao criar link de pagamento");
+
+    return { init_point: data.init_point };
+  },
+});
+
+/**
  * Webhook para receber notificações de pagamento do Mercado Pago.
  */
 export const handleWebhook = internalAction({

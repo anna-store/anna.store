@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth.ts";
@@ -16,7 +16,7 @@ import {
   User, Package, Heart, LogOut, Pencil, Check, X,
   ChevronDown, ChevronUp, MapPin, ShoppingBag, Clock, Truck, CircleCheck, Ban,
   RefreshCw, AlertTriangle, Info, CheckSquare, Square,
-  Star, StarOff, MessageSquareText, Eye, EyeOff
+  Star, StarOff, MessageSquareText, Eye, EyeOff, Trash2, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -43,6 +43,8 @@ export default function PainelInner() {
   const updateProfile = useMutation(api.users.updateProfile);
   const createExchange = useMutation(api.exchanges.createExchange);
   const createReview = useMutation(api.reviews.createReview);
+  const deleteOrder = useMutation(api.orders.deleteOrder);
+  const createPayment = useAction(api.mercadopago.createPayment);
 
 
   const [editing, setEditing] = useState(false);
@@ -81,6 +83,8 @@ export default function PainelInner() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const updatePassword = useMutation(api.users.updatePassword);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isPaying, setIsPaying] = useState<string | null>(null);
 
   if (userId && currentUser === undefined) {
     return (
@@ -258,6 +262,44 @@ export default function PainelInner() {
       toast.error(err.data?.message || err.message || "Erro ao enviar avaliação");
     } finally {
       setReviewLoading(false);
+    }
+  };
+  
+  const handlePay = async (order: any) => {
+    if (!userId) return;
+    setIsPaying(order._id);
+    try {
+      const result = await createPayment({
+        orderId: order._id,
+        items: order.items,
+        appUrl: window.location.origin,
+        userId,
+      });
+
+      if (result.init_point) {
+        window.location.href = result.init_point;
+      }
+    } catch (error) {
+      toast.error("Erro ao iniciar pagamento");
+      console.error(error);
+    } finally {
+      setIsPaying(null);
+    }
+  };
+
+  const handleDelete = async (orderId: any) => {
+    if (!userId) return;
+    if (!confirm("Tem certeza que deseja excluir este pedido pendente?")) return;
+
+    setIsDeleting(orderId);
+    try {
+      await deleteOrder({ orderId, userId });
+      toast.success("Pedido excluído com sucesso");
+    } catch (error) {
+      toast.error("Erro ao excluir pedido");
+      console.error(error);
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -480,274 +522,6 @@ export default function PainelInner() {
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card className="cursor-default hover:border-primary/40 transition-colors">
-          <CardContent className="flex items-center gap-3 py-5">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <Package className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{orders === undefined ? "—" : orders.length}</p>
-              <p className="text-sm text-muted-foreground">Pedidos</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="cursor-pointer hover:border-primary/40 transition-colors">
-          <Link to="/favoritos">
-            <CardContent className="flex items-center gap-3 py-5">
-              <div className="h-10 w-10 rounded-full bg-pink-500/10 flex items-center justify-center shrink-0">
-                <Heart className="h-5 w-5 text-pink-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">—</p>
-                <p className="text-sm text-muted-foreground">Favoritos</p>
-              </div>
-            </CardContent>
-          </Link>
-        </Card>
-      </div>
-
-      {/* Meus Pedidos — Seção Completa */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Package className="h-5 w-5 text-primary" />
-            Meus Pedidos
-          </CardTitle>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/catalogo">Continuar Comprando</Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {orders === undefined ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 w-full rounded-lg" />)}
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Package className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p className="text-sm font-medium">Nenhum pedido encontrado</p>
-              <p className="text-xs mt-1">Explore nossa boutique e faça seu primeiro pedido!</p>
-              <Button variant="outline" size="sm" asChild className="mt-4">
-                <Link to="/catalogo">Explorar Catálogo</Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {orders.map((order) => {
-                const s = STATUS_LABELS[order.status] ?? STATUS_LABELS.pending;
-                const isExpanded = expandedOrder === order._id;
-                const progress = getStatusProgress(order.status);
-
-                return (
-                  <div key={order._id} className="border rounded-xl overflow-hidden transition-all hover:border-primary/20">
-                    {/* Cabeçalho do Pedido (sempre visível) */}
-                    <button
-                      onClick={() => toggleOrder(order._id)}
-                      className="w-full flex items-center justify-between gap-4 p-4 text-left hover:bg-muted/30 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* Miniatura do primeiro item */}
-                        <div className="h-12 w-12 rounded-lg bg-muted/50 overflow-hidden shrink-0 border">
-                          {order.items[0]?.image ? (
-                            <img src={order.items[0].image} alt="" className="h-full w-full object-cover" />
-                          ) : (
-                            <Package className="h-6 w-6 m-auto mt-3 text-muted-foreground/30" />
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold truncate">
-                            Pedido • {format(new Date(order.createdAt), "dd/MM/yyyy", { locale: ptBR })}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {order.items.length} {order.items.length === 1 ? "item" : "itens"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-sm font-bold hidden sm:block">
-                          {order.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                        </span>
-                        <Badge variant="outline" className={`gap-1.5 ${s.color}`}>
-                          {s.icon}
-                          {s.label}
-                        </Badge>
-                        {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-                      </div>
-                    </button>
-
-                    {/* Detalhes expandidos do Pedido */}
-                    {isExpanded && (
-                      <div className="border-t bg-muted/10 p-4 space-y-5 animate-in slide-in-from-top-2 duration-200">
-
-                        {/* Timeline de Status */}
-                        {order.status !== "cancelled" && (
-                          <div className="flex items-center justify-between gap-1 px-2">
-                            {STATUS_FLOW.map((step, i) => {
-                              const stepMeta = STATUS_LABELS[step];
-                              const isActive = i <= progress;
-                              return (
-                                <div key={step} className="flex flex-col items-center gap-1.5 flex-1">
-                                  <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground/40"}`}>
-                                    {stepMeta.icon}
-                                  </div>
-                                  <span className={`text-[10px] font-medium ${isActive ? "text-foreground" : "text-muted-foreground/40"}`}>
-                                    {stepMeta.label}
-                                  </span>
-                                  {i < STATUS_FLOW.length - 1 && (
-                                    <div className={`absolute h-0.5 w-full ${isActive ? "bg-primary" : "bg-muted"}`} />
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-
-                        {order.status === "cancelled" && (
-                          <div className="flex items-center gap-2 text-red-500 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-3">
-                            <Ban className="h-4 w-4" />
-                            <span className="text-sm font-medium">Este pedido foi cancelado</span>
-                          </div>
-                        )}
-
-                        <Separator />
-
-                        {/* Lista de Itens */}
-                        <div className="space-y-3">
-                          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Itens do Pedido</p>
-                          {order.items.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-3">
-                              <div className="h-14 w-14 rounded-lg bg-muted/50 overflow-hidden shrink-0 border">
-                                {item.image ? (
-                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                                ) : (
-                                  <Package className="h-6 w-6 m-auto mt-4 text-muted-foreground/30" />
-                                )}
-                              </div>
-                              <div className="flex flex-col items-end gap-1 shrink-0">
-                                <span className="text-sm font-semibold">
-                                  {(item.price * item.quantity).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                                </span>
-                                {order.status === "delivered" && (
-                                  (() => {
-                                    const rev = getReviewForProduct(order._id, item.productId);
-                                    if (rev) {
-                                      return (
-                                        <div className="flex items-center gap-1 text-[10px] text-yellow-600 font-bold bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/20">
-                                          <Star className="h-2.5 w-2.5 fill-yellow-600" />
-                                          {rev.rating} Avaliado
-                                        </div>
-                                      );
-                                    }
-                                    return (
-                                      <button
-                                        onClick={() => openReviewForm(order._id, item.productId)}
-                                        className="text-[10px] font-bold uppercase tracking-wider text-primary hover:underline cursor-pointer"
-                                      >
-                                        Avaliar Item
-                                      </button>
-                                    );
-                                  })()
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <Separator />
-
-                        {/* Resumo Financeiro + Endereço */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {/* Resumo */}
-                          <div className="space-y-2 text-sm">
-                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Resumo</p>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Subtotal</span>
-                              <span>{order.subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-                            </div>
-                            {order.discount > 0 && (
-                              <div className="flex justify-between text-green-600">
-                                <span>Desconto</span>
-                                <span>-{order.discount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-                              </div>
-                            )}
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Frete</span>
-                              <span>{order.shipping === 0 ? "Grátis" : order.shipping.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-                            </div>
-                            {order.couponCode && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Cupom</span>
-                                <Badge variant="secondary" className="text-[10px]">{order.couponCode}</Badge>
-                              </div>
-                            )}
-                            <Separator />
-                            <div className="flex justify-between font-bold text-base">
-                              <span>Total</span>
-                              <span>{order.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-                            </div>
-                          </div>
-
-                          {/* Endereço */}
-                          <div className="space-y-2 text-sm">
-                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-                              <MapPin className="h-3 w-3" />
-                              Endereço de Entrega
-                            </p>
-                            <div className="bg-muted/30 rounded-lg p-3 border text-muted-foreground space-y-0.5">
-                              <p className="font-medium text-foreground">{order.address.street}</p>
-                              <p>{order.address.city}, {order.address.state}</p>
-                              <p>CEP: {order.address.zip}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Botão Solicitar Troca + Status da Troca */}
-                        {order.status === "delivered" && (() => {
-                          const ex = getExchangeForOrder(order._id);
-                          if (ex) {
-                            const exColors: Record<string, string> = {
-                              pending: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-                              approved: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-                              rejected: "bg-red-500/10 text-red-600 border-red-500/20",
-                              completed: "bg-green-500/10 text-green-600 border-green-500/20",
-                            };
-                            const exLabels: Record<string, string> = {
-                              pending: "Troca em Análise", approved: "Troca Aprovada",
-                              rejected: "Troca Recusada", completed: "Troca Concluída",
-                            };
-                            return (
-                              <div className="flex items-center gap-2 bg-muted/30 border rounded-lg px-4 py-3 mt-2">
-                                <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm text-muted-foreground flex-1">Solicitação de troca</span>
-                                <Badge variant="outline" className={exColors[ex.status]}>{exLabels[ex.status]}</Badge>
-                              </div>
-                            );
-                          }
-                          return (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full mt-2 gap-2 border-dashed cursor-pointer"
-                              onClick={() => openExchangeForm(order._id)}
-                            >
-                              <RefreshCw className="h-3.5 w-3.5" />
-                              Solicitar Troca
-                            </Button>
-                          );
-                        })()}
-
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </CardContent>
       </Card>
 

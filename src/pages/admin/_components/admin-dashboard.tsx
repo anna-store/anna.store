@@ -7,7 +7,7 @@ import { api } from "@/convex/_generated/api.js";
 import { 
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp, 
   Share2, ArrowRight, Settings, Plus, Search, Filter, 
-  ChevronDown, CheckCircle2, XCircle, Clock, Trash2, 
+  ChevronDown, CheckCircle2, XCircle, Clock, Trash2, Lock,
   MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
@@ -93,9 +93,14 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
     code: "", discountType: "percentage" as "percentage" | "fixed", discountValue: 0, minOrderValue: 0, isActive: true, freeShipping: false
   });
 
+  // Password Change States
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordTargetId, setPasswordTargetId] = useState<Id<"users"> | null>(null);
+  const [newPasswordValue, setNewPasswordValue] = useState("");
+
   // Mutations
   const updateStatus = useMutation(api.admin.updateOrderStatus);
-  const toggleAdmin = useMutation(api.admin.toggleUserAdmin);
+  const toggleAdmin = useMutation(api.admin.toggleAdmin);
   const createProduct = useMutation(api.admin.createProduct);
   const updateProduct = useMutation(api.admin.updateProduct);
   const deleteProduct = useMutation(api.admin.deleteProduct);
@@ -105,6 +110,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const toggleCoupon = useMutation(api.admin.toggleCoupon);
   const deleteCoupon = useMutation(api.admin.deleteCoupon);
   const generateUploadUrl = useMutation(api.admin.generateUploadUrl);
+  const deleteUser = useMutation(api.admin.deleteUser);
+  const changePassword = useMutation(api.admin.changeUserPassword);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleStatusChange = async (orderId: Id<"orders">, status: typeof ORDER_STATUSES[number]) => {
@@ -122,6 +129,37 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       toast.success(!current ? "Usuário promovido a admin" : "Admin removido");
     } catch {
       toast.error("Erro ao alterar permissão");
+    }
+  };
+
+  const handleDeleteUser = async (userId: Id<"users">) => {
+    if (!confirm("Tem certeza que deseja excluir este usuário permanentemente? Esta ação não pode ser desfeita.")) return;
+    try {
+      await deleteUser({ callerId, userId });
+      toast.success("Usuário excluído com sucesso");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir usuário");
+    }
+  };
+
+  const handleChangePassword = (userId: Id<"users">) => {
+    setPasswordTargetId(userId);
+    setNewPasswordValue("");
+    setIsPasswordModalOpen(true);
+  };
+
+  const handleConfirmPasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordTargetId || newPasswordValue.length < 6) {
+      toast.error("A senha deve ter no mínimo 6 caracteres");
+      return;
+    }
+    try {
+      await changePassword({ callerId, userId: passwordTargetId, newPassword: newPasswordValue });
+      toast.success("Senha alterada com sucesso");
+      setIsPasswordModalOpen(false);
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao alterar senha");
     }
   };
 
@@ -455,7 +493,13 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                       {!users ? <SkeletonList /> : users
                         .filter(u => u.email.toLowerCase().includes(userSearch.toLowerCase()) || (u.name?.toLowerCase().includes(userSearch.toLowerCase())))
                         .map(u => (
-                          <UserRow key={u._id} user={u} onToggleAdmin={handleToggleAdmin} />
+                          <UserRow 
+                            key={u._id} 
+                            user={u} 
+                            onToggleAdmin={handleToggleAdmin} 
+                            onDelete={handleDeleteUser} 
+                            onChangePassword={handleChangePassword}
+                          />
                         ))
                       }
                     </div>
@@ -609,6 +653,35 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         </DialogContent>
       </Dialog>
 
+      {/* Password Change Modal */}
+      <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">Alterar Senha</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleConfirmPasswordChange} className="space-y-6 py-4">
+            <div className="space-y-1">
+              <Label className="text-[10px] uppercase font-black text-white/40">Nova Senha</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/20" />
+                <Input 
+                  type="password"
+                  required 
+                  placeholder="Mínimo 6 caracteres"
+                  value={newPasswordValue} 
+                  onChange={e => setNewPasswordValue(e.target.value)}
+                  className="bg-white/5 border-white/10 pl-10" 
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={() => setIsPasswordModalOpen(false)}>Cancelar</Button>
+              <Button type="submit" className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold px-8">Confirmar</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* Coupon Modal */}
       <Dialog open={isCouponModalOpen} onOpenChange={setIsCouponModalOpen}>
         <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-md">
@@ -704,7 +777,7 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
               <h4 className="font-bold text-sm text-white">{order.userName || "Cliente"}</h4>
               <Badge variant="outline" className={cn(meta.color, "text-[8px] uppercase font-black px-2 py-0 border")}>{meta.label}</Badge>
             </div>
-            <p className="text-[10px] font-mono text-white/20">#{order._id.slice(-8).toUpperCase()} · {format(new Date(order.createdAt), "dd/MM/yyyy HH:mm")}</p>
+            <p className="text-[10px] font-mono text-white/20">#{order._id?.slice(-8).toUpperCase()} · {order.createdAt ? format(new Date(order.createdAt), "dd/MM/yyyy HH:mm") : "Sem data"}</p>
           </div>
         </div>
 
@@ -892,7 +965,7 @@ function ReviewRow({ review, onDelete }: { review: any; onDelete: any }) {
         </Button>
       </div>
       <p className="text-xs text-white/60 leading-relaxed italic">"{review.comment}"</p>
-      <p className="text-[9px] text-white/20 font-mono uppercase tracking-widest">ID Pedido: {review.orderId.slice(-8).toUpperCase()}</p>
+      <p className="text-[9px] text-white/20 font-mono uppercase tracking-widest">ID Pedido: {review.orderId?.slice(-8).toUpperCase()}</p>
     </div>
   );
 }
@@ -946,7 +1019,7 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
   );
 }
 
-function UserRow({ user, onToggleAdmin }: { user: any; onToggleAdmin: any }) {
+function UserRow({ user, onToggleAdmin, onDelete, onChangePassword }: { user: any; onToggleAdmin: any; onDelete: any; onChangePassword: any }) {
   return (
     <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex items-center justify-between gap-4">
       <div className="flex items-center gap-4">
@@ -980,6 +1053,18 @@ function UserRow({ user, onToggleAdmin }: { user: any; onToggleAdmin: any }) {
               onClick={() => onToggleAdmin(user._id, user.isAdmin)}
             >
               {user.isAdmin ? "Remover Privilégios Admin" : "Tornar Administrador"}
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
+              onClick={() => onChangePassword(user._id)}
+            >
+              Alterar Senha
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-xs text-red-500 focus:text-red-400 focus:bg-red-500/5 cursor-pointer"
+              onClick={() => onDelete(user._id)}
+            >
+              Excluir Usuário
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

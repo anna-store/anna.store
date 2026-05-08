@@ -25,6 +25,7 @@ import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import {
   formatPrice,
   getDiscount,
+  type Product
 } from "@/lib/products-data.ts";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { useWishlistStore } from "@/hooks/use-wishlist.ts";

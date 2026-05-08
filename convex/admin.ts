@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query, internalMutation } from "./_generated/server";
+import { mutation, query, internalMutation, internalQuery, action } from "./_generated/server";
+import { internal } from "./_generated/api";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel.d.ts";
 
@@ -160,7 +161,50 @@ export const getAllUsers = query({
 });
 
 // ─── Update order status ──────────────────────────────────────────────────────
-export const updateOrderStatus = mutation({
+export const updateOrderStatus = action({
+  args: {
+    callerId: v.optional(v.id("users")),
+    orderId: v.id("orders"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("confirmed"),
+      v.literal("shipped"),
+      v.literal("delivered"),
+      v.literal("cancelled"),
+    ),
+  },
+  handler: async (ctx, args) => {
+    // 1. Atualiza o status no banco via mutation interna
+    await ctx.runMutation(internal.admin.internalUpdateOrderStatus, {
+      callerId: args.callerId,
+      orderId: args.orderId,
+      status: args.status,
+    });
+
+    // 2. Busca o pedido + cliente para enviar o e-mail
+    try {
+      const order = await ctx.runQuery(internal.admin.internalGetOrder, { orderId: args.orderId });
+      if (order?.userId) {
+        const user = await ctx.runQuery(internal.admin.internalGetUser, { userId: order.userId as Id<"users"> });
+        if (user?.email) {
+          await ctx.runAction(internal.actions.sendOrderStatusEmail, {
+            email: user.email,
+            name: user.name ?? "Cliente",
+            orderId: args.orderId,
+            status: args.status,
+            appUrl: process.env.APP_URL ?? "https://annashoes.com.br",
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao enviar e-mail de status:", e);
+      // Não bloqueia a atualização se o e-mail falhar
+    }
+  },
+});
+
+/** Mutation interna usada pelo action updateOrderStatus */
+export const internalUpdateOrderStatus = internalMutation({
   args: {
     callerId: v.optional(v.id("users")),
     orderId: v.id("orders"),
@@ -178,12 +222,46 @@ export const updateOrderStatus = mutation({
   },
 });
 
+/** Query interna: busca pedido pelo id */
+export const internalGetOrder = internalQuery({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => ctx.db.get(args.orderId),
+});
+
+/** Query interna: busca usuário pelo id */
+export const internalGetUser = internalQuery({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => ctx.db.get(args.userId),
+});
+
 // ─── Toggle admin role ────────────────────────────────────────────────────────
 export const toggleAdmin = mutation({
   args: { callerId: v.optional(v.id("users")), userId: v.id("users"), isAdmin: v.boolean() },
   handler: async (ctx, args) => {
     await requireAdmin(ctx, args.callerId);
     await ctx.db.patch(args.userId, { isAdmin: args.isAdmin });
+  },
+});
+
+// ─── Delete user ──────────────────────────────────────────────────────────────
+export const deleteUser = mutation({
+  args: { callerId: v.optional(v.id("users")), userId: v.id("users") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.callerId);
+    // Não permitir que um admin se exclua
+    if (args.callerId === args.userId) {
+      throw new ConvexError({ code: "FORBIDDEN", message: "Você não pode excluir sua própria conta" });
+    }
+    await ctx.db.delete(args.userId);
+  },
+});
+
+// ─── Change user password ─────────────────────────────────────────────────────
+export const changeUserPassword = mutation({
+  args: { callerId: v.optional(v.id("users")), userId: v.id("users"), newPassword: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.callerId);
+    await ctx.db.patch(args.userId, { password: args.newPassword });
   },
 });
 
