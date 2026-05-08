@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, Link } from "react-router-dom";
 import Receipt from "@/components/Receipt.tsx";
 import { Printer } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useQuery, useMutation, useAction, useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import {
@@ -31,7 +31,6 @@ import { toast } from "sonner";
 import type { Id } from "@/convex/_generated/dataModel";
 import { motion, AnimatePresence } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
-import { useEffect, useRef } from "react";
 
 const NOTIFICATION_SOUND = "https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"; // Cha-ching sound
 
@@ -57,7 +56,13 @@ function fmt(n: number | undefined | null) {
 
 export default function AdminDashboard({ callerId }: { callerId: string }) {
   const convex = useConvex();
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = (searchParams.get("tab") as Tab) || "overview";
+
+  const setActiveTab = (tab: Tab) => {
+    setSearchParams({ tab });
+  };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Queries
   const stats = useQuery(api.admin.getStats, { callerId: callerId as Id<"users"> });
@@ -68,8 +73,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const exchanges = useQuery(api.admin.getAllExchanges, { callerId: callerId as Id<"users"> });
   const reviews = useQuery(api.admin.getAllReviews, { callerId: callerId as Id<"users"> });
 
-  const avgValue = stats?.totalRevenue && stats?.totalOrders 
-    ? stats.totalRevenue / stats.totalOrders 
+  const avgValue = stats?.totalRevenue && stats?.totalOrders
+    ? stats.totalRevenue / stats.totalOrders
     : 0;
 
   // Filters
@@ -108,6 +113,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
   // Mutations & Actions
   const updateStatus = useAction(api.admin.updateOrderStatus);
+  const updateTracking = useAction(api.admin.updateOrderTracking);
   const toggleAdmin = useMutation(api.admin.toggleAdmin);
   const createProduct = useMutation(api.admin.createProduct);
   const updateProduct = useMutation(api.admin.updateProduct);
@@ -358,31 +364,57 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ea3372]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
+        {/* Sidebar Overlay (Mobile Only) */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[40] lg:hidden"
+            />
+          )}
+        </AnimatePresence>
+
         {/* Sidebar */}
-        <aside className="w-64 border-r border-white/5 bg-black/40 backdrop-blur-3xl p-6 flex flex-col gap-8 relative z-20">
-          <Link to="/" className="flex items-center gap-3 px-2 group">
-            <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] flex items-center justify-center shadow-lg shadow-[#ea3372]/20 group-hover:scale-105 transition-transform">
-              <span className="font-black text-white italic text-xl">A</span>
-            </div>
-            <div>
-              <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> SHOES</span></p>
-              <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Admin Core</p>
-            </div>
-          </Link>
+        <aside className={cn(
+          "fixed inset-y-0 left-0 w-72 border-r border-white/5 bg-black/80 backdrop-blur-3xl p-6 flex flex-col gap-8 z-[50] transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:bg-black/40",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}>
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3 px-2 group">
+              <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] flex items-center justify-center shadow-lg shadow-[#ea3372]/20 group-hover:scale-105 transition-transform">
+                <span className="font-black text-white italic text-xl">A</span>
+              </div>
+              <div>
+                <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> SHOES</span></p>
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Admin Core</p>
+              </div>
+            </Link>
+            <Button variant="ghost" size="icon" className="lg:hidden text-white/40" onClick={() => setIsSidebarOpen(false)}>
+              <X className="size-5" />
+            </Button>
+          </div>
 
           <nav className="flex flex-col gap-1">
             {NAV.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setIsSidebarOpen(false);
+                }}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                  "flex items-center gap-3 px-4 py-4 lg:py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
                   activeTab === item.id
-                    ? "bg-white/10 text-white shadow-lg shadow-black/50"
+                    ? "bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
                     : "text-white/40 hover:bg-white/5 hover:text-white/60"
                 )}
               >
-                {item.icon}
+                <div className={cn("transition-colors", activeTab === item.id ? "text-white" : "text-white/40")}>
+                  {item.icon}
+                </div>
                 {item.label}
               </button>
             ))}
@@ -391,43 +423,53 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
           <div className="mt-auto">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5">
               <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-2">Sessão</p>
-              <p className="text-xs font-bold text-white/60 truncate">{callerId}</p>
+              <p className="text-[9px] font-bold text-white/40 truncate">{callerId}</p>
             </div>
           </div>
         </aside>
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto relative z-10 flex flex-col">
-          <header className="h-20 border-b border-white/5 px-8 flex items-center justify-between bg-black/20 backdrop-blur-md sticky top-0 z-30">
-            <div>
-              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">Dashboard</h2>
-              <p className="text-xl font-black italic">{NAV.find(n => n.id === activeTab)?.label}</p>
+          <header className="h-20 border-b border-white/5 px-4 lg:px-8 flex items-center justify-between bg-black/20 backdrop-blur-md sticky top-0 z-30">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden text-white/60"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                <LayoutDashboard className="size-6" />
+              </Button>
+              <div>
+                <h2 className="hidden lg:block text-sm font-black uppercase tracking-[0.2em] text-white/40">Dashboard</h2>
+                <p className="text-lg lg:text-xl font-black italic">{NAV.find(n => n.id === activeTab)?.label}</p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 lg:gap-4">
               {!notificationsEnabled && (
-                <Button 
+                <Button
                   onClick={requestNotificationPermission}
-                  variant="outline" 
-                  className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 h-10 px-4 rounded-xl gap-2 text-[10px] font-black uppercase"
+                  variant="outline"
+                  className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 h-10 px-3 lg:px-4 rounded-xl gap-2 text-[10px] font-black uppercase"
                 >
-                  <TrendingUp className="size-3" /> Ativar Alertas
+                  <TrendingUp className="size-3 hidden sm:block" /> {activeTab === 'overview' ? 'Ativar Alertas' : 'Alertas'}
                 </Button>
               )}
               {activeTab === "products" && (
-                <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
-                  <Plus className="size-4" /> Novo Produto
+                <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-4 lg:px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
+                  <Plus className="size-4" /> <span className="hidden sm:inline">Novo Produto</span>
                 </Button>
               )}
               {activeTab === "coupons" && (
-                <Button onClick={() => setIsCouponModalOpen(true)} className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#38b6ff]/20">
-                  <Plus className="size-4" /> Novo Cupom
+                <Button onClick={() => setIsCouponModalOpen(true)} className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold h-10 px-4 lg:px-6 rounded-xl gap-2 shadow-lg shadow-[#38b6ff]/20">
+                  <Plus className="size-4" /> <span className="hidden sm:inline">Novo Cupom</span>
                 </Button>
               )}
             </div>
           </header>
 
-          <div className="p-8 flex-1">
+          <div className="p-4 lg:p-8 flex-1">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -533,15 +575,15 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
                     <div className="space-y-4">
                       {!orders ? <SkeletonList /> : orders
-                        .filter(o => 
+                        .filter(o =>
                           (orderStatusFilter === "all" || o.status === orderStatusFilter) &&
                           (
-                            (o.userName?.toLowerCase() || "").includes(orderSearch.toLowerCase()) || 
+                            (o.userName?.toLowerCase() || "").includes(orderSearch.toLowerCase()) ||
                             (o._id?.toLowerCase() || "").includes(orderSearch.toLowerCase())
                           )
                         )
                         .map(o => (
-                          <OrderRow key={o._id} order={o} onStatusChange={handleStatusChange} onPrint={() => handlePrint(o)} />
+                          <OrderRow key={o._id} order={o} callerId={callerId} updateTracking={updateTracking} onStatusChange={handleStatusChange} onPrint={() => handlePrint(o)} />
                         ))
                       }
                     </div>
@@ -571,8 +613,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     </div>
                     <div className="space-y-4">
                       {!users ? <SkeletonList /> : users
-                        .filter(u => 
-                          (u.email?.toLowerCase() || "").includes(userSearch.toLowerCase()) || 
+                        .filter(u =>
+                          (u.email?.toLowerCase() || "").includes(userSearch.toLowerCase()) ||
                           (u.name?.toLowerCase() || "").includes(userSearch.toLowerCase())
                         )
                         .map(u => (
@@ -858,7 +900,7 @@ function SkeletonList() {
   );
 }
 
-function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChange: any; onPrint: any }) {
+function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: { order: any; callerId: string; updateTracking: any; onStatusChange: any; onPrint: any }) {
   const meta = STATUS_META[order.status] || STATUS_META.pending;
   const [expanded, setExpanded] = useState(false);
 
@@ -878,40 +920,43 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
           </div>
         </div>
 
-        <div className="flex items-center gap-8">
-          <div className="text-right">
-            <p className="text-xs text-white/30 font-bold uppercase tracking-widest mb-1">Total</p>
-            <p className="text-lg font-black text-white leading-none">{fmt(order.total)}</p>
+        <div className="flex flex-wrap items-center gap-3 lg:gap-8">
+          <div className="text-left md:text-right min-w-[80px]">
+            <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-1">Total</p>
+            <p className="text-base lg:text-lg font-black text-white leading-none">{fmt(order.total)}</p>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-white/5 border-white/10 hover:bg-[#ea3372]/10 hover:text-[#ea3372] text-[10px] font-black uppercase tracking-widest h-10 px-4 gap-2 cursor-pointer transition-all"
-            onClick={onPrint}
-          >
-            <Printer className="size-3" />
-            Guia de Envio
-          </Button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-white/5 border-white/10 hover:bg-[#ea3372]/10 hover:text-[#ea3372] text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 gap-2 cursor-pointer transition-all flex-1 sm:flex-none"
+              onClick={onPrint}
+            >
+              <Printer className="size-3" />
+              <span className="hidden xs:inline">Guia</span>
+              <span className="hidden lg:inline">de Envio</span>
+            </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-[10px] font-black uppercase tracking-widest h-10 px-4">
-                Mudar Status <ChevronDown className="ml-2 size-3" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
-              {ORDER_STATUSES.map(s => (
-                <DropdownMenuItem
-                  key={s}
-                  className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
-                  onClick={() => onStatusChange(order._id, s)}
-                >
-                  {STATUS_META[s].label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 flex-1 sm:flex-none">
+                  Status <ChevronDown className="ml-1 lg:ml-2 size-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
+                {ORDER_STATUSES.map(s => (
+                  <DropdownMenuItem
+                    key={s}
+                    className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
+                    onClick={() => onStatusChange(order._id, s)}
+                  >
+                    {STATUS_META[s].label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
@@ -950,6 +995,48 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
                   <p className="text-[10px] text-white/60">CEP: {order.address?.zip}</p>
                   <p className="text-[10px] text-white/40 mt-2 font-mono">{order.userEmail}</p>
                 </div>
+              </div>
+              <div className="md:col-span-2 pt-6 border-t border-white/5">
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#ea3372] mb-4 flex items-center gap-2">
+                  <TrendingUp className="size-3" /> Gestão de Rastreio
+                </h5>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 relative group">
+                    <Input
+                      placeholder="CÓDIGO DE RASTREIO (EX: AA123456789BR)"
+                      className="bg-white/5 border-white/10 h-12 text-xs font-bold tracking-widest pl-4 uppercase rounded-2xl focus:border-[#ea3372]/40 transition-all"
+                      defaultValue={order.trackingCode || ""}
+                      id={`tracking-${order._id}`}
+                    />
+                  </div>
+                  <Button
+                    className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-black px-8 h-12 rounded-2xl transition-all shadow-xl shadow-[#38b6ff]/20 flex items-center gap-2"
+                    onClick={async () => {
+                      const input = document.getElementById(`tracking-${order._id}`) as HTMLInputElement;
+                      const val = input.value.trim().toUpperCase();
+                      if (!val) return toast.error("Por favor, insira um código de rastreio válido.");
+                      
+                      try {
+                        await updateTracking({ 
+                          callerId: callerId as Id<"users">, 
+                          orderId: order._id, 
+                          trackingCode: val 
+                        });
+                        toast.success("Rastreio atualizado e cliente notificado!");
+                      } catch (e) {
+                        toast.error("Erro ao atualizar rastreio.");
+                      }
+                    }}
+                  >
+                    <Package className="size-4" />
+                    {order.trackingCode ? "Atualizar Rastreio" : "Notificar Cliente"}
+                  </Button>
+                </div>
+                {order.trackingCode && (
+                  <p className="text-[9px] text-green-500 font-black mt-3 uppercase tracking-widest flex items-center gap-1 opacity-70">
+                    <CheckCircle2 className="size-3" /> Código de rastreio ativo: {order.trackingCode}
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>

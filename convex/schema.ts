@@ -56,6 +56,7 @@ export default defineSchema({
       state: v.string(),
       zip: v.string(),
     }),
+    trackingCode: v.optional(v.string()),
     createdAt: v.string(),
   })
     .index("by_user", ["userId"])

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, ShoppingBag, User, Heart } from "lucide-react";
+import { Home, Search, ShoppingBag, User, LayoutDashboard, Package, LogOut, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -9,13 +9,23 @@ export default function MobileNav() {
   const { items: cartItems } = useCartStore();
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
-  const navItems = [
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  const shopItems = [
     { label: "Início", icon: Home, href: "/" },
     { label: "Catálogo", icon: Search, href: "/catalogo" },
     { label: "Carrinho", icon: ShoppingBag, href: "/carrinho", badge: cartCount },
-    { label: "Favoritos", icon: Heart, href: "/favoritos" },
     { label: "Perfil", icon: User, href: "/painel" },
   ];
+
+  const adminItems = [
+    { label: "Geral", icon: LayoutDashboard, href: "/admin" },
+    { label: "Pedidos", icon: Package, href: "/admin?tab=orders" },
+    { label: "Produtos", icon: ShoppingCart, href: "/admin?tab=products" },
+    { label: "Loja", icon: LogOut, href: "/" },
+  ];
+
+  const navItems = isAdmin ? adminItems : shopItems;
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0b0b0b]/90 backdrop-blur-xl border-t border-white/10 pb-safe-area">

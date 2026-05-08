@@ -5,6 +5,7 @@ import Footer from "@/components/Footer.tsx";
 import AccessibilityMenu from "@/components/AccessibilityMenu.tsx";
 import MobileNav from "@/components/MobileNav.tsx";
 import InstallPrompt from "@/components/InstallPrompt.tsx";
+import WhatsAppButton from "@/components/WhatsAppButton.tsx";
 
 export default function AppLayout() {
   const [isAccessOpen, setIsAccessOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function AppLayout() {
       <main className="flex-1 pb-16 md:pb-0">
         <Outlet />
       </main>
+      <WhatsAppButton />
       <MobileNav />
       <Footer />
     </div>

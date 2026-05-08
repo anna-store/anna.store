@@ -8,7 +8,13 @@
   "theme_color": "#ea3372",
   "icons": [
     {
-      "src": "https://img.icons8.com/color/512/sneakers.png",
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

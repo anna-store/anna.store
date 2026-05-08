@@ -203,6 +203,34 @@ export const updateOrderStatus = action({
   },
 });
 
+export const updateOrderTracking = action({
+  args: {
+    callerId: v.optional(v.id("users")),
+    orderId: v.id("orders"),
+    trackingCode: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.runMutation(internal.admin.internalUpdateOrderTracking, {
+      callerId: args.callerId,
+      orderId: args.orderId,
+      trackingCode: args.trackingCode,
+    });
+    // Futuro: Disparar e-mail de rastreio aqui
+  },
+});
+
+export const internalUpdateOrderTracking = internalMutation({
+  args: {
+    callerId: v.optional(v.id("users")),
+    orderId: v.id("orders"),
+    trackingCode: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.callerId);
+    await ctx.db.patch(args.orderId, { trackingCode: args.trackingCode, status: "shipped" });
+  },
+});
+
 /** Mutation interna usada pelo action updateOrderStatus */
 export const internalUpdateOrderStatus = internalMutation({
   args: {
