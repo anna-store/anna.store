@@ -2,33 +2,33 @@ import { useState } from "react";
 import Receipt from "@/components/Receipt.tsx";
 import { Printer } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useQuery, useMutation, useConvex } from "convex/react";
+import { useQuery, useMutation, useAction, useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { 
-  LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp, 
-  Share2, ArrowRight, Settings, Plus, Search, Filter, 
+import {
+  LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp,
+  Share2, ArrowRight, Settings, Plus, Search, Filter,
   ChevronDown, CheckCircle2, XCircle, Clock, Trash2, Lock,
   MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
-import { 
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger 
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter 
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { 
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select.tsx";
 import { Switch } from "@/components/ui/switch.tsx";
 import { cn } from "@/lib/utils.ts";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import type { Id } from "@/convex/_generated/dataModel.d.ts";
+import type { Id } from "@/convex/_generated/dataModel";
 import { motion, AnimatePresence } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 
@@ -37,14 +37,14 @@ type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges
 const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
-  pending:   { label: "Pendente",  color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/5" },
+  pending: { label: "Pendente", color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/5" },
   confirmed: { label: "Confirmado", color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
-  shipped:   { label: "Enviado",    color: "text-purple-500 border-purple-500/20 bg-purple-500/5" },
-  delivered: { label: "Entregue",   color: "text-green-500 border-green-500/20 bg-green-500/5" },
-  cancelled: { label: "Cancelado",  color: "text-red-500 border-red-500/20 bg-red-500/5" },
-  approved:  { label: "Aprovado",   color: "text-green-500 border-green-500/20 bg-green-500/5" },
-  rejected:  { label: "Rejeitado",  color: "text-red-500 border-red-500/20 bg-red-500/5" },
-  completed: { label: "Concluído",  color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
+  shipped: { label: "Enviado", color: "text-purple-500 border-purple-500/20 bg-purple-500/5" },
+  delivered: { label: "Entregue", color: "text-green-500 border-green-500/20 bg-green-500/5" },
+  cancelled: { label: "Cancelado", color: "text-red-500 border-red-500/20 bg-red-500/5" },
+  approved: { label: "Aprovado", color: "text-green-500 border-green-500/20 bg-green-500/5" },
+  rejected: { label: "Rejeitado", color: "text-red-500 border-red-500/20 bg-red-500/5" },
+  completed: { label: "Concluído", color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
 };
 
 function fmt(n: number | undefined | null) {
@@ -55,15 +55,19 @@ function fmt(n: number | undefined | null) {
 export default function AdminDashboard({ callerId }: { callerId: string }) {
   const convex = useConvex();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
-  
+
   // Queries
-  const stats = useQuery(api.admin.getStats, { callerId });
-  const orders = useQuery(api.admin.getAllOrders, { callerId });
-  const products = useQuery(api.admin.getAllProducts, { callerId });
-  const users = useQuery(api.admin.getAllUsers, { callerId });
-  const coupons = useQuery(api.admin.getAllCoupons, { callerId });
-  const exchanges = useQuery(api.admin.getAllExchanges, { callerId });
-  const reviews = useQuery(api.admin.getAllReviews, { callerId });
+  const stats = useQuery(api.admin.getStats, { callerId: callerId as Id<"users"> });
+  const orders = useQuery(api.admin.getAllOrders, { callerId: callerId as Id<"users"> });
+  const products = useQuery(api.admin.getAllProducts, { callerId: callerId as Id<"users"> });
+  const users = useQuery(api.admin.getAllUsers, { callerId: callerId as Id<"users"> });
+  const coupons = useQuery(api.admin.getAllCoupons, { callerId: callerId as Id<"users"> });
+  const exchanges = useQuery(api.admin.getAllExchanges, { callerId: callerId as Id<"users"> });
+  const reviews = useQuery(api.admin.getAllReviews, { callerId: callerId as Id<"users"> });
+
+  const avgValue = stats?.totalRevenue && stats?.totalOrders 
+    ? stats.totalRevenue / stats.totalOrders 
+    : 0;
 
   // Filters
   const [orderSearch, setOrderSearch] = useState("");
@@ -77,12 +81,12 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       window.print();
     }, 100);
   };
-  
+
   // Product Form States
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [productForm, setProductForm] = useState({
-    name: "", brand: "", category: "", price: 0, originalPrice: 0, 
+    name: "", brand: "", category: "", price: 0, originalPrice: 0,
     description: "", images: "", sizes: "", colors: "", tags: "",
     inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
     gender: "Feminino"
@@ -99,8 +103,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const [passwordTargetId, setPasswordTargetId] = useState<Id<"users"> | null>(null);
   const [newPasswordValue, setNewPasswordValue] = useState("");
 
-  // Mutations
-  const updateStatus = useMutation(api.admin.updateOrderStatus);
+  // Mutations & Actions
+  const updateStatus = useAction(api.admin.updateOrderStatus);
   const toggleAdmin = useMutation(api.admin.toggleAdmin);
   const createProduct = useMutation(api.admin.createProduct);
   const updateProduct = useMutation(api.admin.updateProduct);
@@ -230,7 +234,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
     try {
       const currentImgs = productForm.images.split(",").map(i => i.trim()).filter(Boolean);
       const newImages = [...currentImgs];
-      
+
       for (const file of Array.from(files)) {
         const postUrl = await generateUploadUrl({ callerId });
         const result = await fetch(postUrl, {
@@ -239,14 +243,14 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
           body: file,
         });
         const { storageId } = await result.json();
-        
+
         // Get the real URL from Convex
         const imageUrl = await convex.query(api.admin.getImageUrl, { storageId });
         if (imageUrl) {
           newImages.push(imageUrl);
         }
       }
-      
+
       setProductForm({ ...productForm, images: newImages.join(", ") });
       toast.success("Imagens enviadas!");
     } catch (err) {
@@ -276,12 +280,12 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
   const NAV: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "overview", label: "Visão Geral", icon: <LayoutDashboard className="h-4 w-4" /> },
-    { id: "orders",   label: "Pedidos",     icon: <Package className="h-4 w-4" /> },
-    { id: "products", label: "Produtos",    icon: <ShoppingBag className="h-4 w-4" /> },
-    { id: "users",    label: "Usuários",    icon: <UsersRound className="h-4 w-4" /> },
-    { id: "coupons",  label: "Cupons",      icon: <TrendingUp className="h-4 w-4" /> },
-    { id: "exchanges",label: "Trocas",      icon: <ArrowRight className="h-4 w-4" /> },
-    { id: "reviews",  label: "Avaliações",  icon: <Share2 className="h-4 w-4" /> },
+    { id: "orders", label: "Pedidos", icon: <Package className="h-4 w-4" /> },
+    { id: "products", label: "Produtos", icon: <ShoppingBag className="h-4 w-4" /> },
+    { id: "users", label: "Usuários", icon: <UsersRound className="h-4 w-4" /> },
+    { id: "coupons", label: "Cupons", icon: <TrendingUp className="h-4 w-4" /> },
+    { id: "exchanges", label: "Trocas", icon: <ArrowRight className="h-4 w-4" /> },
+    { id: "reviews", label: "Avaliações", icon: <Share2 className="h-4 w-4" /> },
   ];
 
   return (
@@ -312,8 +316,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 onClick={() => setActiveTab(item.id)}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                  activeTab === item.id 
-                    ? "bg-white/10 text-white shadow-lg shadow-black/50" 
+                  activeTab === item.id
+                    ? "bg-white/10 text-white shadow-lg shadow-black/50"
                     : "text-white/40 hover:bg-white/5 hover:text-white/60"
                 )}
               >
@@ -338,7 +342,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">Dashboard</h2>
               <p className="text-xl font-black italic">{NAV.find(n => n.id === activeTab)?.label}</p>
             </div>
-            
+
             <div className="flex items-center gap-4">
               {activeTab === "products" && (
                 <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
@@ -366,10 +370,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {[
-                        { label: "Vendas Totais", value: fmt(stats.totalSales), icon: ShoppingBag, color: "text-[#ea3372]" },
+                        { label: "Vendas Totais", value: fmt(stats.totalRevenue), icon: ShoppingBag, color: "text-[#ea3372]" },
                         { label: "Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#38b6ff]" },
                         { label: "Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-purple-500" },
-                        { label: "Média p/ Pedido", value: fmt(stats.avgOrderValue), icon: TrendingUp, color: "text-green-500" },
+                        { label: "Média p/ Pedido", value: fmt(avgValue), icon: TrendingUp, color: "text-green-500" },
                       ].map((s, i) => (
                         <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-xl group hover:border-[#ea3372]/30 transition-all">
                           <s.icon className={cn("size-6 mb-4", s.color)} />
@@ -434,8 +438,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/[0.02] p-6 rounded-3xl border border-white/5">
                       <div className="relative flex-1 w-full max-w-md">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
-                        <Input 
-                          placeholder="Buscar por ID ou Cliente..." 
+                        <Input
+                          placeholder="Buscar por ID ou Cliente..."
                           className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl focus:border-[#ea3372]/40"
                           value={orderSearch}
                           onChange={e => setOrderSearch(e.target.value)}
@@ -461,7 +465,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                       {!orders ? <SkeletonList /> : orders
                         .filter(o => 
                           (orderStatusFilter === "all" || o.status === orderStatusFilter) &&
-                          (o.userName.toLowerCase().includes(orderSearch.toLowerCase()) || o._id.toLowerCase().includes(orderSearch.toLowerCase()))
+                          (
+                            (o.userName?.toLowerCase() || "").includes(orderSearch.toLowerCase()) || 
+                            (o._id?.toLowerCase() || "").includes(orderSearch.toLowerCase())
+                          )
                         )
                         .map(o => (
                           <OrderRow key={o._id} order={o} onStatusChange={handleStatusChange} onPrint={() => handlePrint(o)} />
@@ -485,8 +492,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   <div className="space-y-6">
                     <div className="relative max-w-md">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
-                      <Input 
-                        placeholder="Buscar por Email ou Nome..." 
+                      <Input
+                        placeholder="Buscar por Email ou Nome..."
                         className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl"
                         value={userSearch}
                         onChange={e => setUserSearch(e.target.value)}
@@ -494,13 +501,16 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     </div>
                     <div className="space-y-4">
                       {!users ? <SkeletonList /> : users
-                        .filter(u => u.email.toLowerCase().includes(userSearch.toLowerCase()) || (u.name?.toLowerCase().includes(userSearch.toLowerCase())))
+                        .filter(u => 
+                          (u.email?.toLowerCase() || "").includes(userSearch.toLowerCase()) || 
+                          (u.name?.toLowerCase() || "").includes(userSearch.toLowerCase())
+                        )
                         .map(u => (
-                          <UserRow 
-                            key={u._id} 
-                            user={u} 
-                            onToggleAdmin={handleToggleAdmin} 
-                            onDelete={handleDeleteUser} 
+                          <UserRow
+                            key={u._id}
+                            user={u}
+                            onToggleAdmin={handleToggleAdmin}
+                            onDelete={handleDeleteUser}
                             onChangePassword={handleChangePassword}
                           />
                         ))
@@ -552,21 +562,21 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Nome do Produto</Label>
-                <Input required value={productForm.name} onChange={e => setProductForm({...productForm, name: e.target.value})} className="bg-white/5 border-white/10" />
+                <Input required value={productForm.name} onChange={e => setProductForm({ ...productForm, name: e.target.value })} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Marca</Label>
-                <Input required value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="bg-white/5 border-white/10" />
+                <Input required value={productForm.brand} onChange={e => setProductForm({ ...productForm, brand: e.target.value })} className="bg-white/5 border-white/10" />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Categoria</Label>
-                <Input required value={productForm.category} onChange={e => setProductForm({...productForm, category: e.target.value})} className="bg-white/5 border-white/10" />
+                <Input required value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Público</Label>
-                <Select value={productForm.gender} onValueChange={(v: any) => setProductForm({...productForm, gender: v})}>
+                <Select value={productForm.gender} onValueChange={(v: any) => setProductForm({ ...productForm, gender: v })}>
                   <SelectTrigger className="bg-white/5 border-white/10 h-10">
                     <SelectValue />
                   </SelectTrigger>
@@ -580,25 +590,25 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Preço (R$)</Label>
-                <Input type="number" required value={productForm.price} onChange={e => setProductForm({...productForm, price: parseFloat(e.target.value)})} className="bg-white/5 border-white/10" />
+                <Input type="number" required value={productForm.price} onChange={e => setProductForm({ ...productForm, price: parseFloat(e.target.value) })} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Preço Original (R$)</Label>
-                <Input type="number" value={productForm.originalPrice} onChange={e => setProductForm({...productForm, originalPrice: parseFloat(e.target.value)})} className="bg-white/5 border-white/10" />
+                <Input type="number" value={productForm.originalPrice} onChange={e => setProductForm({ ...productForm, originalPrice: parseFloat(e.target.value) })} className="bg-white/5 border-white/10" />
               </div>
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] uppercase font-black text-white/40">Descrição</Label>
-              <Textarea required value={productForm.description} onChange={e => setProductForm({...productForm, description: e.target.value})} className="bg-white/5 border-white/10 min-h-24" />
+              <Textarea required value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-white/5 border-white/10 min-h-24" />
             </div>
             <div className="space-y-3">
               <Label className="text-[10px] uppercase font-black text-white/40">Imagens do Produto</Label>
-              
+
               <div className="grid grid-cols-4 gap-4">
                 {productForm.images.split(",").map(i => i.trim()).filter(Boolean).map((img, idx) => (
                   <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
                     <img src={img} className="size-full object-cover" />
-                    <button 
+                    <button
                       type="button"
                       onClick={() => removeImage(idx)}
                       className="absolute top-1 right-1 size-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -607,16 +617,16 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     </button>
                   </div>
                 ))}
-                
+
                 <label className={cn(
                   "aspect-square rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#ea3372]/40 hover:bg-[#ea3372]/5 transition-all",
                   isUploading && "opacity-50 cursor-wait"
                 )}>
-                  <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*" 
-                    className="hidden" 
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="hidden"
                     onChange={handleImageUpload}
                     disabled={isUploading}
                   />
@@ -630,20 +640,20 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   )}
                 </label>
               </div>
-              
+
               <div className="space-y-1">
                 <Label className="text-[9px] text-white/20 uppercase font-black">URLs Manuais (Opcional)</Label>
-                <Input value={productForm.images} onChange={e => setProductForm({...productForm, images: e.target.value})} className="bg-white/5 border-white/10 text-[10px]" placeholder="Cole URLs separadas por vírgula se preferir" />
+                <Input value={productForm.images} onChange={e => setProductForm({ ...productForm, images: e.target.value })} className="bg-white/5 border-white/10 text-[10px]" placeholder="Cole URLs separadas por vírgula se preferir" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Tamanhos (separados por vírgula)</Label>
-                <Input required value={productForm.sizes} onChange={e => setProductForm({...productForm, sizes: e.target.value})} className="bg-white/5 border-white/10" />
+                <Input required value={productForm.sizes} onChange={e => setProductForm({ ...productForm, sizes: e.target.value })} className="bg-white/5 border-white/10" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Cores (separadas por vírgula)</Label>
-                <Input value={productForm.colors} onChange={e => setProductForm({...productForm, colors: e.target.value})} className="bg-white/5 border-white/10" />
+                <Input value={productForm.colors} onChange={e => setProductForm({ ...productForm, colors: e.target.value })} className="bg-white/5 border-white/10" />
               </div>
             </div>
             <div className="grid grid-cols-4 gap-4 pt-2">
@@ -654,9 +664,9 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 { id: "isBestSeller", label: "Mais Vendido" },
               ].map(opt => (
                 <div key={opt.id} className="flex items-center gap-2">
-                  <Switch 
-                    checked={(productForm as any)[opt.id]} 
-                    onCheckedChange={(v: boolean) => setProductForm({...productForm, [opt.id]: v})} 
+                  <Switch
+                    checked={(productForm as any)[opt.id]}
+                    onCheckedChange={(v: boolean) => setProductForm({ ...productForm, [opt.id]: v })}
                   />
                   <Label className="text-[9px] uppercase font-black text-white/40">{opt.label}</Label>
                 </div>
@@ -681,13 +691,13 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               <Label className="text-[10px] uppercase font-black text-white/40">Nova Senha</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/20" />
-                <Input 
+                <Input
                   type="password"
-                  required 
+                  required
                   placeholder="Mínimo 6 caracteres"
-                  value={newPasswordValue} 
+                  value={newPasswordValue}
                   onChange={e => setNewPasswordValue(e.target.value)}
-                  className="bg-white/5 border-white/10 pl-10" 
+                  className="bg-white/5 border-white/10 pl-10"
                 />
               </div>
             </div>
@@ -708,17 +718,17 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
           <form onSubmit={handleCouponSubmit} className="space-y-6 py-4">
             <div className="space-y-1">
               <Label className="text-[10px] uppercase font-black text-white/40">Código do Cupom</Label>
-              <Input 
+              <Input
                 required placeholder="EX: VERÃO10"
-                value={couponForm.code} 
-                onChange={e => setCouponForm({...couponForm, code: e.target.value.toUpperCase()})}
-                className="bg-white/5 border-white/10 font-mono tracking-widest" 
+                value={couponForm.code}
+                onChange={e => setCouponForm({ ...couponForm, code: e.target.value.toUpperCase() })}
+                className="bg-white/5 border-white/10 font-mono tracking-widest"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Tipo</Label>
-                <Select value={couponForm.discountType} onValueChange={(v: any) => setCouponForm({...couponForm, discountType: v})}>
+                <Select value={couponForm.discountType} onValueChange={(v: any) => setCouponForm({ ...couponForm, discountType: v })}>
                   <SelectTrigger className="bg-white/5 border-white/10">
                     <SelectValue />
                   </SelectTrigger>
@@ -730,27 +740,27 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Valor do Desconto</Label>
-                <Input 
+                <Input
                   type="number" required
-                  value={couponForm.discountValue} 
-                  onChange={e => setCouponForm({...couponForm, discountValue: parseFloat(e.target.value)})}
-                  className="bg-white/5 border-white/10" 
+                  value={couponForm.discountValue}
+                  onChange={e => setCouponForm({ ...couponForm, discountValue: parseFloat(e.target.value) })}
+                  className="bg-white/5 border-white/10"
                 />
               </div>
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] uppercase font-black text-white/40">Valor Mínimo do Pedido (R$)</Label>
-              <Input 
+              <Input
                 type="number" required
-                value={couponForm.minOrderValue} 
-                onChange={e => setCouponForm({...couponForm, minOrderValue: parseFloat(e.target.value)})}
-                className="bg-white/5 border-white/10" 
+                value={couponForm.minOrderValue}
+                onChange={e => setCouponForm({ ...couponForm, minOrderValue: parseFloat(e.target.value) })}
+                className="bg-white/5 border-white/10"
               />
             </div>
             <div className="flex items-center gap-3 pt-2">
-              <Switch 
-                checked={couponForm.freeShipping} 
-                onCheckedChange={(v: boolean) => setCouponForm({...couponForm, freeShipping: v})} 
+              <Switch
+                checked={couponForm.freeShipping}
+                onCheckedChange={(v: boolean) => setCouponForm({ ...couponForm, freeShipping: v })}
               />
               <div className="space-y-0.5">
                 <Label className="text-[10px] uppercase font-black text-white/40">Frete Grátis</Label>
@@ -803,10 +813,10 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
             <p className="text-xs text-white/30 font-bold uppercase tracking-widest mb-1">Total</p>
             <p className="text-lg font-black text-white leading-none">{fmt(order.total)}</p>
           </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
+
+          <Button
+            variant="outline"
+            size="sm"
             className="bg-white/5 border-white/10 hover:bg-[#ea3372]/10 hover:text-[#ea3372] text-[10px] font-black uppercase tracking-widest h-10 px-4 gap-2 cursor-pointer transition-all"
             onClick={onPrint}
           >
@@ -822,8 +832,8 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
               {ORDER_STATUSES.map(s => (
-                <DropdownMenuItem 
-                  key={s} 
+                <DropdownMenuItem
+                  key={s}
                   className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
                   onClick={() => onStatusChange(order._id, s)}
                 >
@@ -837,7 +847,7 @@ function OrderRow({ order, onStatusChange, onPrint }: { order: any; onStatusChan
 
       <AnimatePresence>
         {expanded && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -966,10 +976,10 @@ function ReviewRow({ review, onDelete }: { review: any; onDelete: any }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="size-10 rounded-full bg-white/5 flex items-center justify-center font-bold text-xs border border-white/10">
-            {review.userName.charAt(0)}
+            {(review.userName || "?").charAt(0)}
           </div>
           <div>
-            <p className="text-xs font-bold text-white">{review.userName}</p>
+            <p className="text-xs font-bold text-white">{review.userName || "Usuário"}</p>
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <TrendingUp key={i} className={cn("size-2", i < review.rating ? "text-yellow-500" : "text-white/10")} />
@@ -1015,9 +1025,9 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
       </div>
 
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className={cn(
             "text-[9px] font-black uppercase tracking-widest h-9 px-4 rounded-lg",
             coupon.isActive ? "text-red-400 hover:text-red-300 hover:bg-red-500/5" : "text-green-400 hover:text-green-300 hover:bg-green-500/5"
@@ -1027,7 +1037,7 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
           {coupon.isActive ? <XCircle className="size-3 mr-2" /> : <CheckCircle2 className="size-3 mr-2" />}
           {coupon.isActive ? "Desativar" : "Ativar"}
         </Button>
-        
+
         <Button variant="ghost" size="icon" className="text-white/10 hover:text-red-500 hover:bg-red-500/5 h-9 w-9" onClick={onDelete}>
           <Trash2 className="size-4" />
         </Button>
@@ -1065,19 +1075,19 @@ function UserRow({ user, onToggleAdmin, onDelete, onChangePassword }: { user: an
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
-            <DropdownMenuItem 
+            <DropdownMenuItem
               className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
               onClick={() => onToggleAdmin(user._id, user.isAdmin)}
             >
               {user.isAdmin ? "Remover Privilégios Admin" : "Tornar Administrador"}
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
               onClick={() => onChangePassword(user._id)}
             >
               Alterar Senha
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               className="text-xs text-red-500 focus:text-red-400 focus:bg-red-500/5 cursor-pointer"
               onClick={() => onDelete(user._id)}
             >

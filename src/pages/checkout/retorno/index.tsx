@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
-import { CheckCircle2, XCircle, Clock, Package, ShoppingBag } from "lucide-react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button.tsx";
 
 import { useCartStore } from "@/hooks/use-cart.ts";
-
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 
 type ReturnStatus = "success" | "failure" | "pending";
@@ -32,32 +31,40 @@ const STATUS_CONFIG: Record<ReturnStatus, {
   pending: {
     icon: <Clock className="h-14 w-14 text-yellow-500" />,
     title: "Pagamento em Processamento",
-    description: "Seu pagamento está sendo processado. Você receberá uma confirmação por e-mail quando for concluído.",
+    description: "Seu pagamento está sendo processado. Assim que for confirmado, você será redirecionado.",
     iconBg: "bg-yellow-100",
   },
 };
 
 export default function CheckoutRetornoPage() {
+  const navigate = useNavigate();
   const clearCart = useCartStore((state) => state.clearCart);
   const confirmPayment = useMutation(api.orders.confirmOrderPayment);
   const [params] = useSearchParams();
-  const rawStatus = params.get("status") ?? params.get("collection_status") ?? "pending";
-  const isSuccess = rawStatus === "success" || rawStatus === "approved";
-  const status: ReturnStatus = isSuccess ? "success" : (rawStatus === "failure" || rawStatus === "rejected") ? "failure" : "pending";
   
   const orderId = params.get("orderId") ?? params.get("external_reference") ?? "";
+  
+  // Monitoramento em tempo real do pedido no banco
+  const dbOrder = useQuery(api.orders.getOrderById, orderId ? { orderId: orderId as any } : "skip");
+
+  const rawStatus = params.get("status") ?? params.get("collection_status") ?? "pending";
+  
+  // O status final depende OU da URL OU do banco de dados (tempo real)
+  const isApproved = rawStatus === "success" || rawStatus === "approved" || dbOrder?.status === "confirmed";
+  const status: ReturnStatus = isApproved ? "success" : (rawStatus === "failure" || rawStatus === "rejected") ? "failure" : "pending";
+  
   const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
-  const [countdown, setCountdown] = useState(isSuccess ? 5 : null as number | null);
+  const [countdown, setCountdown] = useState(isApproved ? 5 : null as number | null);
 
   useEffect(() => {
-    if (status === "success") {
+    if (isApproved) {
       clearCart();
-      if (orderId) {
-        // Fallback: confirma o pedido no client-side caso o webhook demore
+      if (orderId && dbOrder?.status === "pending") {
         confirmPayment({ orderId: orderId as any }).catch(console.error);
       }
+      if (countdown === null) setCountdown(5);
     }
-  }, [status, orderId, clearCart, confirmPayment]);
+  }, [isApproved, orderId, dbOrder?.status, clearCart, confirmPayment, countdown]);
 
   useEffect(() => {
     if (countdown === null) return;

@@ -34,8 +34,24 @@ const STATUS_LABELS: Record<string, { label: string; color: string; icon: React.
 const STATUS_FLOW = ["pending", "confirmed", "shipped", "delivered"];
 
 export default function PainelInner() {
-  const { user, removeUser } = useAuth();
+  const { user, removeUser, isAuthenticated } = useAuth();
   const userId = user?._id;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-6">
+        <div className="bg-yellow-500/10 h-20 w-20 rounded-full flex items-center justify-center mx-auto">
+          <User className="h-10 w-10 text-yellow-600" />
+        </div>
+        <h2 className="text-2xl font-black italic uppercase tracking-tighter">Área de Cliente</h2>
+        <p className="text-muted-foreground text-sm">Acesse sua conta para gerenciar seu perfil e pedidos.</p>
+        <Button asChild className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold w-full">
+          <Link to="/auth">Entrar na Conta</Link>
+        </Button>
+      </div>
+    );
+  }
+
   const currentUser = useQuery(api.users.getCurrentUser, userId ? { userId } : {});
   const orders = useQuery(api.orders.getMyOrders, userId ? { userId } : "skip");
   const exchanges = useQuery(api.exchanges.getMyExchanges, userId ? { userId } : "skip");

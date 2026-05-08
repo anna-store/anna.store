@@ -74,8 +74,23 @@ function getStatusProgress(status: string) {
 
 // ─── Componente Principal ─────────────────────────────────────────────────────
 export default function PedidosInner() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const userId = user?._id;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-6">
+        <div className="bg-yellow-500/10 h-20 w-20 rounded-full flex items-center justify-center mx-auto">
+          <Clock className="h-10 w-10 text-yellow-600" />
+        </div>
+        <h2 className="text-2xl font-black italic uppercase tracking-tighter">Acesso Restrito</h2>
+        <p className="text-muted-foreground text-sm">Você precisa estar logado para ver seus pedidos.</p>
+        <Button asChild className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold w-full">
+          <Link to="/auth">Fazer Login</Link>
+        </Button>
+      </div>
+    );
+  }
 
   const orders = useQuery(api.orders.getMyOrders, userId ? { userId } : "skip");
   const deleteOrder = useMutation(api.orders.deleteOrder);

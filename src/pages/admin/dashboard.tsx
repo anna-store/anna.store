@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction, useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
   const stats = useQuery(api.admin.getStats);
   const orders = useQuery(api.admin.getAllOrders, { statusFilter: orderStatusFilter });
   const users = useQuery(api.admin.getAllUsers);
-  const updateStatus = useMutation(api.admin.updateOrderStatus);
+  const updateStatus = useAction(api.admin.updateOrderStatus);
   const toggleAdmin = useMutation(api.admin.toggleAdmin);
 
   const handleStatusChange = async (orderId: Id<"orders">, status: typeof ORDER_STATUSES[number]) => {
