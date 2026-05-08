@@ -120,3 +120,26 @@ export const internalUpdateStatus = internalMutation({
     await ctx.db.patch(args.orderId, patch);
   },
 });
+
+/**
+ * Exclui um pedido pendente.
+ */
+export const deleteOrder = mutation({
+  args: { orderId: v.id("orders"), userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const order = await ctx.db.get(args.orderId);
+    if (!order) throw new ConvexError({ code: "NOT_FOUND", message: "Pedido não encontrado" });
+
+    // Verifica se o pedido pertence ao usuário
+    if (order.userId !== args.userId) {
+      throw new ConvexError({ code: "FORBIDDEN", message: "Não autorizado" });
+    }
+
+    // Só permite excluir se estiver pendente
+    if (order.status !== "pending") {
+      throw new ConvexError({ code: "BAD_REQUEST", message: "Apenas pedidos pendentes podem ser excluídos" });
+    }
+
+    await ctx.db.delete(args.orderId);
+  },
+});

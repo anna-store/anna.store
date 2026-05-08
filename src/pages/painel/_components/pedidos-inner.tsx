@@ -1,15 +1,16 @@
-import { useQuery } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
-import { Package, ArrowLeft, Printer } from "lucide-react";
+import { Package, ArrowLeft, Printer, Trash2, CreditCard } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import Receipt from "@/components/Receipt.tsx";
+import { toast } from "sonner";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pending: { label: "Aguardando", color: "bg-yellow-500/10 text-yellow-600 border-yellow-200" },
@@ -21,13 +22,62 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 export default function PedidosInner() {
   const orders = useQuery(api.orders.getMyOrders);
-  const [printingOrder, setPrintingOrder] = useState<unknown>(null);
+  const deleteOrder = useMutation(api.orders.deleteOrder);
+  const createPayment = useAction(api.mercadopago.createPayment);
+  
+  const [printingOrder, setPrintingOrder] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isPaying, setIsPaying] = useState<string | null>(null);
 
-  const handlePrint = (order: unknown) => {
+  const handlePrint = (order: any) => {
     setPrintingOrder(order);
     setTimeout(() => {
       window.print();
     }, 100);
+  };
+
+  const handlePay = async (order: any) => {
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) return;
+    const user = JSON.parse(userStr);
+
+    setIsPaying(order._id);
+    try {
+      const result = await createPayment({
+        orderId: order._id,
+        items: order.items,
+        appUrl: window.location.origin,
+        userId: user._id,
+      });
+
+      if (result.init_point) {
+        window.location.href = result.init_point;
+      }
+    } catch (error) {
+      toast.error("Erro ao iniciar pagamento");
+      console.error(error);
+    } finally {
+      setIsPaying(null);
+    }
+  };
+
+  const handleDelete = async (orderId: any) => {
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) return;
+    const user = JSON.parse(userStr);
+    
+    if (!confirm("Tem certeza que deseja excluir este pedido pendente?")) return;
+
+    setIsDeleting(orderId);
+    try {
+      await deleteOrder({ orderId, userId: user._id });
+      toast.success("Pedido excluído com sucesso");
+    } catch (error) {
+      toast.error("Erro ao excluir pedido");
+      console.error(error);
+    } finally {
+      setIsDeleting(null);
+    }
   };
 
   return (
@@ -76,6 +126,28 @@ export default function PedidosInner() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
+                        {order.status === "pending" && (
+                          <>
+                            <Button 
+                              size="sm" 
+                              className="h-8 text-xs gap-2 font-bold bg-[#ea3372] hover:bg-[#c9295f] text-white"
+                              onClick={() => handlePay(order)}
+                              disabled={isPaying === order._id}
+                            >
+                              <CreditCard className="h-3 w-3" />
+                              {isPaying === order._id ? "Processando..." : "Finalizar Compra"}
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => handleDelete(order._id)}
+                              disabled={isDeleting === order._id || isPaying === order._id}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                         <Button 
                           variant="outline" 
                           size="sm" 
