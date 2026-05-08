@@ -68,8 +68,8 @@ export default function Index() {
           >
             <img
               src="/hero-anna-shoes.png"
-              alt="Anna Shoes Collection Wall"
-              className="w-full h-full object-cover brightness-[0.5] contrast-[1.2] object-center"
+              alt="Anna Shoes Concept"
+              className="w-full h-full object-cover brightness-[0.7] contrast-[1.2] object-center scale-105"
             />
           </motion.div>
 
