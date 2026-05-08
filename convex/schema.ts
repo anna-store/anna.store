@@ -123,6 +123,7 @@ export default defineSchema({
     isNew: v.optional(v.boolean()),
     isFeatured: v.optional(v.boolean()),
     isBestSeller: v.optional(v.boolean()),
+    gender: v.optional(v.string()), // Feminino, Masculino, Kids
     tags: v.array(v.string()),
   }).index("by_category", ["category"]),
 

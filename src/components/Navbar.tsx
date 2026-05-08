@@ -102,14 +102,15 @@ export default function Navbar() {
               size="icon"
               className="text-white/70 hover:text-[#38b6ff] cursor-pointer"
               onClick={() => setSearchOpen(true)}
+              aria-label="Abrir busca"
             >
               <Search className="h-5 w-5" />
             </Button>
           )}
 
           {/* Wishlist */}
-          <Link to="/favoritos">
-            <Button variant="ghost" size="icon" className="text-white/70 hover:text-[#ea3372] relative cursor-pointer">
+          <Link to="/favoritos" aria-label="Ver produtos favoritos">
+            <Button variant="ghost" size="icon" className="text-white/70 hover:text-[#ea3372] relative cursor-pointer" aria-label="Favoritos">
               <Heart className="h-5 w-5" />
               {wishlistItems.length > 0 && (
                 <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-[#ea3372] border-0">
@@ -120,8 +121,8 @@ export default function Navbar() {
           </Link>
 
           {/* Cart */}
-          <Link to="/carrinho">
-            <Button variant="ghost" size="icon" className="text-white/70 hover:text-[#38b6ff] relative cursor-pointer">
+          <Link to="/carrinho" aria-label="Ver carrinho de compras">
+            <Button variant="ghost" size="icon" className="text-white/70 hover:text-[#38b6ff] relative cursor-pointer" aria-label="Carrinho">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-[#38b6ff] border-0">

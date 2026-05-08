@@ -15,18 +15,19 @@ export type Product = {
   isNew?: boolean;
   isFeatured?: boolean;
   isBestSeller?: boolean;
+  gender?: string;
   tags: string[];
 };
 
 export const CATEGORIES = [
   "Todos",
-  "Tênis Masculino",
-  "Tênis Feminino",
+  "Tênis",
   "Casual",
   "Esportivo",
-  "Infantil",
   "Sandálias",
   "Botas",
+  "Chinelos",
+  "Infantil",
 ];
 
 export const PRODUCTS: Product[] = [
@@ -34,7 +35,8 @@ export const PRODUCTS: Product[] = [
     id: "1",
     name: "Tênis Runner Pro X",
     brand: "Nike",
-    category: "Tênis Masculino",
+    category: "Tênis",
+    gender: "Masculino",
     price: 299.90,
     originalPrice: 399.90,
     images: [
@@ -57,6 +59,7 @@ export const PRODUCTS: Product[] = [
     name: "Sneaker Street Style",
     brand: "Adidas",
     category: "Casual",
+    gender: "Unissex",
     price: 249.90,
     originalPrice: 329.90,
     images: [
@@ -76,7 +79,8 @@ export const PRODUCTS: Product[] = [
     id: "3",
     name: "Tênis Feminino Glam",
     brand: "Vans",
-    category: "Tênis Feminino",
+    category: "Tênis",
+    gender: "Feminino",
     price: 219.90,
     images: [
       "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&q=80",
@@ -98,6 +102,7 @@ export const PRODUCTS: Product[] = [
     name: "Boot Couro Premium",
     brand: "Timberland",
     category: "Botas",
+    gender: "Masculino",
     price: 459.90,
     originalPrice: 579.90,
     images: [
@@ -118,6 +123,7 @@ export const PRODUCTS: Product[] = [
     name: "Sandália Comfort Plus",
     brand: "Birkenstock",
     category: "Sandálias",
+    gender: "Feminino",
     price: 189.90,
     images: [
       "https://images.unsplash.com/photo-1611086074785-6b5b9b0d0a9d?w=800&q=80",
@@ -136,6 +142,7 @@ export const PRODUCTS: Product[] = [
     name: "Tênis Infantil Sport",
     brand: "Nike",
     category: "Infantil",
+    gender: "Kids",
     price: 159.90,
     originalPrice: 199.90,
     images: [

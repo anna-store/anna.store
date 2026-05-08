@@ -147,14 +147,14 @@ export default function Index() {
               className="flex flex-wrap gap-5 items-center"
             >
               <Link to="/catalogo">
-                <Button size="lg" className="bg-[#ea3372] text-white hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(234,51,114,0.3)] group cursor-pointer">
-                  Shop Collection
+                <Button size="lg" className="bg-[#ea3372] text-white hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(234,51,114,0.3)] group cursor-pointer" aria-label="Ver catálogo completo de produtos">
+                  Ver Catálogo
                   <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/catalogo">
-                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer">
-                  Ver Lookbook
+              <Link to="/catalogo?new=true">
+                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer" aria-label="Ver lançamentos e novidades">
+                  Ver Novidades
                 </Button>
               </Link>
             </motion.div>

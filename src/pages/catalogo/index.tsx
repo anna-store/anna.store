@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal, X, ChevronDown, Search, Grid2X2, LayoutList } from "lucide-react";
@@ -60,9 +60,25 @@ export default function CatalogoPage() {
   const searchParam = searchParams.get("search") ?? "";
   const isPromo = searchParams.get("promo") === "true";
   const isNew = searchParams.get("new") === "true";
+  const genderParam = searchParams.get("genero") ?? "Todos";
 
   const [search, setSearch] = useState(searchParam);
   const [activeCategory, setActiveCategory] = useState(categoryParam);
+  const [activeGender, setActiveGender] = useState(genderParam);
+
+  // Sync state with URL params
+  useEffect(() => {
+    setSearch(searchParam);
+  }, [searchParam]);
+
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+  }, [categoryParam]);
+
+  useEffect(() => {
+    setActiveGender(genderParam);
+  }, [genderParam]);
+
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 600]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -73,13 +89,18 @@ export default function CatalogoPage() {
   const dbProducts = useQuery(api.products.getAll) || [];
   const PRODUCTS_DYNAMIC = useMemo(() => dbProducts.map(p => ({ ...p, id: p._id })), [dbProducts]);
   
-  const ALL_BRANDS = useMemo(() => [...new Set(PRODUCTS_DYNAMIC.map((p) => p.brand))], [PRODUCTS_DYNAMIC]);
+  const ALL_BRANDS = useMemo(() => [...new Set(PRODUCTS_DYNAMIC.map((p) => p.brand))].sort(), [PRODUCTS_DYNAMIC]);
+  const ALL_CATEGORIES_DYNAMIC = useMemo(() => ["Todos", ...new Set(PRODUCTS_DYNAMIC.map((p) => p.category))].sort(), [PRODUCTS_DYNAMIC]);
+  const ALL_GENDERS_DYNAMIC = useMemo(() => ["Todos", ...new Set(PRODUCTS_DYNAMIC.map((p: any) => p.gender).filter(Boolean))].sort(), [PRODUCTS_DYNAMIC]);
 
   const filtered = useMemo(() => {
     let result = PRODUCTS_DYNAMIC;
 
     if (activeCategory !== "Todos") {
       result = result.filter((p) => p.category === activeCategory);
+    }
+    if (activeGender !== "Todos") {
+      result = result.filter((p: any) => p.gender === activeGender);
     }
     if (isPromo) {
       result = result.filter((p) => p.originalPrice != null);
@@ -106,7 +127,7 @@ export default function CatalogoPage() {
     }
 
     return sortProducts(result, sort);
-  }, [activeCategory, isPromo, isNew, search, priceRange, selectedSizes, selectedBrands, sort]);
+  }, [activeCategory, activeGender, isPromo, isNew, search, priceRange, selectedSizes, selectedBrands, sort]);
 
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) =>
@@ -122,6 +143,7 @@ export default function CatalogoPage() {
 
   const clearFilters = () => {
     setActiveCategory("Todos");
+    setActiveGender("Todos");
     setPriceRange([0, 600]);
     setSelectedSizes([]);
     setSelectedBrands([]);
@@ -131,6 +153,7 @@ export default function CatalogoPage() {
 
   const activeFilterCount =
     (activeCategory !== "Todos" ? 1 : 0) +
+    (activeGender !== "Todos" ? 1 : 0) +
     selectedSizes.length +
     selectedBrands.length +
     (priceRange[0] > 0 || priceRange[1] < 600 ? 1 : 0);
@@ -141,7 +164,7 @@ export default function CatalogoPage() {
       <div>
         <h3 className="font-semibold text-sm mb-3">Categorias</h3>
         <div className="space-y-1">
-          {CATEGORIES.map((cat) => (
+          {ALL_CATEGORIES_DYNAMIC.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -152,6 +175,26 @@ export default function CatalogoPage() {
               }`}
             >
               {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Gender / Public */}
+      <div>
+        <h3 className="font-semibold text-sm mb-3">Público</h3>
+        <div className="flex flex-wrap gap-2">
+          {ALL_GENDERS_DYNAMIC.map((g) => (
+            <button
+              key={g}
+              onClick={() => setActiveGender(g)}
+              className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border ${
+                activeGender === g
+                  ? "bg-[#38b6ff] border-[#38b6ff] text-white shadow-lg shadow-[#38b6ff]/20"
+                  : "border-white/10 text-white/40 hover:border-white/20 hover:text-white/60"
+              }`}
+            >
+              {g}
             </button>
           ))}
         </div>

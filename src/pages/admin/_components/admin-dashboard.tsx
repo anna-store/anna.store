@@ -84,7 +84,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const [productForm, setProductForm] = useState({
     name: "", brand: "", category: "", price: 0, originalPrice: 0, 
     description: "", images: "", sizes: "", colors: "", tags: "",
-    inStock: true, isNew: true, isFeatured: false, isBestSeller: false
+    inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
+    gender: "Feminino"
   });
 
   // Coupon Form States
@@ -180,14 +181,16 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         inStock: product.inStock,
         isNew: product.isNew || false,
         isFeatured: product.isFeatured || false,
-        isBestSeller: product.isBestSeller || false
+        isBestSeller: product.isBestSeller || false,
+        gender: product.gender || "Feminino"
       });
     } else {
       setEditingProduct(null);
       setProductForm({
         name: "", brand: "", category: "", price: 0, originalPrice: 0,
         description: "", images: "", sizes: "34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44", colors: "Preto, Branco", tags: "",
-        inStock: true, isNew: true, isFeatured: false, isBestSeller: false
+        inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
+        gender: "Feminino"
       });
     }
     setIsProductModalOpen(true);
@@ -560,6 +563,20 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Categoria</Label>
                 <Input required value={productForm.category} onChange={e => setProductForm({...productForm, category: e.target.value})} className="bg-white/5 border-white/10" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] uppercase font-black text-white/40">Público</Label>
+                <Select value={productForm.gender} onValueChange={(v: any) => setProductForm({...productForm, gender: v})}>
+                  <SelectTrigger className="bg-white/5 border-white/10 h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
+                    <SelectItem value="Feminino">Feminino</SelectItem>
+                    <SelectItem value="Masculino">Masculino</SelectItem>
+                    <SelectItem value="Kids">Kids</SelectItem>
+                    <SelectItem value="Unissex">Unissex</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Preço (R$)</Label>

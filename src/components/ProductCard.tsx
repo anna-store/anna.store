@@ -85,6 +85,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                 ? "bg-[#ea3372] text-white"
                 : "bg-white/80 text-gray-600 opacity-0 group-hover:opacity-100 hover:bg-[#ea3372] hover:text-white"
             )}
+            aria-label={isWishlisted ? "Remover dos favoritos" : "Adicionar aos favoritos"}
           >
             <Heart className="h-4 w-4" fill={isWishlisted ? "currentColor" : "none"} />
           </button>
@@ -94,6 +95,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             <Button
               onClick={handleAddToCart}
               className="w-full rounded-none bg-[#0b0b0b] hover:bg-[#ea3372] text-white h-10 text-sm font-semibold cursor-pointer"
+              aria-label={`Adicionar ${product.name} ao carrinho`}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Adicionar ao Carrinho
