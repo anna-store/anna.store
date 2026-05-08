@@ -24,6 +24,7 @@ export const sendResetPasswordEmail = action({
         html: `
           <div style="background-color: #050505; color: #ffffff; font-family: 'Outfit', 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border-radius: 24px; text-align: center;">
             <div style="margin-bottom: 30px;">
+              <img src="https://1.gravatar.com/avatar/450ccf591f7ff7e865f12e74d998ddb5bf7cb1a9abc25fad50c2aa1d0af114c5?s=200" alt="Anna Shoes Logo" style="width: 100px; height: 100px; border-radius: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
               <h1 style="color: #ffffff; font-size: 28px; font-weight: 900; letter-spacing: -0.05em; margin: 0; text-transform: uppercase;">
                 ANNA <span style="color: #ea3372;">SHOES</span>
               </h1>
