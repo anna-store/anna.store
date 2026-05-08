@@ -22,16 +22,37 @@ export const sendResetPasswordEmail = action({
         to: [args.email],
         subject: "Redefinição de Senha - Anna Shoes",
         html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #ea3372;">Anna Shoes</h2>
-            <p>Olá,</p>
-            <p>Recebemos uma solicitação para redefinir a senha da sua conta.</p>
-            <p>Clique no botão abaixo para escolher uma nova senha:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${args.resetLink}" style="background-color: #ea3372; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Redefinir Minha Senha</a>
+          <div style="background-color: #050505; color: #ffffff; font-family: 'Outfit', 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border-radius: 24px; text-align: center;">
+            <div style="margin-bottom: 30px;">
+              <h1 style="color: #ffffff; font-size: 28px; font-weight: 900; letter-spacing: -0.05em; margin: 0; text-transform: uppercase;">
+                ANNA <span style="color: #ea3372;">SHOES</span>
+              </h1>
+              <div style="height: 2px; width: 40px; background-color: #ea3372; margin: 15px auto;"></div>
             </div>
-            <p style="font-size: 12px; color: #666;">Se você não solicitou isso, ignore este e-mail.</p>
-            <p style="font-size: 12px; color: #666;">O link expira em 1 hora.</p>
+            
+            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.02em;">Recuperação de Acesso</h2>
+            
+            <p style="color: #a0a0a0; font-size: 16px; line-height: 1.6; margin-bottom: 30px; padding: 0 20px;">
+              Olá!<br>
+              Recebemos uma solicitação para redefinir a senha da sua conta exclusiva na <strong>Anna Shoes</strong>. Se foi você, clique no botão abaixo para prosseguir.
+            </p>
+            
+            <div style="margin: 40px 0;">
+              <a href="${args.resetLink}" style="background-color: #ea3372; color: #ffffff; padding: 18px 36px; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.2em; display: inline-block; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(234, 51, 114, 0.2);">
+                Redefinir Senha
+              </a>
+            </div>
+            
+            <p style="color: #666666; font-size: 12px; margin-top: 40px; line-height: 1.5;">
+              Se você não solicitou esta alteração, por favor ignore este e-mail.<br>
+              Este link é válido por 1 hora.
+            </p>
+            
+            <div style="border-top: 1px solid #1a1a1a; margin-top: 40px; padding-top: 20px;">
+              <p style="color: #444444; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em;">
+                Anna Shoes &copy; 2026 &bull; Boutique Digital de Luxo
+              </p>
+            </div>
           </div>
         `,
       });
