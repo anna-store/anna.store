@@ -8,7 +8,7 @@ import {
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp,
   Share2, ArrowRight, Settings, Plus, Search, Filter,
   ChevronDown, CheckCircle2, XCircle, Clock, Trash2, Lock,
-  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2
+  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -360,11 +360,12 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       {/* Componente de Recibo para Admin (Ordem de Entrega) */}
       <Receipt order={printingOrder} type="admin" />
 
-      <div className="flex min-h-screen bg-[#050505] text-white relative overflow-hidden font-sans print:hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ea3372]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="flex min-h-screen bg-[#020202] text-white relative overflow-hidden font-sans print:hidden">
+        {/* LUZES ATMOSFÉRICAS REFINADAS */}
+        <div className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-[#ea3372]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[#38b6ff]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '3s' }} />
 
-        {/* Sidebar Overlay (Mobile Only) */}
+        {/* Sidebar Sidebar Overlay (Mobile Only) */}
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div
@@ -372,24 +373,26 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSidebarOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[40] lg:hidden"
+              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[40] lg:hidden"
             />
           )}
         </AnimatePresence>
 
-        {/* Sidebar */}
+        {/* Sidebar com Glassmorphism */}
         <aside className={cn(
-          "fixed inset-y-0 left-0 w-72 border-r border-white/5 bg-black/80 backdrop-blur-3xl p-6 flex flex-col gap-8 z-[50] transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:bg-black/40",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed inset-y-0 left-0 w-72 border-r border-white/[0.03] bg-black/40 backdrop-blur-3xl p-6 flex flex-col gap-10 z-[50] transition-all duration-500 lg:relative lg:translate-x-0 lg:w-64",
+          isSidebarOpen ? "translate-x-0 shadow-2xl shadow-black" : "-translate-x-full"
         )}>
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 px-2 group">
-              <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] flex items-center justify-center shadow-lg shadow-[#ea3372]/20 group-hover:scale-105 transition-transform">
-                <span className="font-black text-white italic text-xl">A</span>
+            <Link to="/" className="flex items-center gap-3 px-1 group">
+              <div className="size-11 rounded-2xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] p-[1.5px] group-hover:scale-110 transition-all duration-700 shadow-lg shadow-[#ea3372]/10">
+                <div className="size-full bg-black rounded-2xl flex items-center justify-center">
+                  <span className="font-black text-white italic text-2xl tracking-tighter">A</span>
+                </div>
               </div>
               <div>
-                <p className="font-black italic text-lg leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> SHOES</span></p>
-                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30">Admin Core</p>
+                <p className="font-black italic text-xl leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> CORE</span></p>
+                <p className="text-[7px] font-black uppercase tracking-[0.4em] text-white/20 mt-1">Management Hub</p>
               </div>
             </Link>
             <Button variant="ghost" size="icon" className="lg:hidden text-white/40" onClick={() => setIsSidebarOpen(false)}>
@@ -397,7 +400,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             </Button>
           </div>
 
-          <nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-2">
             {NAV.map((item) => (
               <button
                 key={item.id}
@@ -406,43 +409,54 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   setIsSidebarOpen(false);
                 }}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-4 lg:py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                  "group flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden",
                   activeTab === item.id
-                    ? "bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
-                    : "text-white/40 hover:bg-white/5 hover:text-white/60"
+                    ? "bg-gradient-to-r from-[#ea3372] to-[#ea3372]/80 text-white shadow-xl shadow-[#ea3372]/20"
+                    : "text-white/30 hover:bg-white/5 hover:text-white"
                 )}
               >
-                <div className={cn("transition-colors", activeTab === item.id ? "text-white" : "text-white/40")}>
+                <div className={cn("transition-all duration-300 group-hover:scale-125 group-hover:rotate-6", activeTab === item.id ? "text-white" : "text-white/30")}>
                   {item.icon}
                 </div>
                 {item.label}
+                {activeTab === item.id && (
+                  <motion.div layoutId="activeInd" className="absolute right-3 w-1.5 h-1.5 bg-white rounded-full shadow-lg shadow-white/50" />
+                )}
               </button>
             ))}
           </nav>
 
-          <div className="mt-auto">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-2">Sessão</p>
-              <p className="text-[9px] font-bold text-white/40 truncate">{callerId}</p>
+          <div className="mt-auto space-y-4">
+            <div className="p-5 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.05] group hover:border-[#ea3372]/20 transition-colors duration-500">
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/10 mb-3">Administrador</p>
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-full bg-[#ea3372]/20 border border-[#ea3372]/30 flex items-center justify-center font-black italic text-[#ea3372] text-[10px]">
+                  AS
+                </div>
+                <p className="text-[10px] font-bold text-white/40 truncate">{callerId.slice(0, 12)}...</p>
+              </div>
             </div>
           </div>
         </aside>
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto relative z-10 flex flex-col">
-          <header className="h-20 border-b border-white/5 px-4 lg:px-8 flex items-center justify-between bg-black/20 backdrop-blur-md sticky top-0 z-30">
-            <div className="flex items-center gap-4">
+          <header className="h-24 border-b border-white/[0.03] px-6 lg:px-10 flex items-center justify-between bg-black/20 backdrop-blur-xl sticky top-0 z-30">
+            <div className="flex items-center gap-5">
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-white/60"
+                className="lg:hidden text-white/60 hover:bg-white/5"
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <LayoutDashboard className="size-6" />
               </Button>
               <div>
-                <h2 className="hidden lg:block text-sm font-black uppercase tracking-[0.2em] text-white/40">Dashboard</h2>
-                <p className="text-lg lg:text-xl font-black italic">{NAV.find(n => n.id === activeTab)?.label}</p>
+                <h2 className="hidden lg:block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-1">Central de Comando</h2>
+                <div className="flex items-center gap-3">
+                  <div className="size-1.5 rounded-full bg-[#ea3372] animate-pulse shadow-lg shadow-[#ea3372]/50" />
+                  <p className="text-xl lg:text-2xl font-black italic tracking-tighter">{NAV.find(n => n.id === activeTab)?.label}</p>
+                </div>
               </div>
             </div>
 
@@ -450,31 +464,29 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               {!notificationsEnabled ? (
                 <Button
                   onClick={requestNotificationPermission}
-                  className="bg-[#ea3372] hover:bg-[#c9295f] text-white h-10 px-4 rounded-xl gap-2 text-[10px] font-black uppercase shadow-lg shadow-[#ea3372]/30"
+                  className="bg-[#ea3372] hover:bg-[#c9295f] text-white h-11 px-5 rounded-2xl gap-3 text-[10px] font-black uppercase shadow-xl shadow-[#ea3372]/20 border border-white/10 transition-all active:scale-95"
                 >
-                  <Star className="size-3 animate-pulse" /> Ativar Alertas de Venda
+                  <Star className="size-3.5 animate-pulse" /> Ativar Alertas
                 </Button>
               ) : (
                 <Button
                   onClick={() => {
                     const audio = new Audio(NOTIFICATION_SOUND);
                     audio.play().catch(() => toast.error("Permita o áudio no navegador"));
-                    toast.success("Som de teste disparado! 💰");
+                    toast.success("Sistema de Áudio Operacional! 💰", {
+                      icon: "🔊",
+                      style: { background: "#0b0b0b", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }
+                    });
                   }}
                   variant="ghost"
-                  className="text-white/30 hover:text-[#38b6ff] h-10 px-3 rounded-xl gap-2 text-[9px] font-black uppercase transition-colors"
+                  className="text-white/20 hover:text-[#38b6ff] hover:bg-white/5 h-11 px-4 rounded-2xl gap-3 text-[9px] font-black uppercase transition-all"
                 >
-                  <TrendingUp className="size-3" /> Testar Som
+                  <TrendingUp className="size-3.5" /> Testar Terminal
                 </Button>
               )}
               {activeTab === "products" && (
-                <Button onClick={() => openProductModal()} className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold h-10 px-4 lg:px-6 rounded-xl gap-2 shadow-lg shadow-[#ea3372]/20">
-                  <Plus className="size-4" /> <span className="hidden sm:inline">Novo Produto</span>
-                </Button>
-              )}
-              {activeTab === "coupons" && (
-                <Button onClick={() => setIsCouponModalOpen(true)} className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold h-10 px-4 lg:px-6 rounded-xl gap-2 shadow-lg shadow-[#38b6ff]/20">
-                  <Plus className="size-4" /> <span className="hidden sm:inline">Novo Cupom</span>
+                <Button onClick={() => openProductModal()} className="bg-white text-black hover:bg-white/90 font-black h-11 px-5 rounded-2xl gap-2 shadow-xl shadow-white/5 transition-all active:scale-95">
+                  <Plus className="size-4" /> <span className="hidden sm:inline text-[10px] uppercase tracking-widest">Novo Item</span>
                 </Button>
               )}
             </div>
@@ -493,15 +505,18 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {[
-                        { label: "Vendas Totais", value: fmt(stats.totalRevenue), icon: ShoppingBag, color: "text-[#ea3372]" },
-                        { label: "Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#38b6ff]" },
-                        { label: "Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-purple-500" },
-                        { label: "Média p/ Pedido", value: fmt(avgValue), icon: TrendingUp, color: "text-green-500" },
+                        { label: "Receita Bruta", value: fmt(stats.totalRevenue), icon: ShoppingBag, color: "text-[#ea3372]", bg: "bg-[#ea3372]/5" },
+                        { label: "Volume de Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#38b6ff]", bg: "bg-[#38b6ff]/5" },
+                        { label: "Base de Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-purple-500", bg: "bg-purple-500/5" },
+                        { label: "Ticket Médio", value: fmt(avgValue), icon: TrendingUp, color: "text-green-500", bg: "bg-green-500/5" },
                       ].map((s, i) => (
-                        <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-xl group hover:border-[#ea3372]/30 transition-all">
-                          <s.icon className={cn("size-6 mb-4", s.color)} />
-                          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">{s.label}</p>
-                          <p className="text-2xl font-black text-white italic">{s.value}</p>
+                        <div key={i} className="p-8 rounded-[32px] bg-white/[0.015] border border-white/[0.03] backdrop-blur-3xl group hover:border-white/10 transition-all duration-500 relative overflow-hidden">
+                          <div className={cn("absolute top-0 right-0 size-24 blur-[60px] opacity-20 transition-opacity group-hover:opacity-40", s.bg)} />
+                          <div className={cn("size-12 rounded-2xl flex items-center justify-center mb-6 border border-white/[0.05] transition-transform duration-500 group-hover:scale-110", s.bg)}>
+                            <s.icon className={cn("size-6", s.color)} />
+                          </div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-2">{s.label}</p>
+                          <p className="text-3xl font-black text-white italic tracking-tighter">{s.value}</p>
                         </div>
                       ))}
                     </div>

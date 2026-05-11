@@ -54,8 +54,8 @@ export default function CarrinhoPage() {
   const subtotal = getTotal();
   const discount = getDiscount();
   const isFreeShipping = appliedCoupon?.freeShipping === true;
-  const shipping = isFreeShipping ? 0 : 19.90; 
-  const total = getFinalTotal() + shipping;
+  const shipping = isFreeShipping ? 0 : null; 
+  const total = getFinalTotal() + (shipping ?? 0);
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
@@ -270,8 +270,8 @@ export default function CarrinhoPage() {
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Frete</span>
-                <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>
-                  {shipping === 0 ? "Grátis" : formatPrice(shipping)}
+                <span className={shipping === 0 ? "text-green-600 font-medium" : "text-muted-foreground italic text-xs"}>
+                  {shipping === 0 ? "Grátis" : shipping === null ? "A calcular" : formatPrice(shipping)}
                 </span>
               </div>
             </div>

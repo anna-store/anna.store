@@ -53,6 +53,16 @@ export const getOrderById = query({
 });
 
 /**
+ * Busca um pedido específico (Interno).
+ */
+export const internalGetOrderById = query({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.orderId);
+  },
+});
+
+/**
  * Cria um novo pedido (Mutação Interna).
  * Chamada pelo backend durante o checkout.
  */

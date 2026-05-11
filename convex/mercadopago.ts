@@ -63,18 +63,7 @@ export const createPreference = action({
         currency_id: "BRL",
         picture_url: item.image,
       }));
-
-      // Adiciona Frete como item se houver
-      if (args.shipping > 0) {
-        mpItems.push({
-          title: "Frete",
-          unit_price: Number(args.shipping.toFixed(2)),
-          quantity: 1,
-          currency_id: "BRL",
-          picture_url: "https://cdn-icons-png.flaticon.com/512/709/709790.png",
-        });
-      }
-
+      
       // Adiciona Desconto como item negativo se houver
       if (args.discount > 0) {
         mpItems.push({
@@ -86,21 +75,20 @@ export const createPreference = action({
         });
       }
 
-      console.log("MP Payload back_urls:", {
-        success: `${args.appUrl}/checkout/retorno`,
-        failure: `${args.appUrl}/checkout/retorno`,
-        pending: `${args.appUrl}/checkout/retorno`,
-      });
-
       const siteUrl = process.env.VITE_CONVEX_SITE_URL || "https://vivid-dotterel-427.convex.site";
 
-      const payload = {
+      const payload: any = {
         items: mpItems,
+        shipments: {
+          cost: Number(args.shipping.toFixed(2)),
+          mode: "not_specified",
+        },
         back_urls: {
           success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
           failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
           pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
         },
+        auto_return: "approved",
         notification_url: `${siteUrl}/mp-webhook`,
         statement_descriptor: "ANNA SHOES",
         external_reference: orderId,
@@ -171,8 +159,12 @@ export const createPayment = action({
 
     const siteUrl = process.env.VITE_CONVEX_SITE_URL || "https://vivid-dotterel-427.convex.site";
 
-    const payload = {
+    const payload: any = {
       items: mpItems,
+      shipments: {
+        cost: 0, // No createPayment padrão, o frete já costuma estar embutido ou deve ser passado
+        mode: "not_specified",
+      },
       back_urls: {
         success: `${args.appUrl}/checkout/retorno?status=success&orderId=${args.orderId}`,
         failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${args.orderId}`,
@@ -258,6 +250,12 @@ export const handleWebhook = internalAction({
             mpPaymentId: String(paymentId),
           });
           console.log(`Pedido ${orderId} atualizado para ${newStatus} via Webhook.`);
+
+          // 4. Se o pagamento foi aprovado, dispara os e-mails de confirmação
+          if (newStatus === "confirmed") {
+            await ctx.runAction(internal.emails.sendOrderConfirmation, { orderId });
+            console.log(`Disparo de e-mails iniciado para pedido ${orderId}`);
+          }
         }
       }
     } catch (error) {

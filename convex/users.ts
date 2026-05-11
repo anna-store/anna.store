@@ -333,3 +333,13 @@ export const updatePassword = mutation({
     return { success: true };
   },
 });
+
+/**
+ * Busca um usuário por ID (Interno).
+ */
+export const internalGetUserById = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});

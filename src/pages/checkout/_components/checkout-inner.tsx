@@ -56,8 +56,8 @@ export default function CheckoutInner() {
   const subtotal = getTotal();
   const discount = getDiscount();
   const hasShipping = shipping !== null;
-  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : (shipping ?? 0);
-  const total = getFinalTotal() + effectiveShipping;
+  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shipping;
+  const total = getFinalTotal() + (effectiveShipping ?? 0);
 
   const {
     register,
