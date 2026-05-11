@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query, internalMutation, internalQuery, action } from "./_generated/server";
 import { internal } from "./_generated/api";
+// AnnaSt Admin Service - Sincronização Forçada
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel.d.ts";
 

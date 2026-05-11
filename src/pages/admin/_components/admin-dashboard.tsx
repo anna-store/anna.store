@@ -115,8 +115,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const updateStatus = useAction(api.admin.updateOrderStatus);
   const updateTracking = useAction(api.admin.updateOrderTracking);
   const toggleAdmin = useMutation(api.admin.toggleAdmin);
-  const createProduct = useMutation(api.admin.createProduct);
-  const updateProduct = useMutation(api.admin.updateProduct);
+  const createProductMutation = useMutation(api.products.createProduct);
+  const updateProductMutation = useMutation(api.products.updateProduct);
   const deleteProduct = useMutation(api.admin.deleteProduct);
   const updateExchange = useMutation(api.admin.updateExchangeStatus);
   const deleteReview = useMutation(api.admin.deleteReview);
@@ -283,10 +283,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
     try {
       if (editingProduct) {
-        await updateProduct({ callerId, productId: editingProduct._id, product: formattedProduct });
+        await updateProductMutation({ productId: editingProduct._id, product: formattedProduct });
         toast.success("Produto atualizado!");
       } else {
-        await createProduct({ callerId, product: formattedProduct });
+        await createProductMutation({ product: formattedProduct });
         toast.success("Produto criado!");
       }
       setIsProductModalOpen(false);

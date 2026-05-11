@@ -28,6 +28,19 @@ export const getById = query({
   },
 });
 
+/**
+ * Atualiza um produto (Versão de Emergência para Sincronização)
+ */
+export const updateProduct = mutation({
+  args: {
+    productId: v.id("products"),
+    product: v.any(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.patch(args.productId, args.product);
+  },
+});
+
 export const getFeatured = query({
   args: {},
   handler: async (ctx) => {
@@ -122,5 +135,17 @@ export const createReview = mutation({
       });
     }
     return reviewId;
+  },
+});
+
+/**
+ * Cria um produto (Versão de Emergência para Sincronização)
+ */
+export const createProduct = mutation({
+  args: {
+    product: v.any(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("products", args.product);
   },
 });
