@@ -205,38 +205,54 @@ export const handleWebhook = internalAction({
   args: { body: v.string() },
   handler: async (ctx, args) => {
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
-    if (!accessToken) return;
+    if (!accessToken) {
+      console.error("MERCADOPAGO_ACCESS_TOKEN não configurado.");
+      return;
+    }
 
     try {
       const payload = JSON.parse(args.body);
-      console.log("MP Webhook Payload:", payload);
+      console.log("MP Webhook Recebido:", payload);
 
       // Verificamos se a notificação é de um pagamento
-      if (payload.type === "payment" || payload.action === "payment.created" || payload.action === "payment.updated") {
+      if (payload.type === "payment" || payload.action?.includes("payment")) {
         const paymentId = payload.data?.id || payload.id;
         if (!paymentId) return;
 
-        // 1. Consulta os detalhes do pagamento no MP
+        // 1. Consulta os detalhes reais do pagamento no MP (Segurança)
         const response: Response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          console.error(`Erro ao buscar pagamento ${paymentId}`);
+          return;
+        }
+        
         const payment: any = await response.json();
-
         const orderId: Id<"orders"> = payment.external_reference as Id<"orders">;
         const status: string = payment.status;
 
         console.log(`Pagamento ${paymentId} para pedido ${orderId}: status ${status}`);
 
-        // 2. Se aprovado, atualiza o pedido para "confirmed"
-        if (status === "approved" && orderId) {
+        // 2. Mapeamento de status
+        let newStatus: "confirmed" | "cancelled" | "pending" | null = null;
+        if (status === "approved") {
+          newStatus = "confirmed";
+        } else if (["rejected", "cancelled", "refunded", "charged_back"].includes(status)) {
+          newStatus = "cancelled";
+        } else if (["pending", "in_process"].includes(status)) {
+          newStatus = "pending";
+        }
+
+        // 3. Atualiza o banco se necessário
+        if (newStatus && orderId) {
           await ctx.runMutation(internal.orders.internalUpdateStatus, {
             orderId,
-            status: "confirmed",
+            status: newStatus,
             mpPaymentId: String(paymentId),
           });
-          console.log(`Pedido ${orderId} CONFIRMADO via Webhook.`);
+          console.log(`Pedido ${orderId} atualizado para ${newStatus} via Webhook.`);
         }
       }
     } catch (error) {

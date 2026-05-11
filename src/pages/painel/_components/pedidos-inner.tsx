@@ -213,27 +213,15 @@ export default function PedidosInner() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Ações para pedidos pendentes */}
+                      {/* Status de aguardando para pedidos pendentes */}
                       {order.status === "pending" && (
-                        <>
-                          <Button
-                            size="sm"
-                            className="h-8 text-[10px] gap-1.5 font-black bg-[#ea3372] hover:bg-[#c9295f] text-white uppercase tracking-widest px-3"
-                            onClick={(e) => { e.stopPropagation(); handlePay(order); }}
-                            disabled={isPaying === order._id}
-                          >
-                            <CreditCard className="h-3 w-3" />
-                            {isPaying === order._id ? "..." : "Pagar"}
-                          </Button>
-                          <Button
-                            variant="ghost" size="icon"
-                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(order._id); }}
-                            disabled={isDeleting === order._id}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </>
+                        <div className="flex flex-col items-end gap-1 px-2">
+                          <div className="flex items-center gap-1.5 text-[10px] font-black text-yellow-600 uppercase tracking-widest bg-yellow-500/10 px-3 py-1.5 rounded-full border border-yellow-500/20">
+                            <Clock className="h-3 w-3 animate-pulse" />
+                            Confirmando Pagamento
+                          </div>
+                          <p className="text-[8px] text-muted-foreground italic font-medium">A confirmação pode levar até 24h</p>
+                        </div>
                       )}
 
                       {/* Recibo apenas para pedidos pagos */}
@@ -248,10 +236,13 @@ export default function PedidosInner() {
                         </Button>
                       )}
 
-                      <Badge variant="outline" className={`gap-1.5 text-[11px] ${s.color}`}>
-                        {s.icon}
-                        {s.label}
-                      </Badge>
+                      {/* Badge de status (oculto se estiver pendente, pois já mostramos o bloco de confirmação) */}
+                      {order.status !== "pending" && (
+                        <Badge variant="outline" className={`gap-1.5 text-[11px] ${s.color}`}>
+                          {s.icon}
+                          {s.label}
+                        </Badge>
+                      )}
                       {isExpanded
                         ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
                         : <ChevronDown className="h-4 w-4 text-muted-foreground" />}

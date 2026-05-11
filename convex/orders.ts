@@ -115,9 +115,19 @@ export const internalUpdateStatus = internalMutation({
     mpPaymentId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const patch: any = { status: args.status };
-    if (args.mpPaymentId) patch.mpPaymentId = args.mpPaymentId;
-    await ctx.db.patch(args.orderId, patch);
+    const order = await ctx.db.get(args.orderId);
+    if (!order) return;
+
+    // Evita retroceder status (ex: não cancela algo que já foi enviado)
+    if (order.status === "shipped" || order.status === "delivered") {
+      console.log(`Tentativa de alterar status de pedido já ${order.status} ignorada.`);
+      return;
+    }
+
+    await ctx.db.patch(args.orderId, { 
+      status: args.status,
+      mpPaymentId: args.mpPaymentId ?? order.mpPaymentId
+    });
   },
 });
 

@@ -447,13 +447,24 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             </div>
 
             <div className="flex items-center gap-2 lg:gap-4">
-              {!notificationsEnabled && (
+              {!notificationsEnabled ? (
                 <Button
                   onClick={requestNotificationPermission}
-                  variant="outline"
-                  className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 h-10 px-3 lg:px-4 rounded-xl gap-2 text-[10px] font-black uppercase"
+                  className="bg-[#ea3372] hover:bg-[#c9295f] text-white h-10 px-4 rounded-xl gap-2 text-[10px] font-black uppercase shadow-lg shadow-[#ea3372]/30"
                 >
-                  <TrendingUp className="size-3 hidden sm:block" /> {activeTab === 'overview' ? 'Ativar Alertas' : 'Alertas'}
+                  <Star className="size-3 animate-pulse" /> Ativar Alertas de Venda
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    const audio = new Audio(NOTIFICATION_SOUND);
+                    audio.play().catch(() => toast.error("Permita o áudio no navegador"));
+                    toast.success("Som de teste disparado! 💰");
+                  }}
+                  variant="ghost"
+                  className="text-white/30 hover:text-[#38b6ff] h-10 px-3 rounded-xl gap-2 text-[9px] font-black uppercase transition-colors"
+                >
+                  <TrendingUp className="size-3" /> Testar Som
                 </Button>
               )}
               {activeTab === "products" && (

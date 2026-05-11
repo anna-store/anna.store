@@ -541,6 +541,30 @@ export default function PainelInner() {
         </CardContent>
       </Card>
 
+      {/* Support Card */}
+      <Card className="bg-gradient-to-br from-[#ea3372]/5 to-transparent border-[#ea3372]/10 shadow-xl shadow-[#ea3372]/5">
+        <CardContent className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-5 text-center sm:text-left">
+            <div className="size-14 rounded-2xl bg-[#ea3372]/10 flex items-center justify-center border border-[#ea3372]/20 shadow-inner">
+              <MessageSquareText className="h-7 w-7 text-[#ea3372]" />
+            </div>
+            <div>
+              <h3 className="font-black italic uppercase tracking-tight text-xl leading-tight">Dúvidas com seu pedido?</h3>
+              <p className="text-xs text-muted-foreground font-medium mt-1">Nossa equipe de suporte está online para te atender agora.</p>
+            </div>
+          </div>
+          <Button
+            asChild
+            className="bg-[#25d366] hover:bg-[#128c7e] text-white font-black px-8 py-6 rounded-2xl shadow-xl shadow-[#25d366]/20 gap-3 w-full sm:w-auto transition-all hover:scale-105 active:scale-95"
+          >
+            <a href="https://wa.me/5531998523315" target="_blank" rel="noopener noreferrer">
+              <MessageSquareText className="h-5 w-5" />
+              Falar no WhatsApp
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* ═══ MODAL DE TROCA ═══ */}
       {exchangeOrderId && (() => {
         const order = orders?.find((o) => o._id === exchangeOrderId);

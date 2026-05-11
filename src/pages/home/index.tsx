@@ -57,30 +57,36 @@ export default function Index() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#050505]">
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#050505] z-10">
         {/* Cinematic Background with Parallax effect simulation */}
         <div className="absolute inset-0 z-0">
           <motion.div
             initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.7 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            animate={{
+              scale: [1, 1.05, 1], // Soft Ken Burns effect
+              opacity: 1
+            }}
+            transition={{
+              scale: { duration: 20, repeat: Infinity, ease: "linear" },
+              opacity: { duration: 1.5, ease: "easeOut" }
+            }}
             className="w-full h-full"
           >
             <img
-              src="/hero-anna-shoes.png"
-              alt="Anna Shoes Concept"
-              className="w-full h-full object-cover brightness-[0.7] contrast-[1.2] object-center scale-105"
+              src="/luxury_fashion_hero_bg_1778080704577.png"
+              alt="Luxury Sneaker Concept"
+              className="w-full h-full object-cover brightness-[0.6] contrast-[1.1] object-center"
             />
           </motion.div>
 
           {/* Advanced Atmosphere Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/40 to-transparent z-10" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay z-10 pointer-events-none" />
 
-          {/* Animated Light Rays */}
-          <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ea3372]/5 blur-[180px] rounded-full animate-pulse pointer-events-none" />
-          <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/5 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
+          {/* Animated Light Rays - Harmonized with sneaker store neons */}
+          <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ea3372]/10 blur-[180px] rounded-full animate-pulse pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/15 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
         </div>
 
         {/* Side Branding - Nova Coleção */}
@@ -222,7 +228,7 @@ export default function Index() {
       <section className="relative z-30 -mt-10 overflow-hidden">
         {/* Tier: Benefits Marquee (Pink) */}
         <div className="bg-[#ea3372] py-4 flex whitespace-nowrap overflow-hidden shadow-[0_0_50px_rgba(234,51,114,0.3)] border-y border-white/10">
-          <motion.div 
+          <motion.div
             animate={{ x: [-1500, 0] }}
             transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
             className="flex items-center gap-20 pr-20"
@@ -232,7 +238,7 @@ export default function Index() {
                 <div className="flex items-center gap-2"><Truck className="size-3" /> Entrega para todo Brasil</div>
                 <div className="flex items-center gap-2"><Shield className="size-3" /> Compra 100% segura</div>
                 <div className="flex items-center gap-2"><RotateCcw className="size-3" /> 30 dias para troca</div>
-                <div className="flex items-center gap-2"><Star className="size-3" /> Produtos originais</div>
+                <div className="flex items-center gap-2"><Star className="size-3" /> Produtos de primeira linha</div>
               </div>
             ))}
           </motion.div>
