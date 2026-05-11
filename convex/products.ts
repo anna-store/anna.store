@@ -1,5 +1,18 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
+
+/**
+ * Busca avaliações de um produto (Forçando Sincronização)
+ */
+export const checkReviews = query({
+  args: { productId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("reviews")
+      .withIndex("by_product", (q) => q.eq("productId", args.productId))
+      .collect();
+  },
+});
 
 export const getAll = query({
   args: {},
@@ -55,5 +68,59 @@ export const getByCategory = query({
       .query("products")
       .withIndex("by_category", (q) => q.eq("category", args.category))
       .collect();
+  },
+});
+
+/**
+ * Busca todas as avaliações de um produto.
+ */
+export const checkReviews = query({
+  args: { productId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("reviews")
+      .withIndex("by_product", (q) => q.eq("productId", args.productId))
+      .collect();
+  },
+});
+
+/**
+ * Cria uma nova avaliação e atualiza o produto.
+ */
+export const createReview = mutation({
+  args: {
+    productId: v.id("products"),
+    userId: v.id("users"),
+    rating: v.number(),
+    comment: v.string(),
+    userName: v.string(),
+    userAvatar: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const reviewId = await ctx.db.insert("reviews", {
+      productId: args.productId,
+      userId: args.userId,
+      orderId: "verified_manual" as any,
+      rating: args.rating,
+      comment: args.comment,
+      userName: args.userName,
+      userAvatar: args.userAvatar,
+      createdAt: new Date().toISOString(),
+    });
+
+    const product = await ctx.db.get(args.productId);
+    if (product) {
+      const all = await ctx.db
+        .query("reviews")
+        .withIndex("by_product", (q) => q.eq("productId", args.productId))
+        .collect();
+      
+      const avg = all.reduce((acc, r) => acc + r.rating, 0) / all.length;
+      await ctx.db.patch(product._id, {
+        rating: Number(avg.toFixed(1)),
+        reviews: all.length
+      });
+    }
+    return reviewId;
   },
 });

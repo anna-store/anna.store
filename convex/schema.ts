@@ -115,7 +115,7 @@ export default defineSchema({
     price: v.number(),
     originalPrice: v.optional(v.number()),
     images: v.array(v.string()),
-    description: v.string(),
+    description: v.optional(v.string()),
     sizes: v.array(v.string()),
     colors: v.array(v.string()),
     rating: v.number(),

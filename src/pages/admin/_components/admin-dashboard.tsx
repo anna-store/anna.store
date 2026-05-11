@@ -736,8 +736,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               </div>
             </div>
             <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Descrição</Label>
-              <Textarea required value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-white/5 border-white/10 min-h-24" />
+              <Label className="text-[10px] uppercase font-black text-white/40">Descrição <span className="text-[8px] opacity-50 lowercase">(Opcional)</span></Label>
+              <Textarea value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-white/5 border-white/10 min-h-24" />
             </div>
             <div className="space-y-3">
               <Label className="text-[10px] uppercase font-black text-white/40">Imagens do Produto</Label>

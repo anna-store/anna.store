@@ -340,6 +340,8 @@ export const getAllProducts = query({
   },
 });
 
+
+
 export const createProduct = mutation({
   args: {
     callerId: v.optional(v.id("users")),
@@ -350,7 +352,7 @@ export const createProduct = mutation({
       price: v.number(),
       originalPrice: v.optional(v.number()),
       images: v.array(v.string()),
-      description: v.string(),
+      description: v.optional(v.string()),
       sizes: v.array(v.string()),
       colors: v.array(v.string()),
       rating: v.number(),
@@ -380,7 +382,7 @@ export const updateProduct = mutation({
       price: v.number(),
       originalPrice: v.optional(v.number()),
       images: v.array(v.string()),
-      description: v.string(),
+      description: v.optional(v.string()),
       sizes: v.array(v.string()),
       colors: v.array(v.string()),
       rating: v.number(),

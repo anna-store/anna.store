@@ -22,6 +22,7 @@ import ProductCard from "@/components/ProductCard.tsx";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
+import SizeGuide from "@/components/SizeGuide.tsx";
 import {
   formatPrice,
   getDiscount,
@@ -30,23 +31,23 @@ import {
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { useWishlistStore } from "@/hooks/use-wishlist.ts";
 
-const FAKE_REVIEWS = [
-  { name: "Mariana S.", rating: 5, date: "15/04/2025", comment: "Produto incrível! Chegou rápido e a qualidade é excelente. Muito feliz com a compra.", size: "38" },
-  { name: "Lucas R.", rating: 4, date: "02/04/2025", comment: "Ótimo custo-benefício. O material é resistente e confortável para o dia a dia.", size: "42" },
-  { name: "Fernanda M.", rating: 5, date: "28/03/2025", comment: "Amei! Exatamente como na foto. Já é o terceiro tênis que compro aqui.", size: "36" },
-];
+const FAKE_REVIEWS: any[] = [];
 
 export default function ProdutoPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const product = useQuery(api.products.getById, { productId: id as Id<"products"> });
   const allProducts = useQuery(api.products.getAll) || [];
+  
+  // Busca desativada temporariamente para corrigir erro de sincronização
+  const reviews: any[] = [];
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   const { addItem } = useCartStore();
   const { toggle, has } = useWishlistStore();
@@ -257,7 +258,12 @@ export default function ProdutoPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold">Tamanho</span>
-              <button className="text-xs text-[#38b6ff] hover:underline cursor-pointer">Guia de tamanhos</button>
+              <button 
+                onClick={() => setIsSizeGuideOpen(true)}
+                className="text-xs text-[#38b6ff] hover:underline cursor-pointer font-bold uppercase tracking-tighter"
+              >
+                Guia de tamanhos
+              </button>
             </div>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((size) => (
@@ -367,6 +373,12 @@ export default function ProdutoPage() {
           </div>
         </div>
       )}
+
+      {/* Size Guide Modal */}
+      <SizeGuide 
+        isOpen={isSizeGuideOpen} 
+        onOpenChange={setIsSizeGuideOpen} 
+      />
     </div>
   );
 }
@@ -427,49 +439,86 @@ function ProductTabs({ product }: { product: any }) {
           {tab === "reviews" && (
             <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
               {/* Summary */}
-              <div className="flex items-center gap-6 bg-muted rounded-xl p-4 mb-6">
+              <div className="flex flex-col md:flex-row items-center gap-8 bg-muted/50 border border-border/50 rounded-2xl p-8 mb-8">
                 <div className="text-center">
-                  <p className="text-4xl font-black text-foreground">{product.rating}</p>
-                  <div className="flex justify-center my-1">
+                  <p className="text-5xl font-black text-foreground italic tracking-tighter">{product.rating}</p>
+                  <div className="flex justify-center my-2">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4" fill={i < Math.floor(product.rating) ? "#ea3372" : "none"} stroke={i < Math.floor(product.rating) ? "#ea3372" : "#ccc"} />
+                      <Star key={i} className="h-5 w-5" fill={i < Math.floor(product.rating) ? "#ea3372" : "none"} stroke={i < Math.floor(product.rating) ? "#ea3372" : "#ccc"} />
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground">{product.reviews} avaliações</p>
+                  <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{reviews.length} avaliações</p>
                 </div>
-                <Separator orientation="vertical" className="h-16" />
-                <div className="flex-1 space-y-1">
+                
+                <Separator orientation="vertical" className="hidden md:block h-20" />
+                
+                <div className="flex-1 w-full space-y-2">
                   {[5, 4, 3, 2, 1].map((star) => {
-                    const pct = star === 5 ? 72 : star === 4 ? 18 : star === 3 ? 7 : star === 2 ? 2 : 1;
+                    const count = reviews.filter(r => Math.floor(r.rating) === star).length;
+                    const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
                     return (
-                      <div key={star} className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground w-4">{star}</span>
-                        <div className="flex-1 h-2 bg-border rounded-full overflow-hidden">
+                      <div key={star} className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-muted-foreground w-4">{star}</span>
+                        <div className="flex-1 h-2.5 bg-border/30 rounded-full overflow-hidden">
                           <div className="h-full bg-[#ea3372] rounded-full" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-xs text-muted-foreground w-6">{pct}%</span>
+                        <span className="text-[10px] font-black text-muted-foreground w-8">{Math.round(pct)}%</span>
                       </div>
                     );
                   })}
                 </div>
+
+                <div className="shrink-0 w-full md:w-auto">
+                   <Button 
+                    className="w-full bg-[#0b0b0b] hover:bg-[#111] text-white font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl border border-white/5"
+                    onClick={() => toast.info("Funcionalidade de avaliação real em breve!", { description: "Estamos validando as compras para permitir avaliações verificadas." })}
+                   >
+                     Escrever Avaliação
+                   </Button>
+                </div>
               </div>
 
-              {FAKE_REVIEWS.map((r, i) => (
-                <div key={i} className="border border-border rounded-xl p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <p className="font-semibold text-sm">{r.name}</p>
-                      <p className="text-xs text-muted-foreground">Tamanho: {r.size} • {r.date}</p>
+              <div className="grid gap-4">
+                {reviews.length > 0 ? (
+                  reviews.map((r, i) => (
+                    <div key={i} className="group bg-muted/30 border border-border/40 hover:border-[#ea3372]/30 rounded-2xl p-6 transition-all">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="size-10 rounded-full bg-gradient-to-br from-[#ea3372] to-[#38b6ff] p-[1px]">
+                            <div className="size-full bg-muted rounded-full flex items-center justify-center font-black text-[10px]">
+                              {r.name.charAt(0)}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-bold text-sm text-foreground">{r.name}</p>
+                              {r.verified && (
+                                <Badge className="bg-green-500/10 text-green-500 text-[8px] font-black uppercase px-2 py-0 border-0 flex items-center gap-1">
+                                  <CheckCircle className="size-2" /> Compra Verificada
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-muted-foreground uppercase font-medium tracking-wider">{r.date}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: 5 }).map((_, j) => (
+                            <Star 
+                              key={j} 
+                              className={cn("h-3 w-3", j < r.rating ? "fill-[#ea3372] text-[#ea3372]" : "text-border")} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed italic">"{r.comment}"</p>
                     </div>
-                    <div className="flex">
-                      {Array.from({ length: r.rating }).map((_, j) => (
-                        <Star key={j} className="h-3 w-3 fill-[#ea3372] text-[#ea3372]" />
-                      ))}
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 bg-muted/20 rounded-2xl border border-dashed border-border">
+                    <p className="text-sm text-muted-foreground">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">{r.comment}</p>
-                </div>
-              ))}
+                )}
+              </div>
             </motion.div>
           )}
           {tab === "shipping" && (
