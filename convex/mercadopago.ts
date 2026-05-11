@@ -92,6 +92,8 @@ export const createPreference = action({
         pending: `${args.appUrl}/checkout/retorno`,
       });
 
+      const siteUrl = process.env.VITE_CONVEX_SITE_URL || "https://vivid-dotterel-427.convex.site";
+
       const payload = {
         items: mpItems,
         back_urls: {
@@ -99,7 +101,7 @@ export const createPreference = action({
           failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${orderId}`,
           pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${orderId}`,
         },
-        // auto_return: "approved", // Removido para evitar erro de validação
+        notification_url: `${siteUrl}/mp-webhook`,
         statement_descriptor: "ANNA SHOES",
         external_reference: orderId,
         metadata: {
@@ -167,6 +169,8 @@ export const createPayment = action({
       picture_url: item.image,
     }));
 
+    const siteUrl = process.env.VITE_CONVEX_SITE_URL || "https://vivid-dotterel-427.convex.site";
+
     const payload = {
       items: mpItems,
       back_urls: {
@@ -174,6 +178,7 @@ export const createPayment = action({
         failure: `${args.appUrl}/checkout/retorno?status=failure&orderId=${args.orderId}`,
         pending: `${args.appUrl}/checkout/retorno?status=pending&orderId=${args.orderId}`,
       },
+      notification_url: `${siteUrl}/mp-webhook`,
       statement_descriptor: "ANNA SHOES",
       external_reference: args.orderId,
       metadata: {
