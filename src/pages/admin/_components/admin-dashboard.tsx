@@ -6,8 +6,8 @@ import { useQuery, useMutation, useAction, useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import {
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp,
-  Share2, ArrowRight, Settings, Plus, Search, Filter,
-  ChevronDown, CheckCircle2, XCircle, Clock, Trash2, Lock,
+  Share2, ArrowRight, Settings, Settings2, Plus, Search, Filter,
+  ChevronDown, CheckCircle2, CheckCircle, XCircle, Clock, Trash2, Lock,
   MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
@@ -97,7 +97,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
     name: "", brand: "", category: "", price: 0, originalPrice: 0,
     description: "", images: "", sizes: "", colors: "", tags: "",
     inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
-    gender: "Feminino"
+    gender: "Feminino", colorVariants: [] as { color: string, sizes: string[] }[]
   });
 
   // Coupon Form States
@@ -253,7 +253,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         isNew: product.isNew || false,
         isFeatured: product.isFeatured || false,
         isBestSeller: product.isBestSeller || false,
-        gender: product.gender || "Feminino"
+        gender: product.gender || "Feminino",
+        colorVariants: product.colorVariants || []
       });
     } else {
       setEditingProduct(null);
@@ -261,7 +262,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         name: "", brand: "", category: "", price: 0, originalPrice: 0,
         description: "", images: "", sizes: "34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44", colors: "Preto, Branco", tags: "",
         inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
-        gender: "Feminino"
+        gender: "Feminino", colorVariants: []
       });
     }
     setIsProductModalOpen(true);
@@ -277,6 +278,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       tags: productForm.tags.split(",").map(t => t.trim()).filter(Boolean),
       rating: editingProduct?.rating || 5,
       reviews: editingProduct?.reviews || 0,
+      colorVariants: productForm.colorVariants,
     };
 
     try {
@@ -787,13 +789,70 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Tamanhos (separados por vírgula)</Label>
-                <Input required value={productForm.sizes} onChange={e => setProductForm({ ...productForm, sizes: e.target.value })} className="bg-white/5 border-white/10" />
+                <Input required value={productForm.sizes} onChange={e => setProductForm({ ...productForm, sizes: e.target.value })} className="bg-white/5 border-white/10" placeholder="Ex: 35, 36, 37, 38" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px] uppercase font-black text-white/40">Cores (separadas por vírgula)</Label>
-                <Input value={productForm.colors} onChange={e => setProductForm({ ...productForm, colors: e.target.value })} className="bg-white/5 border-white/10" />
+                <Input value={productForm.colors} onChange={e => setProductForm({ ...productForm, colors: e.target.value })} className="bg-white/5 border-white/10" placeholder="Ex: Branco, Preto" />
               </div>
             </div>
+
+            {/* Configuração Avançada de Estoque */}
+            {productForm.colors && productForm.sizes && (
+              <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
+                <Label className="text-[10px] uppercase font-black text-[#38b6ff] flex items-center gap-2">
+                  <Settings2 className="size-3" /> Configuração de Estoque por Cor
+                </Label>
+                
+                <div className="space-y-6">
+                  {productForm.colors.split(",").map(c => c.trim()).filter(Boolean).map(color => (
+                    <div key={color} className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="size-2 rounded-full bg-[#ea3372]" />
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">{color}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {productForm.sizes.split(",").map(s => s.trim()).filter(Boolean).map(size => {
+                          const variant = productForm.colorVariants.find(v => v.color === color);
+                          const isSelected = variant?.sizes.includes(size);
+                          
+                          return (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => {
+                                const newVariants = [...productForm.colorVariants];
+                                const index = newVariants.findIndex(v => v.color === color);
+                                
+                                if (index === -1) {
+                                  newVariants.push({ color, sizes: [size] });
+                                } else {
+                                  const sizes = newVariants[index].sizes;
+                                  if (sizes.includes(size)) {
+                                    newVariants[index].sizes = sizes.filter(s => s !== size);
+                                  } else {
+                                    newVariants[index].sizes = [...sizes, size];
+                                  }
+                                }
+                                setProductForm({ ...productForm, colorVariants: newVariants });
+                              }}
+                              className={cn(
+                                "h-8 min-w-[40px] px-2 rounded-lg border text-[10px] font-black transition-all",
+                                isSelected 
+                                  ? "bg-[#ea3372] border-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20" 
+                                  : "bg-white/5 border-white/10 text-white/40 hover:border-white/20"
+                              )}
+                            >
+                              {size}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-4 gap-4 pt-2">
               {[
                 { id: "inStock", label: "Em Estoque" },

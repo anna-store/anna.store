@@ -118,6 +118,10 @@ export default defineSchema({
     description: v.optional(v.string()),
     sizes: v.array(v.string()),
     colors: v.array(v.string()),
+    colorVariants: v.optional(v.array(v.object({
+      color: v.string(),
+      sizes: v.array(v.string()),
+    }))),
     rating: v.number(),
     reviews: v.number(),
     inStock: v.boolean(),

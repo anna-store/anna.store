@@ -266,19 +266,28 @@ export default function ProdutoPage() {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-12 h-12 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer ${
-                    selectedSize === size
-                      ? "border-[#ea3372] bg-[#ea3372] text-white"
-                      : "border-border hover:border-[#ea3372] text-foreground"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+              {product.sizes.map((size) => {
+                // Lógica de estoque por cor
+                const variant = product.colorVariants?.find(v => v.color === selectedColor);
+                const isAvailable = !variant || variant.sizes.includes(size);
+
+                return (
+                  <button
+                    key={size}
+                    disabled={!isAvailable}
+                    onClick={() => setSelectedSize(size)}
+                    className={`w-12 h-12 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer ${
+                      selectedSize === size
+                        ? "border-[#ea3372] bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
+                        : !isAvailable
+                          ? "border-border/20 bg-muted/20 text-muted-foreground/30 cursor-not-allowed opacity-50"
+                          : "border-border hover:border-[#ea3372] text-foreground"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
