@@ -1,19 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
-/**
- * Busca avaliações de um produto (Forçando Sincronização)
- */
-export const checkReviews = query({
-  args: { productId: v.string() },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("reviews")
-      .withIndex("by_product", (q) => q.eq("productId", args.productId))
-      .collect();
-  },
-});
-
 export const getAll = query({
   args: {},
   handler: async (ctx) => {

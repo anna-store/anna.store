@@ -11,6 +11,7 @@
 import type * as actions from "../actions.js";
 import type * as admin from "../admin.js";
 import type * as coupons from "../coupons.js";
+import type * as debug from "../debug.js";
 import type * as emails from "../emails.js";
 import type * as exchanges from "../exchanges.js";
 import type * as http from "../http.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   admin: typeof admin;
   coupons: typeof coupons;
+  debug: typeof debug;
   emails: typeof emails;
   exchanges: typeof exchanges;
   http: typeof http;

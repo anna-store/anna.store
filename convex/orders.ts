@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query, internalMutation } from "./_generated/server";
+import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 /**
  * Busca os pedidos do usuário logado via sessão local.
@@ -55,7 +56,7 @@ export const getOrderById = query({
 /**
  * Busca um pedido específico (Interno).
  */
-export const internalGetOrderById = query({
+export const internalGetOrderById = internalQuery({
   args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.orderId);
@@ -141,7 +142,7 @@ export const internalUpdateStatus = internalMutation({
 
     // Gatilho para e-mail de envio
     if (args.status === "shipped") {
-      await ctx.runAction(internal.emails.sendShippingConfirmation, { orderId: args.orderId });
+      await ctx.scheduler.runAfter(0, internal.emails.sendShippingConfirmation, { orderId: args.orderId });
     }
   },
 });
@@ -203,6 +204,6 @@ export const updateTracking = mutation({
     });
     
     // Dispara o e-mail
-    await ctx.runAction(internal.emails.sendShippingConfirmation, { orderId: args.orderId });
+    await ctx.scheduler.runAfter(0, internal.emails.sendShippingConfirmation, { orderId: args.orderId });
   },
 });

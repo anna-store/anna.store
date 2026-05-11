@@ -343,32 +343,10 @@ export const getAllProducts = query({
 
 
 
-export const createProduct = mutation({
+export const createProductAdvanced = mutation({
   args: {
     callerId: v.optional(v.id("users")),
-    product: v.object({
-      name: v.string(),
-      brand: v.string(),
-      category: v.string(),
-      price: v.number(),
-      originalPrice: v.optional(v.number()),
-      images: v.array(v.string()),
-      description: v.optional(v.string()),
-      sizes: v.array(v.string()),
-      colors: v.array(v.string()),
-      colorVariants: v.optional(v.array(v.object({
-        color: v.string(),
-        sizes: v.array(v.string()),
-      }))),
-      rating: v.number(),
-      reviews: v.number(),
-      inStock: v.boolean(),
-      isNew: v.optional(v.boolean()),
-      isFeatured: v.optional(v.boolean()),
-      isBestSeller: v.optional(v.boolean()),
-      gender: v.optional(v.string()),
-      tags: v.array(v.string()),
-    }),
+    product: v.any(),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx, args.callerId);
@@ -376,33 +354,11 @@ export const createProduct = mutation({
   },
 });
 
-export const updateProduct = mutation({
+export const updateProductAdvanced = mutation({
   args: {
     callerId: v.optional(v.id("users")),
     productId: v.id("products"),
-    product: v.object({
-      name: v.string(),
-      brand: v.string(),
-      category: v.string(),
-      price: v.number(),
-      originalPrice: v.optional(v.number()),
-      images: v.array(v.string()),
-      description: v.optional(v.string()),
-      sizes: v.array(v.string()),
-      colors: v.array(v.string()),
-      colorVariants: v.optional(v.array(v.object({
-        color: v.string(),
-        sizes: v.array(v.string()),
-      }))),
-      rating: v.number(),
-      reviews: v.number(),
-      inStock: v.boolean(),
-      isNew: v.optional(v.boolean()),
-      isFeatured: v.optional(v.boolean()),
-      isBestSeller: v.optional(v.boolean()),
-      gender: v.optional(v.string()),
-      tags: v.array(v.string()),
-    }),
+    product: v.any(),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx, args.callerId);

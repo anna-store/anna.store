@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -337,7 +337,7 @@ export const updatePassword = mutation({
 /**
  * Busca um usuário por ID (Interno).
  */
-export const internalGetUserById = query({
+export const internalGetUserById = internalQuery({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.userId);
