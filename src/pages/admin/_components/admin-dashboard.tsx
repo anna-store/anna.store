@@ -932,7 +932,10 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
 
   return (
     <div className="rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden group">
-      <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div 
+        className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+      >
         <div className="flex items-center gap-4">
           <div className="size-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shadow-lg cursor-pointer" onClick={() => setExpanded(!expanded)}>
             <Package className={cn("size-6 text-white/40 transition-transform", expanded && "rotate-180")} />
@@ -966,7 +969,12 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 flex-1 sm:flex-none">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-white/5 border-white/10 hover:bg-white/10 text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 flex-1 sm:flex-none"
+                  onClick={(e) => e.stopPropagation()} // Impede de fechar o card ao mudar status
+                >
                   Status <ChevronDown className="ml-1 lg:ml-2 size-3" />
                 </Button>
               </DropdownMenuTrigger>

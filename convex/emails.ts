@@ -133,3 +133,67 @@ export const sendOrderConfirmation = internalAction({
     }
   },
 });
+
+/**
+ * Envia e-mail de confirmação de envio (rastreio) para o cliente.
+ */
+export const sendShippingConfirmation = internalAction({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return;
+
+    const order = await ctx.runQuery(internal.orders.internalGetOrderById, { orderId: args.orderId });
+    if (!order || !order.trackingCode) return;
+
+    const customer = await ctx.runQuery(internal.users.internalGetUserById, { userId: order.userId });
+    if (!customer || !customer.email) return;
+
+    const storeName = "AnnaSt Store";
+
+    try {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `${storeName} <onboarding@resend.dev>`,
+          to: [customer.email],
+          subject: `🚚 Seu pedido #${order._id.slice(0, 8)} está a caminho!`,
+          html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
+              <div style="background-color: #ea3372; padding: 30px; text-align: center;">
+                <h1 style="color: white; margin: 0; font-size: 24px;">🚚 Pedido Enviado!</h1>
+              </div>
+              <div style="padding: 30px; line-height: 1.6; color: #333;">
+                <p>Olá, <strong>${customer.name?.split(' ')[0]}</strong>!</p>
+                <p>Boas notícias: seu pedido já foi postado e está a caminho da sua casa.</p>
+                
+                <div style="background-color: #f9f9f9; padding: 25px; border-radius: 12px; text-align: center; margin: 20px 0; border: 1px dashed #ea3372;">
+                  <p style="margin: 0; color: #666; font-size: 14px;">Seu Código de Rastreio (SEDEX):</p>
+                  <h2 style="margin: 10px 0; color: #ea3372; letter-spacing: 2px;">${order.trackingCode}</h2>
+                  <a href="https://rastreamento.correios.com.br/app/index.php?objeto=${order.trackingCode}" 
+                     style="display: inline-block; margin-top: 10px; background-color: #38b6ff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">
+                    Rastrear nos Correios
+                  </a>
+                </div>
+
+                <p>A partir de agora, você pode acompanhar cada passo da entrega através do link acima.</p>
+
+                <p style="margin-top: 30px;">Obrigado por confiar na <strong>AnnaSt Store</strong>!</p>
+              </div>
+              <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #999;">
+                AnnaSt Store — Estilo e Conforto em cada passo.
+              </div>
+            </div>
+          `,
+        }),
+      });
+      console.log(`E-mail de rastreio enviado para pedido ${args.orderId}`);
+    } catch (e) {
+      console.error("Erro ao enviar e-mail de rastreio:", e);
+    }
+  }
+});

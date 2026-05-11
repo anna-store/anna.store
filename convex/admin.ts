@@ -215,7 +215,13 @@ export const updateOrderTracking = action({
       orderId: args.orderId,
       trackingCode: args.trackingCode,
     });
-    // Futuro: Disparar e-mail de rastreio aqui
+    
+    // Disparar e-mail de rastreio real
+    try {
+      await ctx.runAction(internal.emails.sendShippingConfirmation, { orderId: args.orderId });
+    } catch (e) {
+      console.error("Erro ao disparar e-mail de rastreio:", e);
+    }
   },
 });
 

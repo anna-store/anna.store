@@ -138,6 +138,11 @@ export const internalUpdateStatus = internalMutation({
       status: args.status,
       mpPaymentId: args.mpPaymentId ?? order.mpPaymentId
     });
+
+    // Gatilho para e-mail de envio
+    if (args.status === "shipped") {
+      await ctx.runAction(internal.emails.sendShippingConfirmation, { orderId: args.orderId });
+    }
   },
 });
 
@@ -176,5 +181,28 @@ export const deleteOrder = mutation({
     }
 
     await ctx.db.delete(args.orderId);
+  },
+});
+
+/**
+ * Atualiza o código de rastreio de um pedido.
+ */
+export const updateTracking = mutation({
+  args: { 
+    callerId: v.optional(v.id("users")), // Para compatibilidade com o painel admin
+    orderId: v.id("orders"), 
+    trackingCode: v.string() 
+  },
+  handler: async (ctx, args) => {
+    const order = await ctx.db.get(args.orderId);
+    if (!order) throw new Error("Pedido não encontrado");
+
+    await ctx.db.patch(args.orderId, { 
+      trackingCode: args.trackingCode,
+      status: "shipped" // Muda automaticamente para enviado ao colocar rastreio
+    });
+    
+    // Dispara o e-mail
+    await ctx.runAction(internal.emails.sendShippingConfirmation, { orderId: args.orderId });
   },
 });
