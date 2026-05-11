@@ -30,6 +30,9 @@ import {
 } from "@/lib/products-data.ts";
 import { useCartStore } from "@/hooks/use-cart.ts";
 import { useWishlistStore } from "@/hooks/use-wishlist.ts";
+import { cn } from "@/lib/utils.ts";
+import { useMutation } from "convex/react";
+import { useAuth } from "@/hooks/use-auth.ts";
 
 const FAKE_REVIEWS: any[] = [];
 
@@ -39,8 +42,7 @@ export default function ProdutoPage() {
   const product = useQuery(api.products.getById, { productId: id as Id<"products"> });
   const allProducts = useQuery(api.products.getAll) || [];
   
-  // Busca desativada temporariamente para corrigir erro de sincronização
-  const reviews: any[] = [];
+  const reviews = useQuery(api.products.checkReviews, { productId: id || "" }) || [];
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -48,6 +50,7 @@ export default function ProdutoPage() {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   const { addItem } = useCartStore();
   const { toggle, has } = useWishlistStore();
@@ -266,28 +269,35 @@ export default function ProdutoPage() {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map((size) => {
-                // Lógica de estoque por cor
-                const variant = product.colorVariants?.find(v => v.color === selectedColor);
-                const isAvailable = !variant || variant.sizes.includes(size);
-
-                return (
-                  <button
-                    key={size}
-                    disabled={!isAvailable}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer ${
-                      selectedSize === size
-                        ? "border-[#ea3372] bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
-                        : !isAvailable
-                          ? "border-border/20 bg-muted/20 text-muted-foreground/30 cursor-not-allowed opacity-50"
+              {product.sizes
+                .filter((size) => {
+                  // Se houver variantes de cor
+                  if (product.colorVariants && product.colorVariants.length > 0) {
+                    // Se uma cor estiver selecionada, mostra apenas os tamanhos daquela cor
+                    if (selectedColor) {
+                      const variant = product.colorVariants.find(v => v.color === selectedColor);
+                      return variant ? variant.sizes.includes(size) : false;
+                    }
+                    // Se nenhuma cor estiver selecionada, mostra tamanhos que existem em PELO MENOS UMA cor
+                    return product.colorVariants.some(v => v.sizes.includes(size));
+                  }
+                  return true;
+                })
+                .map((size) => {
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`w-12 h-12 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer ${
+                        selectedSize === size
+                          ? "border-[#ea3372] bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
                           : "border-border hover:border-[#ea3372] text-foreground"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                );
-              })}
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
             </div>
           </div>
 
@@ -366,9 +376,8 @@ export default function ProdutoPage() {
         </div>
       </div>
 
-      {/* Description & Reviews tabs */}
       <div className="mb-16">
-        <ProductTabs product={product} />
+        <ProductTabs product={product} reviews={reviews} />
       </div>
 
       {/* Related products */}
@@ -392,8 +401,13 @@ export default function ProdutoPage() {
   );
 }
 
-function ProductTabs({ product }: { product: any }) {
+
+
+function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
   const [tab, setTab] = useState<"desc" | "reviews" | "shipping">("desc");
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const tabs = [
     { id: "desc" as const, label: "Descrição" },
@@ -480,7 +494,14 @@ function ProductTabs({ product }: { product: any }) {
                 <div className="shrink-0 w-full md:w-auto">
                    <Button 
                     className="w-full bg-[#0b0b0b] hover:bg-[#111] text-white font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl border border-white/5"
-                    onClick={() => toast.info("Funcionalidade de avaliação real em breve!", { description: "Estamos validando as compras para permitir avaliações verificadas." })}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        toast.error("Você precisa estar logado para avaliar");
+                        navigate("/auth");
+                        return;
+                      }
+                      setIsReviewModalOpen(true);
+                    }}
                    >
                      Escrever Avaliação
                    </Button>
@@ -495,19 +516,19 @@ function ProductTabs({ product }: { product: any }) {
                         <div className="flex items-center gap-3">
                           <div className="size-10 rounded-full bg-gradient-to-br from-[#ea3372] to-[#38b6ff] p-[1px]">
                             <div className="size-full bg-muted rounded-full flex items-center justify-center font-black text-[10px]">
-                              {r.name.charAt(0)}
+                              {(r.userName || "U").charAt(0)}
                             </div>
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="font-bold text-sm text-foreground">{r.name}</p>
-                              {r.verified && (
-                                <Badge className="bg-green-500/10 text-green-500 text-[8px] font-black uppercase px-2 py-0 border-0 flex items-center gap-1">
-                                  <CheckCircle className="size-2" /> Compra Verificada
-                                </Badge>
-                              )}
+                              <p className="font-bold text-sm text-foreground">{r.userName}</p>
+                              <Badge className="bg-green-500/10 text-green-500 text-[8px] font-black uppercase px-2 py-0 border-0 flex items-center gap-1">
+                                <CheckCircle className="size-2" /> Compra Verificada
+                              </Badge>
                             </div>
-                            <p className="text-[10px] text-muted-foreground uppercase font-medium tracking-wider">{r.date}</p>
+                            <p className="text-[10px] text-muted-foreground uppercase font-medium tracking-wider">
+                              {new Date(r.createdAt).toLocaleDateString("pt-BR")}
+                            </p>
                           </div>
                         </div>
                         <div className="flex gap-0.5">
@@ -534,7 +555,7 @@ function ProductTabs({ product }: { product: any }) {
             <motion.div key="shipping" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
               {[
                 { icon: Truck, title: "Envio para todo o Brasil", desc: "Entregamos em todas as regiões do país. Prazo varia de acordo com a localidade.", color: "#38b6ff" },
-                { icon: RotateCcw, title: "Política de trocas e devoluções", desc: "Você tem 7 dias para solicitar troca ou devolução após o recebimento do produto.", color: "#ea3372" },
+                { icon: RotateCcw, title: "Política de trocas", desc: "Você tem 7 dias para solicitar a troca após o recebimento do produto.", color: "#ea3372" },
                 { icon: Shield, title: "Compra 100% segura", desc: "Todos os pagamentos são processados com criptografia e proteção total.", color: "#38b6ff" },
               ].map((item) => (
                 <div key={item.title} className="flex gap-4 p-4 bg-muted rounded-xl">
@@ -551,6 +572,115 @@ function ProductTabs({ product }: { product: any }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Review Modal */}
+      <ReviewFormModal 
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        productId={product._id}
+        productName={product.name}
+        productImage={product.images[0]}
+      />
     </div>
+  );
+}
+
+function ReviewFormModal({ isOpen, onClose, productId, productName, productImage }: { isOpen: boolean, onClose: () => void, productId: Id<"products">, productName: string, productImage: string }) {
+  const { user } = useAuth();
+  const createReview = useMutation(api.products.createReview);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async () => {
+    if (!user?._id) return;
+    setLoading(true);
+    try {
+      await createReview({
+        userId: user._id,
+        productId,
+        rating,
+        comment: comment.trim(),
+        userName: user.name || "Cliente",
+        userAvatar: typeof user.avatar === "string" ? user.avatar : undefined,
+      });
+      toast.success("Avaliação enviada com sucesso!");
+      onClose();
+      setComment("");
+    } catch (err: any) {
+      toast.error("Erro ao enviar avaliação");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4" onClick={onClose}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-background border border-white/10 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+          <div className="flex items-center gap-3">
+            <div className="size-10 rounded-xl bg-[#ea3372]/10 flex items-center justify-center">
+              <Star className="h-5 w-5 text-[#ea3372] fill-[#ea3372]" />
+            </div>
+            <h2 className="text-xl font-black italic uppercase tracking-tighter">Avaliar Produto</h2>
+          </div>
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-white/5">
+            <XIcon className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+            <img src={productImage} alt="" className="size-16 rounded-xl object-cover border border-white/10" />
+            <div className="min-w-0">
+              <p className="text-sm font-bold truncate">{productName}</p>
+              <p className="text-[10px] text-white/40 uppercase font-black tracking-widest">Sua opinião importa</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-white/40">Sua nota</p>
+            <div className="flex justify-center gap-3">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <button key={s} onClick={() => setRating(s)} className="transition-transform hover:scale-125 active:scale-95">
+                  <Star className={`size-8 transition-colors ${s <= rating ? "fill-[#ea3372] text-[#ea3372] drop-shadow-[0_0_10px_rgba(234,51,114,0.4)]" : "text-white/10 hover:text-white/30"}`} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Seu comentário</label>
+            <textarea 
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="O que você achou da qualidade, conforto e estilo?"
+              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea3372]/50 transition-all resize-none"
+            />
+          </div>
+
+          <Button 
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full h-14 bg-[#ea3372] hover:bg-[#c9295f] text-white font-black italic uppercase tracking-widest rounded-2xl shadow-lg shadow-[#ea3372]/20"
+          >
+            {loading ? "Enviando..." : "Publicar Avaliação"}
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
   );
 }

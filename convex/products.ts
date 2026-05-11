@@ -91,6 +91,7 @@ export const createReview = mutation({
   args: {
     productId: v.id("products"),
     userId: v.id("users"),
+    orderId: v.optional(v.id("orders")),
     rating: v.number(),
     comment: v.string(),
     userName: v.string(),
@@ -100,7 +101,7 @@ export const createReview = mutation({
     const reviewId = await ctx.db.insert("reviews", {
       productId: args.productId,
       userId: args.userId,
-      orderId: "verified_manual" as any,
+      orderId: args.orderId,
       rating: args.rating,
       comment: args.comment,
       userName: args.userName,

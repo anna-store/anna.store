@@ -268,9 +268,11 @@ export default function PainelInner() {
       await createReview({
         userId,
         orderId: reviewOrderId as Id<"orders">,
-        productId: reviewProductId,
+        productId: reviewProductId as Id<"products">,
         rating: reviewRating,
         comment: reviewComment.trim(),
+        userName: currentUser?.name ?? user?.name ?? "Cliente",
+        userAvatar: (typeof currentUser?.avatar === "string" ? currentUser.avatar : undefined) ?? (typeof user?.avatar === "string" ? user.avatar : undefined),
       });
       toast.success("Avaliação enviada! Obrigado.");
       setReviewOrderId(null);

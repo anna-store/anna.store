@@ -97,7 +97,7 @@ export default defineSchema({
   reviews: defineTable({
     productId: v.string(),
     userId: v.id("users"),
-    orderId: v.id("orders"),
+    orderId: v.optional(v.id("orders")),
     rating: v.number(),
     comment: v.string(),
     userName: v.string(),
