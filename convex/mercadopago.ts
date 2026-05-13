@@ -37,6 +37,7 @@ export const createPreference = action({
     appUrl: v.string(),
   },
   handler: async (ctx, args) => {
+    console.log("createPreference chamado com:", JSON.stringify(args, null, 2));
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
     if (!accessToken) {
@@ -88,6 +89,13 @@ export const createPreference = action({
         shipments: {
           cost: Number(args.shipping.toFixed(2)),
           mode: "not_specified",
+          receiver_address: {
+            zip_code: args.address.zip.replace(/\D/g, ""),
+            street_name: args.address.street,
+            street_number: Number(args.address.number) || 0,
+            floor: args.address.neighborhood || "",
+            apartment: "",
+          }
         },
         back_urls: {
           success: `${args.appUrl}/checkout/retorno?status=success&orderId=${orderId}`,
@@ -103,6 +111,8 @@ export const createPreference = action({
           orderId: orderId,
         }
       };
+
+      console.log("Payload MP Preference:", JSON.stringify(payload, null, 2));
 
       const response: Response = await fetch("https://api.mercadopago.com/checkout/preferences", {
         method: "POST",

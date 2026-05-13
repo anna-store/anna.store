@@ -48,7 +48,7 @@ type AddressForm = z.infer<typeof addressSchema>;
 export default function CheckoutInner() {
   const navigate = useNavigate();
   const { user: localUser } = useAuth();
-  const { items, clearCart, getTotal, getDiscount, getFinalTotal, appliedCoupon } = useCartStore();
+  const { items, clearCart, getTotal, getDiscount, getFinalTotal, appliedCoupon, isFreeShipping } = useCartStore();
   const currentUser = useQuery(api.users.getCurrentUser, { userId: localUser?._id });
   const createPreference = useAction(api.mercadopago.createPreference);
 
@@ -63,8 +63,9 @@ export default function CheckoutInner() {
   // Pricing
   const subtotal = getTotal();
   const discount = getDiscount();
+  const freeShippingActive = isFreeShipping();
   const shippingPrice = selectedShipping?.price ?? 0;
-  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shippingPrice;
+  const effectiveShipping = freeShippingActive ? 0 : shippingPrice;
   const hasShipping = !!selectedShipping;
   const total = getFinalTotal() + effectiveShipping;
 
@@ -115,9 +116,17 @@ export default function CheckoutInner() {
           });
           console.log("Cotações recebidas:", quotes);
           setShippingOptions(quotes);
-          if (quotes.length > 0) setSelectedShipping(quotes[0]);
           
-          toast.success("Endereço e frete carregados!");
+          // Se tiver frete grátis (por cupom ou por valor), seleciona o primeiro automaticamente
+          if (quotes.length > 0) {
+            if (freeShippingActive) {
+              setSelectedShipping(quotes[0]);
+            } else {
+              setSelectedShipping(null); // Reseta para forçar escolha
+            }
+          }
+          
+          toast.success("Endereço carregado!");
         }
       } catch (e) {
         console.error("Erro no checkout:", e);
@@ -178,6 +187,13 @@ export default function CheckoutInner() {
     }
 
     const address = getValues();
+    console.log("Valores para pagamento:", {
+      subtotal,
+      discount,
+      effectiveShipping,
+      total,
+      hasFreeShipping: appliedCoupon?.freeShipping
+    });
     try {
       // 1. Atualiza o perfil do usuário com os dados do checkout
       await updateProfile({
@@ -413,41 +429,54 @@ export default function CheckoutInner() {
                       {/* Shipping Options */}
                       {shippingOptions.length > 0 && (
                         <div className="space-y-4 pt-4">
-                          <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#ad2335] ml-1">Escolha a Entrega</Label>
-                          <div className="grid grid-cols-1 gap-3">
-                            {shippingOptions.map((opt) => (
-                              <div
-                                key={opt.id}
-                                onClick={() => setSelectedShipping(opt)}
-                                className={cn(
-                                  "p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
-                                  selectedShipping?.id === opt.id
-                                    ? "bg-[#660e14] border-[#660e14] text-white shadow-lg"
-                                    : "bg-white/40 border-black/5 text-[#660e14] hover:bg-white/60"
-                                )}
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className={cn(
-                                    "size-10 rounded-full flex items-center justify-center transition-colors",
-                                    selectedShipping?.id === opt.id ? "bg-white/20" : "bg-[#660e14]/5"
-                                  )}>
-                                    <Truck className={cn("size-5", selectedShipping?.id === opt.id ? "text-white" : "text-[#ad2335]")} />
-                                  </div>
-                                  <div>
-                                    <p className="text-[11px] font-black uppercase tracking-widest">{opt.name}</p>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                      <Clock className="size-3 opacity-40" />
-                                      <p className="text-[9px] font-bold opacity-60 uppercase tracking-tighter">Até {opt.delivery_time} dias úteis</p>
+                          <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#ad2335] ml-1">
+                            {isFreeShipping() ? "Benefício Ativado" : "Escolha a Entrega"}
+                          </Label>
+                          
+                          {isFreeShipping() ? (
+                            <div className="p-6 rounded-[24px] bg-[#ad2335]/5 border border-[#ad2335]/20 flex items-center gap-4">
+                              <div className="size-12 rounded-2xl bg-[#ad2335] flex items-center justify-center shadow-lg shadow-[#ad2335]/20">
+                                <Truck className="size-6 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-black uppercase tracking-widest text-[#660e14]">Frete Grátis Aplicado</p>
+                                <p className="text-[9px] font-bold text-[#660e14]/40 uppercase tracking-widest mt-0.5">
+                                  Entrega via {selectedShipping?.name || "Transportadora"}
+                                </p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 gap-3">
+                              {shippingOptions.map((opt) => (
+                                <div
+                                  key={opt.id}
+                                  onClick={() => setSelectedShipping(opt)}
+                                  className={cn(
+                                    "p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
+                                    selectedShipping?.id === opt.id
+                                      ? "bg-[#660e14] border-[#660e14] text-white shadow-lg"
+                                      : "bg-white/40 border-black/5 text-[#660e14] hover:bg-white/60"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-4">
+                                    <div className={cn(
+                                      "size-10 rounded-full flex items-center justify-center transition-colors",
+                                      selectedShipping?.id === opt.id ? "bg-white/20" : "bg-[#660e14]/5"
+                                    )}>
+                                      <Truck className={cn("size-5", selectedShipping?.id === opt.id ? "text-white" : "text-[#ad2335]")} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[11px] font-black uppercase tracking-widest">{opt.name}</p>
                                     </div>
                                   </div>
+                                  <div className="text-right">
+                                    <p className="text-sm font-black tracking-tight">{formatPrice(opt.price)}</p>
+                                    {selectedShipping?.id === opt.id && <CheckCircle2 className="size-4 text-white ml-auto mt-1" />}
+                                  </div>
                                 </div>
-                                <div className="text-right">
-                                  <p className="text-sm font-black tracking-tight">{formatPrice(opt.price)}</p>
-                                  {selectedShipping?.id === opt.id && <CheckCircle2 className="size-4 text-white ml-auto mt-1" />}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -607,18 +636,20 @@ export default function CheckoutInner() {
                       <span>- {formatPrice(discount)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span>Frete</span>
-                    <span className={cn(
-                      "text-[#660e14]",
-                      effectiveShipping === 0 && hasShipping ? "text-[#ad2335] font-black" : "",
-                    )}>
-                      {appliedCoupon?.freeShipping 
-                        ? "Grátis" 
-                        : hasShipping 
-                          ? formatPrice(effectiveShipping) 
-                          : "A calcular"}
-                    </span>
+                    <div className="text-right">
+                      {freeShippingActive ? (
+                        <>
+                          <span className="text-muted-foreground line-through mr-2 opacity-50">{formatPrice(shippingPrice)}</span>
+                          <span className="text-[#ad2335] font-black">Grátis</span>
+                        </>
+                      ) : hasShipping ? (
+                        <span className="text-[#660e14]">{formatPrice(shippingPrice)}</span>
+                      ) : (
+                        <span className="text-[#660e14]/20 italic">A calcular</span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -627,7 +658,7 @@ export default function CheckoutInner() {
                 <div className="flex justify-between font-normal text-2xl text-[#660e14]">
                   <span style={{ fontFamily: "'Last Dream', cursive" }}>Total</span>
                   <span className="text-[#ad2335] font-black text-xl tracking-tighter">
-                    {selectedShipping || appliedCoupon?.freeShipping ? formatPrice(total) : "—"}
+                    {selectedShipping || freeShippingActive ? formatPrice(total) : "—"}
                   </span>
                 </div>
               </CardContent>

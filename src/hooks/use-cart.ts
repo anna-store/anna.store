@@ -11,6 +11,8 @@ export type CartItem = {
   quantity: number;
 };
 
+export const FREE_SHIPPING_THRESHOLD = 250;
+
 type CartStore = {
   items: CartItem[];
   appliedCoupon: { 
@@ -27,6 +29,7 @@ type CartStore = {
   getTotal: () => number;
   getDiscount: () => number;
   getFinalTotal: () => number;
+  isFreeShipping: () => boolean;
   applyCoupon: (code: string) => boolean; // Legacy/placeholder
   applyRawCoupon: (coupon: any) => void;
   removeCoupon: () => void;
@@ -90,6 +93,11 @@ export const useCartStore = create<CartStore>()(
         const total = get().getTotal();
         const discount = get().getDiscount();
         return Math.max(0, total - discount);
+      },
+      isFreeShipping: () => {
+        const subtotal = get().getTotal();
+        const coupon = get().appliedCoupon;
+        return subtotal >= FREE_SHIPPING_THRESHOLD || coupon?.freeShipping === true;
       },
       applyCoupon: (code) => {
         // Legacy check

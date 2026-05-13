@@ -124,7 +124,11 @@ export default function CatalogoPage() {
       result = result.filter((p) => p.category?.trim().toLowerCase() === activeCategory.toLowerCase());
     }
     if (activeGender !== "Todos") {
-      result = result.filter((p: any) => p.gender?.trim().toLowerCase() === activeGender.toLowerCase());
+      result = result.filter((p: any) => {
+        const pGender = p.gender?.trim().toLowerCase();
+        const activeG = activeGender.toLowerCase();
+        return pGender === activeG || pGender === "unissex";
+      });
     }
     if (isPromo) {
       result = result.filter((p) => p.originalPrice != null);
@@ -364,7 +368,12 @@ export default function CatalogoPage() {
         <div className="flex flex-wrap gap-2 mb-6">
           {activeCategory !== "Todos" && (
             <Badge className="gap-2 cursor-pointer bg-[#660e14]/10 text-[#660e14] hover:bg-[#660e14]/20 border-0 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider" onClick={() => setActiveCategory("Todos")}>
-              {activeCategory} <X className="h-3 w-3" />
+              Cat: {activeCategory} <X className="h-3 w-3" />
+            </Badge>
+          )}
+          {activeGender !== "Todos" && (
+            <Badge className="gap-2 cursor-pointer bg-[#660e14]/10 text-[#660e14] hover:bg-[#660e14]/20 border-0 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider" onClick={() => setActiveGender("Todos")}>
+              Público: {activeGender} <X className="h-3 w-3" />
             </Badge>
           )}
           {selectedSizes.map((s) => (

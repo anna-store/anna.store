@@ -19,8 +19,9 @@ import { Separator } from "@/components/ui/separator.tsx";
 import { toast } from "sonner";
 import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { useCartStore } from "@/hooks/use-cart.ts";
+import { useCartStore, FREE_SHIPPING_THRESHOLD } from "@/hooks/use-cart.ts";
 import { formatPrice } from "@/lib/products-data.ts";
+import { cn } from "@/lib/utils.ts";
 import {
   Empty,
   EmptyHeader,
@@ -44,7 +45,8 @@ export default function CarrinhoPage() {
     appliedCoupon, 
     applyCoupon,
     applyRawCoupon,
-    removeCoupon 
+    removeCoupon,
+    isFreeShipping
   } = useCartStore();
   const navigate = useNavigate();
   const convex = useConvex();
@@ -54,8 +56,8 @@ export default function CarrinhoPage() {
 
   const subtotal = getTotal();
   const discount = getDiscount();
-  const isFreeShipping = appliedCoupon?.freeShipping === true;
-  const shipping = isFreeShipping ? 0 : null; 
+  const freeShippingActive = isFreeShipping();
+  const shipping = freeShippingActive ? 0 : null; 
   const total = getFinalTotal() + (shipping ?? 0);
 
   const handleApplyCoupon = async () => {
@@ -222,6 +224,33 @@ export default function CarrinhoPage() {
             <h2 className="font-black uppercase tracking-[0.2em] text-xs text-[#660e14]">Resumo do Pedido</h2>
             <Separator className="bg-black/5" />
 
+            {/* Free Shipping Progress */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#660e14]">
+                <span>Frete Grátis</span>
+                <span className={freeShippingActive ? "text-green-600" : "text-[#ad2335]"}>
+                  {freeShippingActive ? "Alcançado!" : `Faltam ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)}`}
+                </span>
+              </div>
+              <div className="h-2 bg-black/5 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
+                  className={cn(
+                    "h-full transition-all duration-500",
+                    freeShippingActive ? "bg-green-500" : "bg-[#ad2335]"
+                  )}
+                />
+              </div>
+              {!freeShippingActive && (
+                <p className="text-[9px] font-bold text-[#660e14]/40 uppercase tracking-widest text-center">
+                  Adicione mais itens para ganhar frete grátis!
+                </p>
+              )}
+            </div>
+
+            <Separator className="bg-black/5" />
+
             {/* Coupon */}
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2 text-[#660e14]">
@@ -240,8 +269,8 @@ export default function CarrinhoPage() {
                   <Input
                     value={couponInput}
                     onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
-                    placeholder="Digite o cupom"
-                    className="text-sm h-9"
+                    placeholder="DIGITE O CUPOM"
+                    className="text-[11px] h-10 bg-white/60 border-black/5 rounded-xl text-[#660e14] font-black uppercase tracking-[0.2em] placeholder:text-[#660e14]/20"
                     onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
                   />
                   <Button 
@@ -255,7 +284,6 @@ export default function CarrinhoPage() {
                 </div>
               )}
               {couponError && <p className="text-[10px] font-bold text-[#ad2335] mt-2 uppercase tracking-widest">{couponError}</p>}
-              <p className="text-[10px] font-bold text-[#660e14]/20 mt-3 uppercase tracking-widest">Dica: QUERO10</p>
             </div>
 
             <Separator />

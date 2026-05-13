@@ -23,10 +23,10 @@ const TESTIMONIALS = [
 ];
 
 const CATEGORY_DATA = [
-  { name: "Tênis Masculino", image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80" },
-  { name: "Tênis Feminino", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80" },
-  { name: "Infantil", image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&q=80" },
-  { name: "Outros", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" },
+  { name: "Tênis Masculino", category: "Tênis", gender: "Masculino", image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80" },
+  { name: "Tênis Feminino", category: "Tênis", gender: "Feminino", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80" },
+  { name: "Infantil", category: "Infantil", gender: "Todos", image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&q=80" },
+  { name: "Casual", category: "Casual", gender: "Todos", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" },
 ];
 
 const stagger = {
@@ -320,7 +320,7 @@ export default function Index() {
           {CATEGORY_DATA.map((cat, i) => (
             <Link
               key={cat.name}
-              to={`/catalogo?categoria=${encodeURIComponent(cat.name)}`}
+              to={`/catalogo?categoria=${encodeURIComponent(cat.category)}&genero=${encodeURIComponent(cat.gender)}`}
               className="group relative aspect-[3/4] rounded-[3rem] overflow-hidden bg-[#660e14] border-4 border-[#660e14] shadow-2xl transition-all duration-500 hover:-translate-y-2"
             >
               {/* Image with Artistic Overlay */}
@@ -395,19 +395,24 @@ export default function Index() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-auto">
             {[
-              { cat: "Infantil", price: "79,90", color: "#ad2335" },
-              { cat: "Casual", price: "129,90", color: "#660e14" },
-              { cat: "Sport", price: "189,90", color: "#ad2335" }
+              { label: "Infantil", cat: "Infantil", price: "79,90", color: "#ad2335" },
+              { label: "Casual", cat: "Casual", price: "129,90", color: "#660e14" },
+              { label: "Sport", cat: "Esportivo", price: "189,90", color: "#ad2335" }
             ].map((item) => (
-              <motion.div
-                key={item.cat}
-                whileHover={{ y: -5 }}
-                className="bg-white/30 backdrop-blur-md p-6 rounded-2xl border-[#660e14]/5 flex flex-col items-center text-center group cursor-pointer"
+              <Link
+                key={item.label}
+                to={`/catalogo?categoria=${encodeURIComponent(item.cat)}`}
+                className="block"
               >
-                <p className="text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.3em] mb-2">From</p>
-                <p className="text-xl font-black text-[#660e14] mb-1">R$ {item.price}</p>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: item.color }}>{item.cat}</p>
-              </motion.div>
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="bg-white/30 backdrop-blur-md p-6 rounded-2xl border-[#660e14]/5 flex flex-col items-center text-center group cursor-pointer h-full"
+                >
+                  <p className="text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.3em] mb-2">From</p>
+                  <p className="text-xl font-black text-[#660e14] mb-1">R$ {item.price}</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: item.color }}>{item.label}</p>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </div>
