@@ -128,6 +128,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const toggleSale = useMutation(api.products.toggleSale);
   const deleteUser = useMutation(api.admin.deleteUser);
   const changePassword = useMutation(api.admin.changeUserPassword);
+  const addToCartME = useAction(api.melhorenvio.addToCart);
   const [isUploading, setIsUploading] = useState(false);
 
   // Sales Notification Logic
@@ -1188,6 +1189,33 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
                     {order.trackingCode ? "Atualizar Rastreio" : "Notificar Cliente"}
                   </Button>
                 </div>
+                
+                {order.status === "confirmed" && (
+                  <div className="mt-4 pt-4 border-t border-black/5">
+                    <div className="flex items-center justify-between bg-[#ad2335]/5 p-4 rounded-2xl border border-[#ad2335]/10">
+                      <div>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-[#ad2335]">Serviço Escolhido</p>
+                        <p className="text-xs font-bold text-[#660e14]">{order.shippingServiceName || "Não especificado"}</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-white border-[#ad2335]/20 text-[#ad2335] hover:bg-[#ad2335] hover:text-white font-black uppercase tracking-widest text-[9px] h-10 px-6 rounded-xl transition-all shadow-sm"
+                        onClick={async () => {
+                          try {
+                            const res = await addToCartME({ orderId: order._id, callerId: callerId as Id<"users"> });
+                            toast.success("Pedido enviado para o carrinho do Melhor Envio!");
+                          } catch (e: any) {
+                            toast.error("Erro ao gerar etiqueta: " + e.message);
+                          }
+                        }}
+                      >
+                        <Truck className="size-3 mr-2" />
+                        Gerar Etiqueta no Melhor Envio
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 {order.trackingCode && (
                   <p className="text-[9px] text-green-600 font-black mt-3 uppercase tracking-widest flex items-center gap-1 opacity-70">
                     <CheckCircle2 className="size-3" /> Código de rastreio ativo: {order.trackingCode}

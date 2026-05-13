@@ -39,6 +39,7 @@ const addressSchema = z.object({
   city: z.string().min(2, "Cidade inválida"),
   state: z.string().min(2, "Estado inválido").max(2, "Use a sigla (ex: SP)"),
   zip: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido (ex: 01310-100)"),
+  document: z.string().min(11, "CPF ou CNPJ inválido").max(18, "CPF ou CNPJ inválido"),
 });
 
 type AddressForm = z.infer<typeof addressSchema>;
@@ -74,7 +75,19 @@ export default function CheckoutInner() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<AddressForm>({ resolver: zodResolver(addressSchema) });
+  } = useForm<AddressForm>({ 
+    resolver: zodResolver(addressSchema),
+    defaultValues: {
+      street: "",
+      number: "",
+      neighborhood: "",
+      complement: "",
+      city: "",
+      state: "",
+      zip: "",
+      document: "",
+    }
+  });
 
   const zipValue = watch("zip");
 
@@ -83,20 +96,24 @@ export default function CheckoutInner() {
   const handleZipLookup = async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, "");
     if (cleanCep.length === 8) {
+      console.log("Iniciando busca para CEP:", cleanCep);
       setCalculatingShipping(true);
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
         const data = await response.json();
+        console.log("Dados do ViaCEP:", data);
         if (!data.erro) {
           setValue("street", data.logradouro);
           setValue("city", data.localidade);
           setValue("state", data.uf);
           
           // Melhor Envio Quote
+          console.log("Buscando cotação Melhor Envio...");
           const quotes = await fetchShipping({
             zip: cleanCep,
             items: items.map(i => ({ productId: i.productId as any, quantity: i.quantity }))
           });
+          console.log("Cotações recebidas:", quotes);
           setShippingOptions(quotes);
           if (quotes.length > 0) setSelectedShipping(quotes[0]);
           
@@ -126,6 +143,7 @@ export default function CheckoutInner() {
       if (currentUser.complement) setValue("complement", currentUser.complement);
       if (currentUser.city) setValue("city", currentUser.city);
       if (currentUser.state) setValue("state", currentUser.state);
+      if (currentUser.document) setValue("document", currentUser.document);
       if (currentUser.zip) {
         setValue("zip", currentUser.zip);
         // Dispara cotação automática do Melhor Envio com o CEP do perfil
@@ -161,6 +179,19 @@ export default function CheckoutInner() {
 
     const address = getValues();
     try {
+      // 1. Atualiza o perfil do usuário com os dados do checkout
+      await updateProfile({
+        userId: currentUser._id,
+        street: address.street,
+        number: address.number,
+        neighborhood: address.neighborhood,
+        complement: address.complement,
+        city: address.city,
+        state: address.state,
+        zip: address.zip,
+        document: address.document,
+      });
+
       const appUrl = window.location.origin;
       const { initPoint } = await createPreference({
         userId: currentUser._id,
@@ -174,10 +205,14 @@ export default function CheckoutInner() {
         subtotal,
         discount,
         shipping: effectiveShipping,
+        shippingServiceId: selectedShipping?.id,
+        shippingServiceName: selectedShipping?.name,
         total,
         couponCode: appliedCoupon?.code,
         address: {
           street: address.street,
+          number: address.number,
+          neighborhood: address.neighborhood,
           city: address.city,
           state: address.state.toUpperCase(),
           zip: address.zip,
@@ -348,6 +383,18 @@ export default function CheckoutInner() {
                         </div>
                       </div>
 
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="document" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CPF ou CNPJ (Para Envio)</Label>
+                          <Input
+                            id="document"
+                            {...register("document")}
+                            placeholder="000.000.000-00"
+                            className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.document ? "border-destructive" : "")}
+                          />
+                          {errors.document && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.document.message}</p>}
+                        </div>
+
                         <div className="space-y-2">
                           <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
                           <div className="flex gap-4">
@@ -355,12 +402,13 @@ export default function CheckoutInner() {
                               id="zip"
                               {...register("zip")}
                               placeholder="01310-100"
-                              className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
+                              className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
                             />
                             {calculatingShipping && <Loader2 className="h-6 w-6 animate-spin text-[#ad2335] self-center" />}
                           </div>
                           {errors.zip && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.zip.message}</p>}
                         </div>
+                      </div>
 
                       {/* Shipping Options */}
                       {shippingOptions.length > 0 && (

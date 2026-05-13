@@ -73,6 +73,7 @@ export default function PainelInner() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
+  const [document, setDocument] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   // Exchange form state
@@ -168,6 +169,7 @@ export default function PainelInner() {
     setCity(currentUser?.city ?? "");
     setState(currentUser?.state ?? "");
     setZip(currentUser?.zip ?? "");
+    setDocument(currentUser?.document ?? "");
     setEditing(true);
   };
 
@@ -189,6 +191,7 @@ export default function PainelInner() {
         city: city.trim() || undefined,
         state: state.trim() || undefined,
         zip: zip.trim() || undefined,
+        document: document.trim() || undefined,
       });
       toast.success("Perfil atualizado!");
       setEditing(false);
@@ -402,6 +405,10 @@ export default function PainelInner() {
                         <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Telefone</Label>
                         <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(11) 99999-9999" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="document" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CPF ou CNPJ (Para Envio)</Label>
+                        <Input id="document" value={document} onChange={(e) => setDocument(e.target.value)} placeholder="000.000.000-00" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
+                      </div>
                     </div>
                     
                     <Separator className="bg-[#660e14]/5" />
@@ -464,6 +471,7 @@ export default function PainelInner() {
                       <div className="space-y-1 text-[#660e14]/60 font-bold uppercase text-[10px] tracking-widest">
                         <p>{currentUser?.email ?? user?.email ?? "—"}</p>
                         <p>{currentUser?.phone ?? "Telefone não informado"}</p>
+                        <p>{currentUser?.document ?? "CPF/CNPJ não informado"}</p>
                       </div>
                     </div>
                     <div className="space-y-3">

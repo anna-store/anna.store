@@ -19,6 +19,7 @@ export default defineSchema({
     city: v.optional(v.string()),
     state: v.optional(v.string()),
     zip: v.optional(v.string()),
+    document: v.optional(v.string()), // CPF ou CNPJ para Frete
     createdAt: v.optional(v.number()),
     totalSpent: v.optional(v.number()),
   }).index("by_token", ["tokenIdentifier"])
@@ -46,12 +47,16 @@ export default defineSchema({
     subtotal: v.number(),
     discount: v.number(),
     shipping: v.number(),
+    shippingServiceId: v.optional(v.number()), // ID do serviço no Melhor Envio (1=Correios, etc)
+    shippingServiceName: v.optional(v.string()), // Nome (ex: SEDEX, PAC)
     total: v.number(),
     couponCode: v.optional(v.string()),
     mpPreferenceId: v.optional(v.string()),
     mpPaymentId: v.optional(v.string()),
     address: v.object({
       street: v.string(),
+      number: v.optional(v.string()),
+      neighborhood: v.optional(v.string()),
       city: v.string(),
       state: v.string(),
       zip: v.string(),

@@ -84,6 +84,7 @@ export const updateProfile = mutation({
     city: v.optional(v.string()),
     state: v.optional(v.string()),
     zip: v.optional(v.string()),
+    document: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { userId, ...data } = args;
