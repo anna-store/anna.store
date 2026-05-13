@@ -354,18 +354,19 @@ export default function CheckoutInner() {
                         </div>
                       </div>
 
-                        <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
-                        <div className="flex gap-4">
-                          <Input
-                            id="zip"
-                            {...register("zip")}
-                            placeholder="01310-100"
-                            className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
-                          />
-                          {calculatingShipping && <Loader2 className="h-6 w-6 animate-spin text-[#ad2335] self-center" />}
+                        <div className="space-y-2">
+                          <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
+                          <div className="flex gap-4">
+                            <Input
+                              id="zip"
+                              {...register("zip")}
+                              placeholder="01310-100"
+                              className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
+                            />
+                            {calculatingShipping && <Loader2 className="h-6 w-6 animate-spin text-[#ad2335] self-center" />}
+                          </div>
+                          {errors.zip && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.zip.message}</p>}
                         </div>
-                        {errors.zip && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.zip.message}</p>}
-                      </div>
 
                       {/* Shipping Options */}
                       {shippingOptions.length > 0 && (
