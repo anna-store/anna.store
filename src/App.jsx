@@ -14,6 +14,7 @@ import PainelPage from "@/pages/painel";
 import PedidosPage from "@/pages/painel/pedidos";
 import AuthCallback from "@/pages/auth/callback";
 import AuthPage from "@/pages/auth";
+import PromocoesPage from "@/pages/promocoes";
 import NotFound from "@/pages/not-found";
 import PoliticaPrivacidade from "@/pages/info/politica-privacidade";
 import TermosDeUso from "@/pages/info/termos-de-uso";
@@ -28,6 +29,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/catalogo" element={<CatalogoPage />} />
+          <Route path="/promocoes" element={<PromocoesPage />} />
           <Route path="/produto/:id" element={<ProdutoPage />} />
           <Route path="/carrinho" element={<CarrinhoPage />} />
           <Route path="/favoritos" element={<FavoritosPage />} />

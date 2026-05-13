@@ -90,18 +90,41 @@ export default function CatalogoPage() {
   const dbProducts = useQuery(api.products.getAll) || [];
   const PRODUCTS_DYNAMIC = useMemo(() => dbProducts.map(p => ({ ...p, id: p._id })), [dbProducts]);
   
-  const ALL_BRANDS = useMemo(() => [...new Set(PRODUCTS_DYNAMIC.map((p) => p.brand))].sort(), [PRODUCTS_DYNAMIC]);
-  const ALL_CATEGORIES_DYNAMIC = useMemo(() => ["Todos", ...new Set(PRODUCTS_DYNAMIC.map((p) => p.category))].sort(), [PRODUCTS_DYNAMIC]);
-  const ALL_GENDERS_DYNAMIC = useMemo(() => ["Todos", ...new Set(PRODUCTS_DYNAMIC.map((p: any) => p.gender).filter(Boolean))].sort(), [PRODUCTS_DYNAMIC]);
+  const ALL_BRANDS = useMemo(() => {
+    const rawBrands = PRODUCTS_DYNAMIC.map((p) => p.brand?.trim()).filter(Boolean);
+    const uniqueNormalized = [...new Set(rawBrands.map(b => b.toLowerCase()))];
+    return uniqueNormalized.map(norm => {
+      // Retorna a versão original (preservando o case do primeiro encontrado)
+      return rawBrands.find(b => b.toLowerCase() === norm) || norm;
+    }).sort();
+  }, [PRODUCTS_DYNAMIC]);
+
+  const ALL_CATEGORIES_DYNAMIC = useMemo(() => {
+    const rawCats = PRODUCTS_DYNAMIC.map((p) => p.category?.trim()).filter(Boolean);
+    const uniqueNormalized = [...new Set(rawCats.map(c => c.toLowerCase()))];
+    const categories = uniqueNormalized.map(norm => {
+      return rawCats.find(c => c.toLowerCase() === norm) || norm;
+    });
+    return ["Todos", ...categories].sort();
+  }, [PRODUCTS_DYNAMIC]);
+
+  const ALL_GENDERS_DYNAMIC = useMemo(() => {
+    const rawGenders = PRODUCTS_DYNAMIC.map((p: any) => p.gender?.trim()).filter(Boolean);
+    const uniqueNormalized = [...new Set(rawGenders.map(g => g.toLowerCase()))];
+    const genders = uniqueNormalized.map(norm => {
+      return rawGenders.find(g => g.toLowerCase() === norm) || norm;
+    });
+    return ["Todos", ...genders].sort();
+  }, [PRODUCTS_DYNAMIC]);
 
   const filtered = useMemo(() => {
     let result = PRODUCTS_DYNAMIC;
 
     if (activeCategory !== "Todos") {
-      result = result.filter((p) => p.category === activeCategory);
+      result = result.filter((p) => p.category?.trim().toLowerCase() === activeCategory.toLowerCase());
     }
     if (activeGender !== "Todos") {
-      result = result.filter((p: any) => p.gender === activeGender);
+      result = result.filter((p: any) => p.gender?.trim().toLowerCase() === activeGender.toLowerCase());
     }
     if (isPromo) {
       result = result.filter((p) => p.originalPrice != null);
@@ -124,7 +147,9 @@ export default function CatalogoPage() {
       result = result.filter((p) => selectedSizes.some((s) => p.sizes.includes(s)));
     }
     if (selectedBrands.length > 0) {
-      result = result.filter((p) => selectedBrands.includes(p.brand));
+      result = result.filter((p) => 
+        selectedBrands.some(brand => brand.toLowerCase() === p.brand?.trim().toLowerCase())
+      );
     }
 
     return sortProducts(result, sort);

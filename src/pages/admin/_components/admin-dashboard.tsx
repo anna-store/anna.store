@@ -8,7 +8,7 @@ import {
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp,
   Share2, ArrowRight, Settings, Settings2, Plus, Search, Filter,
   ChevronDown, CheckCircle2, CheckCircle, XCircle, Clock, Trash2, Lock,
-  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star, Truck
+  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star, Truck, Percent
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -34,7 +34,7 @@ import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 const NOTIFICATION_SOUND = "https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"; // Cha-ching sound
 
-type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges" | "reviews";
+type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges" | "reviews" | "promotions";
 
 const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 
@@ -125,6 +125,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const toggleCoupon = useMutation(api.admin.toggleCoupon);
   const deleteCoupon = useMutation(api.admin.deleteCoupon);
   const generateUploadUrl = useMutation(api.admin.generateUploadUrl);
+  const toggleSale = useMutation(api.products.toggleSale);
   const deleteUser = useMutation(api.admin.deleteUser);
   const changePassword = useMutation(api.admin.changeUserPassword);
   const [isUploading, setIsUploading] = useState(false);
@@ -358,6 +359,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
     { id: "overview", label: "Visão Geral", icon: <LayoutDashboard className="h-4 w-4" /> },
     { id: "orders", label: "Pedidos", icon: <Package className="h-4 w-4" /> },
     { id: "products", label: "Produtos", icon: <ShoppingBag className="h-4 w-4" /> },
+    { id: "promotions", label: "Promoções", icon: <Percent className="h-4 w-4" /> },
     { id: "users", label: "Usuários", icon: <UsersRound className="h-4 w-4" /> },
     { id: "coupons", label: "Cupons", icon: <TrendingUp className="h-4 w-4" /> },
     { id: "exchanges", label: "Trocas", icon: <ArrowRight className="h-4 w-4" /> },
@@ -630,6 +632,27 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     <div className="grid grid-cols-1 gap-4">
                       {!products ? <SkeletonList /> : products.map(p => (
                         <ProductRow key={p._id} product={p} onEdit={() => openProductModal(p)} onDelete={() => deleteProduct({ callerId, productId: p._id })} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "promotions" && (
+                  <div className="space-y-6">
+                    <div className="p-6 rounded-[32px] bg-gradient-to-r from-[#ad2335]/10 to-[#660e14]/5 border border-[#ad2335]/10 shadow-sm">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="size-10 rounded-full bg-[#ad2335]/10 flex items-center justify-center">
+                          <Percent className="size-5 text-[#ad2335]" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-[#660e14] text-sm uppercase tracking-widest">Gerenciar Promoções</h3>
+                          <p className="text-[9px] text-[#660e14]/40 font-bold uppercase tracking-widest">Ative descontos nos produtos — eles aparecerão automaticamente na página /promocoes</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      {!products ? <SkeletonList /> : products.map(p => (
+                        <PromotionRow key={p._id} product={p} onToggle={toggleSale} />
                       ))}
                     </div>
                   </div>
@@ -1385,6 +1408,82 @@ function UserRow({ user, onToggleAdmin, onDelete, onChangePassword }: { user: an
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+    </div>
+  );
+}
+
+function PromotionRow({ product, onToggle }: { product: any; onToggle: any }) {
+  const [salePrice, setSalePrice] = useState(product.isOnSale ? product.price : Math.round(product.price * 0.9));
+  const discount = Math.round(((product.originalPrice || product.price) - product.price) / (product.originalPrice || product.price) * 100);
+
+  const handleToggle = async (active: boolean) => {
+    try {
+      await onToggle({ 
+        productId: product._id, 
+        isOnSale: active, 
+        salePrice: active ? salePrice : undefined 
+      });
+      toast.success(active ? "Promoção ativada!" : "Promoção desativada!");
+    } catch {
+      toast.error("Erro ao atualizar promoção");
+    }
+  };
+
+  return (
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all flex items-center justify-between gap-4 shadow-sm">
+      <div className="flex items-center gap-4">
+        <div className="size-14 rounded-2xl overflow-hidden border border-black/5 shadow-sm">
+          <img src={product.images[0]} className="size-full object-cover" />
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <h4 className="font-bold text-sm text-[#660e14]">{product.name}</h4>
+            {product.isOnSale && (
+              <Badge className="bg-[#ad2335] text-white text-[8px] font-black uppercase px-2 py-0 border-0">{discount}% OFF</Badge>
+            )}
+          </div>
+          <p className="text-[10px] font-bold text-[#660e14]/30 tracking-widest uppercase">
+            {fmt(product.originalPrice || product.price)}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-6">
+        {product.isOnSale ? (
+           <div className="flex items-center gap-3 bg-[#ad2335]/5 p-2 px-4 rounded-2xl border border-[#ad2335]/10 animate-in fade-in zoom-in duration-300">
+             <div className="text-right">
+               <p className="text-[8px] text-[#ad2335] font-black uppercase tracking-widest leading-tight">Preço Promo</p>
+               <p className="text-sm font-black text-[#ad2335] leading-none">{fmt(product.price)}</p>
+             </div>
+             <Button 
+               variant="ghost" 
+               size="sm" 
+               className="text-[9px] font-black uppercase tracking-widest h-8 px-3 rounded-xl bg-white border border-[#ad2335]/20 text-[#ad2335] hover:bg-[#ad2335] hover:text-white transition-all ml-2"
+               onClick={() => handleToggle(false)}
+             >
+               Remover
+             </Button>
+           </div>
+        ) : (
+          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div className="relative w-32">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#660e14]/40">R$</span>
+              <Input 
+                type="number" 
+                value={salePrice}
+                onChange={(e) => setSalePrice(Number(e.target.value))}
+                className="h-10 pl-8 text-xs font-bold border-black/5 bg-white rounded-xl text-[#660e14] focus:border-[#ad2335]/30 focus:ring-0"
+              />
+            </div>
+            <Button 
+              className="bg-[#ad2335] hover:bg-[#660e14] text-white text-[9px] font-black uppercase tracking-widest h-10 px-4 rounded-xl shadow-lg shadow-[#ad2335]/20 transition-all active:scale-95"
+              onClick={() => handleToggle(true)}
+            >
+              Ativar Promo
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

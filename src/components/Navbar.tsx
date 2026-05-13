@@ -21,7 +21,7 @@ import {
 const NAV_LINKS = [
   { label: "Início", href: "/" },
   { label: "Catálogo", href: "/catalogo" },
-  { label: "Promoções", href: "/catalogo?promo=true" },
+  { label: "Promoções", href: "/promocoes" },
   { label: "Novidades", href: "/catalogo?new=true" },
 ];
 
@@ -49,7 +49,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
     <header className="sticky top-0 z-50 bg-[#fdf0e3] text-[#660e14] shadow-lg">
       {/* Announcement bar */}
       <div className="bg-[#ad2335] text-white text-center text-xs py-2 px-4 font-medium tracking-wide">
-        NOVIDADES SEMANAIS • USE O CUPOM: <strong>QUERO10</strong> e ganhe 10% na primeira compra
+        PARA COMPRAS ACIMA DE R$250,00 FRETE GRÁTIS PARA TODO O BRASIL
       </div>
 
       <div className="max-w-7xl mx-auto px-4 h-24 md:h-40 flex items-center justify-between gap-4">

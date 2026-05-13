@@ -137,3 +137,47 @@ export const createProduct = mutation({
     return await ctx.db.insert("products", args.product);
   },
 });
+
+/**
+ * Busca todos os produtos em promoção.
+ */
+export const getOnSale = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("products")
+      .withIndex("by_sale", (q) => q.eq("isOnSale", true))
+      .collect();
+  },
+});
+
+/**
+ * Alterna o status de promoção de um produto.
+ */
+export const toggleSale = mutation({
+  args: {
+    productId: v.id("products"),
+    isOnSale: v.boolean(),
+    salePrice: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const product = await ctx.db.get(args.productId);
+    if (!product) throw new Error("Produto não encontrado");
+
+    if (args.isOnSale && args.salePrice !== undefined) {
+      // Ativando promoção: salva o preço original e aplica o preço promocional
+      await ctx.db.patch(args.productId, {
+        isOnSale: true,
+        originalPrice: product.originalPrice || product.price, // Preserva o original se já existir
+        price: args.salePrice,
+      });
+    } else {
+      // Desativando promoção: restaura o preço original
+      await ctx.db.patch(args.productId, {
+        isOnSale: false,
+        price: product.originalPrice || product.price,
+        originalPrice: undefined,
+      });
+    }
+  },
+});

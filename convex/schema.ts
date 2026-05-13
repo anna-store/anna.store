@@ -136,7 +136,10 @@ export default defineSchema({
     width: v.optional(v.number()),  // em cm
     height: v.optional(v.number()), // em cm
     length: v.optional(v.number()), // em cm
-  }).index("by_category", ["category"]),
+    // Promoções
+    isOnSale: v.optional(v.boolean()),
+  }).index("by_category", ["category"])
+    .index("by_sale", ["isOnSale"]),
 
   coupons: defineTable({
     code: v.string(),
