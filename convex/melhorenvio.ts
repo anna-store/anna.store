@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
+import { api } from "./_generated/api";
 
 const MELHORENVIO_URL = process.env.MELHORENVIO_URL || "https://sandbox.melhorenvio.com.br";
 const MELHORENVIO_TOKEN = process.env.MELHORENVIO_TOKEN;
@@ -36,7 +37,7 @@ export const calculateShipping = action({
       const origin = item.fromZip || defaultZip;
       if (!groups[origin]) groups[origin] = [];
       groups[origin].push({
-        id: item.productId,
+        id: item._id,
         width: item.width || 20,
         height: item.height || 15,
         length: item.length || 30,

@@ -404,7 +404,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 <p className="text-[7px] font-black uppercase tracking-[0.4em] text-[#660e14]/20 mt-1">Management Hub</p>
               </div>
             </Link>
-            <Button variant="ghost" size="icon" className="lg:hidden text-white/40" onClick={() => setIsSidebarOpen(false)}>
+            <Button variant="ghost" size="icon" className="lg:hidden text-[#660e14]/40" onClick={() => setIsSidebarOpen(false)}>
               <X className="size-5" />
             </Button>
           </div>
@@ -693,7 +693,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             </AnimatePresence>
           </div>
 
-          <footer className="p-8 border-t border-white/5 text-[9px] text-white/10 font-black uppercase tracking-[0.4em] text-center">
+          <footer className="p-8 border-t border-black/5 text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.4em] text-center">
             Anna Shoes Terminal Core System &bull; Version 4.0.0-PRO
           </footer>
         </div>
@@ -948,50 +948,50 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
       {/* Coupon Modal */}
       <Dialog open={isCouponModalOpen} onOpenChange={setIsCouponModalOpen}>
-        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-md">
+        <DialogContent className="bg-[#fdf0e3] border-[#660e14]/10 text-[#660e14] max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">Novo Cupom</DialogTitle>
+            <DialogTitle className="text-xl font-black uppercase tracking-widest italic text-[#660e14]">Novo Cupom</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleCouponSubmit} className="space-y-6 py-4">
             <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Código do Cupom</Label>
+              <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Código do Cupom</Label>
               <Input
                 required placeholder="EX: VERÃO10"
                 value={couponForm.code}
                 onChange={e => setCouponForm({ ...couponForm, code: e.target.value.toUpperCase() })}
-                className="bg-white/5 border-white/10 font-mono tracking-widest"
+                className="bg-white border-black/5 font-mono tracking-widest text-[#660e14]"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Tipo</Label>
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Tipo</Label>
                 <Select value={couponForm.discountType} onValueChange={(v: any) => setCouponForm({ ...couponForm, discountType: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectTrigger className="bg-white border-black/5 text-[#660e14]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
+                  <SelectContent className="bg-[#fdf0e3] border-[#660e14]/10 text-[#660e14]">
                     <SelectItem value="percentage">Porcentagem (%)</SelectItem>
                     <SelectItem value="fixed">Valor Fixo (R$)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Valor do Desconto</Label>
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Valor do Desconto</Label>
                 <Input
                   type="number" required
                   value={couponForm.discountValue}
                   onChange={e => setCouponForm({ ...couponForm, discountValue: parseFloat(e.target.value) })}
-                  className="bg-white/5 border-white/10"
+                  className="bg-white border-black/5 text-[#660e14]"
                 />
               </div>
             </div>
             <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Valor Mínimo do Pedido (R$)</Label>
+              <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Valor Mínimo do Pedido (R$)</Label>
               <Input
                 type="number" required
                 value={couponForm.minOrderValue}
                 onChange={e => setCouponForm({ ...couponForm, minOrderValue: parseFloat(e.target.value) })}
-                className="bg-white/5 border-white/10"
+                className="bg-white border-black/5 text-[#660e14]"
               />
             </div>
             <div className="flex items-center gap-3 pt-2">
@@ -1000,13 +1000,13 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 onCheckedChange={(v: boolean) => setCouponForm({ ...couponForm, freeShipping: v })}
               />
               <div className="space-y-0.5">
-                <Label className="text-[10px] uppercase font-black text-white/40">Frete Grátis</Label>
-                <p className="text-[9px] text-white/20">Zera o custo de entrega para este cupom</p>
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Frete Grátis</Label>
+                <p className="text-[9px] text-[#660e14]/30">Zera o custo de entrega para este cupom</p>
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setIsCouponModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold px-8">Criar Cupom</Button>
+              <Button type="button" variant="ghost" className="text-[#660e14]/60 hover:text-[#660e14]" onClick={() => setIsCouponModalOpen(false)}>Cancelar</Button>
+              <Button type="submit" className="bg-[#ad2335] hover:bg-[#660e14] text-white font-bold px-8">Criar Cupom</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -1020,7 +1020,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 function SkeletonList() {
   return (
     <div className="space-y-4">
-      {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 w-full bg-white/5 rounded-2xl" />)}
+      {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 w-full bg-[#660e14]/5 rounded-2xl" />)}
     </div>
   );
 }
