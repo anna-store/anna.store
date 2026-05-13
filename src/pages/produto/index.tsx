@@ -13,6 +13,7 @@ import {
   Plus,
   Share2,
   CheckCircle,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -33,6 +34,7 @@ import { useWishlistStore } from "@/hooks/use-wishlist.ts";
 import { cn } from "@/lib/utils.ts";
 import { useMutation } from "convex/react";
 import { useAuth } from "@/hooks/use-auth.ts";
+import { useAction } from "convex/react";
 
 const FAKE_REVIEWS: any[] = [];
 
@@ -551,22 +553,37 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
             </motion.div>
           )}
           {tab === "shipping" && (
-            <motion.div key="shipping" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
-              {[
-                { icon: Truck, title: "Envio para todo o Brasil", desc: "Entregamos em todas as regiões do país. Prazo varia de acordo com a localidade.", color: "#38b6ff" },
-                { icon: RotateCcw, title: "Política de trocas", desc: "Você tem 7 dias para solicitar a troca após o recebimento do produto.", color: "#ea3372" },
-                { icon: Shield, title: "Compra 100% segura", desc: "Todos os pagamentos são processados com criptografia e proteção total.", color: "#38b6ff" },
-              ].map((item) => (
-                <div key={item.title} className="flex gap-4 p-4 bg-muted rounded-xl">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}20` }}>
-                    <item.icon className="h-5 w-5" style={{ color: item.color }} />
+            <motion.div key="shipping" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
+              <div className="bg-[#660e14]/5 border border-[#660e14]/10 rounded-3xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="size-10 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+                    <Truck className="size-5 text-[#ad2335]" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm">{item.title}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
+                    <h3 className="text-sm font-black text-[#660e14] uppercase tracking-widest">Calcular Frete e Prazo</h3>
+                    <p className="text-[10px] text-[#660e14]/40 font-bold uppercase tracking-tighter">Informe seu CEP para cotação direta</p>
                   </div>
                 </div>
-              ))}
+
+                <ShippingCalculator product={product} />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { icon: RotateCcw, title: "Troca Grátis", desc: "Até 7 dias após o recebimento.", color: "#ad2335" },
+                  { icon: Shield, title: "Compra Segura", desc: "Dados protegidos pela AnnaSt.", color: "#660e14" },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-4 p-5 bg-white/40 border border-black/5 rounded-2xl backdrop-blur-sm">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${item.color}10` }}>
+                      <item.icon className="h-5 w-5" style={{ color: item.color }} />
+                    </div>
+                    <div>
+                      <p className="font-black text-[#660e14] text-[10px] uppercase tracking-widest">{item.title}</p>
+                      <p className="text-[10px] text-[#660e14]/60 font-medium mt-1 leading-tight">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -674,6 +691,82 @@ function ReviewFormModal({ isOpen, onClose, productId, productName, productImage
           </Button>
         </div>
       </motion.div>
+    </div>
+  );
+}
+
+function ShippingCalculator({ product }: { product: any }) {
+  const [cep, setCep] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const fetchShipping = useAction(api.melhorenvio.calculateShipping);
+
+  const handleCalculate = async () => {
+    const cleanCep = cep.replace(/\D/g, "");
+    if (cleanCep.length !== 8) {
+      toast.error("CEP inválido");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const quotes = await fetchShipping({
+        zip: cleanCep,
+        items: [{ productId: product._id, quantity: 1 }]
+      });
+      setResults(quotes);
+      if (quotes.length === 0) toast.error("Nenhuma transportadora disponível para este CEP.");
+    } catch (e) {
+      toast.error("Erro ao calcular frete");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-3">
+        <Input
+          placeholder="00000-000"
+          value={cep}
+          onChange={(e) => setCep(e.target.value)}
+          maxLength={9}
+          className="bg-white border-black/5 h-12 rounded-2xl text-xs font-bold tracking-widest focus:border-[#ad2335]/40 text-[#660e14] max-w-[180px]"
+        />
+        <Button
+          onClick={handleCalculate}
+          disabled={loading}
+          className="bg-[#660e14] hover:bg-[#ad2335] text-white h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+        >
+          {loading ? <Loader2 className="size-4 animate-spin" /> : "Calcular"}
+        </Button>
+      </div>
+
+      <AnimatePresence>
+        {results.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid gap-2 pt-2"
+          >
+            {results.map((res, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-white/60 border border-black/5 rounded-2xl">
+                <div className="flex items-center gap-3">
+                  <Truck className="size-4 text-[#ad2335]" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-[#660e14]">{res.name}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <Clock className="size-3 text-[#660e14]/40" />
+                      <p className="text-[9px] font-bold text-[#660e14]/40 uppercase">Até {res.delivery_time} dias úteis</p>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs font-black text-[#ad2335]">{formatPrice(res.price)}</p>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

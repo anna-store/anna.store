@@ -15,6 +15,7 @@ import type * as debug from "../debug.js";
 import type * as emails from "../emails.js";
 import type * as exchanges from "../exchanges.js";
 import type * as http from "../http.js";
+import type * as melhorenvio from "../melhorenvio.js";
 import type * as mercadopago from "../mercadopago.js";
 import type * as mpMutations from "../mpMutations.js";
 import type * as orders from "../orders.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   emails: typeof emails;
   exchanges: typeof exchanges;
   http: typeof http;
+  melhorenvio: typeof melhorenvio;
   mercadopago: typeof mercadopago;
   mpMutations: typeof mpMutations;
   orders: typeof orders;

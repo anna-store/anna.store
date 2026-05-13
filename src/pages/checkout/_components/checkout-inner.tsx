@@ -11,8 +11,10 @@ import {
   CreditCard,
   ShieldCheck,
   ChevronRight,
-  Loader2,
   ExternalLink,
+  Truck,
+  Clock,
+  CheckCircle2,
 } from "lucide-react";
 import { api } from "@/convex/_generated/api.js";
 import { useAuth } from "@/hooks/use-auth.ts";
@@ -50,14 +52,18 @@ export default function CheckoutInner() {
 
   const [step, setStep] = useState<"address" | "confirm">("address");
   const [submitting, setSubmitting] = useState(false);
-  const [shipping, setShipping] = useState<number | null>(null);
+  const [shippingOptions, setShippingOptions] = useState<any[]>([]);
+  const [selectedShipping, setSelectedShipping] = useState<any>(null);
+  const [calculatingShipping, setCalculatingShipping] = useState(false);
+
+  const fetchShipping = useAction(api.melhorenvio.calculateShipping);
 
   // Pricing
   const subtotal = getTotal();
   const discount = getDiscount();
-  const hasShipping = shipping !== null;
-  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shipping;
-  const total = getFinalTotal() + (effectiveShipping ?? 0);
+  const shippingPrice = selectedShipping?.price ?? 0;
+  const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shippingPrice;
+  const total = getFinalTotal() + effectiveShipping;
 
   const {
     register,
@@ -84,6 +90,7 @@ export default function CheckoutInner() {
   const handleZipLookup = async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, "");
     if (cleanCep.length === 8) {
+      setCalculatingShipping(true);
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
         const data = await response.json();
@@ -91,10 +98,23 @@ export default function CheckoutInner() {
           setValue("street", data.logradouro);
           setValue("city", data.localidade);
           setValue("state", data.uf);
-          calculateShipping(data.uf);
-          toast.success("Endereço preenchido!");
+          
+          // Melhor Envio Quote
+          const quotes = await fetchShipping({
+            zip: cleanCep,
+            items: items.map(i => ({ productId: i.productId as any, quantity: i.quantity }))
+          });
+          setShippingOptions(quotes);
+          if (quotes.length > 0) setSelectedShipping(quotes[0]);
+          
+          toast.success("Endereço e frete carregados!");
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Erro no checkout:", e);
+        toast.error("Erro ao calcular frete. Tente novamente.");
+      } finally {
+        setCalculatingShipping(false);
+      }
     }
   };
 
@@ -334,22 +354,66 @@ export default function CheckoutInner() {
                         </div>
                       </div>
 
-                      <div className="space-y-2">
                         <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
-                        <Input
-                          id="zip"
-                          {...register("zip")}
-                          placeholder="01310-100"
-                          className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
-                        />
+                        <div className="flex gap-4">
+                          <Input
+                            id="zip"
+                            {...register("zip")}
+                            placeholder="01310-100"
+                            className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
+                          />
+                          {calculatingShipping && <Loader2 className="h-6 w-6 animate-spin text-[#ad2335] self-center" />}
+                        </div>
                         {errors.zip && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.zip.message}</p>}
                       </div>
 
+                      {/* Shipping Options */}
+                      {shippingOptions.length > 0 && (
+                        <div className="space-y-4 pt-4">
+                          <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#ad2335] ml-1">Escolha a Entrega</Label>
+                          <div className="grid grid-cols-1 gap-3">
+                            {shippingOptions.map((opt) => (
+                              <div
+                                key={opt.id}
+                                onClick={() => setSelectedShipping(opt)}
+                                className={cn(
+                                  "p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
+                                  selectedShipping?.id === opt.id
+                                    ? "bg-[#660e14] border-[#660e14] text-white shadow-lg"
+                                    : "bg-white/40 border-black/5 text-[#660e14] hover:bg-white/60"
+                                )}
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className={cn(
+                                    "size-10 rounded-full flex items-center justify-center transition-colors",
+                                    selectedShipping?.id === opt.id ? "bg-white/20" : "bg-[#660e14]/5"
+                                  )}>
+                                    <Truck className={cn("size-5", selectedShipping?.id === opt.id ? "text-white" : "text-[#ad2335]")} />
+                                  </div>
+                                  <div>
+                                    <p className="text-[11px] font-black uppercase tracking-widest">{opt.name}</p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <Clock className="size-3 opacity-40" />
+                                      <p className="text-[9px] font-bold opacity-60 uppercase tracking-tighter">Até {opt.delivery_time} dias úteis</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-sm font-black tracking-tight">{formatPrice(opt.price)}</p>
+                                  {selectedShipping?.id === opt.id && <CheckCircle2 className="size-4 text-white ml-auto mt-1" />}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <Button
                         type="submit"
-                        className="w-full h-16 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-[20px] transition-all duration-500 shadow-xl shadow-[#660e14]/10 mt-4"
+                        disabled={!selectedShipping || calculatingShipping}
+                        className="w-full h-16 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-[20px] transition-all duration-500 shadow-xl shadow-[#660e14]/10 mt-4 disabled:opacity-50 disabled:grayscale"
                       >
-                        Continuar para Pagamento
+                        {calculatingShipping ? "Calculando Frete..." : "Continuar para Pagamento"}
                         <ChevronRight className="ml-1 h-4 w-4" />
                       </Button>
                     </form>
@@ -520,7 +584,7 @@ export default function CheckoutInner() {
                 <div className="flex justify-between font-normal text-2xl text-[#660e14]">
                   <span style={{ fontFamily: "'Last Dream', cursive" }}>Total</span>
                   <span className="text-[#ad2335] font-black text-xl tracking-tighter">
-                    {hasShipping || appliedCoupon?.freeShipping ? formatPrice(total) : "—"}
+                    {selectedShipping || appliedCoupon?.freeShipping ? formatPrice(total) : "—"}
                   </span>
                 </div>
               </CardContent>

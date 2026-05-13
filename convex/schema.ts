@@ -130,6 +130,12 @@ export default defineSchema({
     isBestSeller: v.optional(v.boolean()),
     gender: v.optional(v.string()), // Feminino, Masculino, Kids
     tags: v.array(v.string()),
+    // Logística (Melhor Envio)
+    fromZip: v.optional(v.string()),
+    weight: v.optional(v.number()), // em kg
+    width: v.optional(v.number()),  // em cm
+    height: v.optional(v.number()), // em cm
+    length: v.optional(v.number()), // em cm
   }).index("by_category", ["category"]),
 
   coupons: defineTable({

@@ -8,7 +8,7 @@ import {
   LayoutDashboard, ShoppingBag, Package, UsersRound, TrendingUp,
   Share2, ArrowRight, Settings, Settings2, Plus, Search, Filter,
   ChevronDown, CheckCircle2, CheckCircle, XCircle, Clock, Trash2, Lock,
-  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star
+  MapPin, ShoppingCart, Tag, ImagePlus, X, Loader2, Star, Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -95,9 +95,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [productForm, setProductForm] = useState({
     name: "", brand: "", category: "", price: 0, originalPrice: 0,
-    description: "", images: "", sizes: "", colors: "", tags: "",
+    description: "", images: "", sizes: "34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44", colors: "Preto, Branco", tags: "",
     inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
-    gender: "Feminino", colorVariants: [] as { color: string, sizes: string[] }[]
+    gender: "Feminino", colorVariants: [] as { color: string, sizes: string[] }[],
+    fromZip: "", weight: 0.8, width: 20, height: 12, length: 30
   });
 
   // Coupon Form States
@@ -254,7 +255,12 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         isFeatured: product.isFeatured || false,
         isBestSeller: product.isBestSeller || false,
         gender: product.gender || "Feminino",
-        colorVariants: product.colorVariants || []
+        colorVariants: product.colorVariants || [],
+        fromZip: product.fromZip || "",
+        weight: product.weight || 0.8,
+        width: product.width || 20,
+        height: product.height || 12,
+        length: product.length || 30
       });
     } else {
       setEditingProduct(null);
@@ -262,7 +268,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
         name: "", brand: "", category: "", price: 0, originalPrice: 0,
         description: "", images: "", sizes: "34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44", colors: "Preto, Branco", tags: "",
         inStock: true, isNew: true, isFeatured: false, isBestSeller: false,
-        gender: "Feminino", colorVariants: []
+        gender: "Feminino", colorVariants: [],
+        fromZip: "", weight: 0.8, width: 20, height: 12, length: 30
       });
     }
     setIsProductModalOpen(true);
@@ -735,19 +742,24 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Descrição <span className="text-[8px] opacity-50 lowercase">(Opcional)</span></Label>
-              <Textarea value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-[#660e14]/5 border-black/5 min-h-24" />
+              <Textarea 
+                value={productForm.description} 
+                onChange={e => setProductForm({ ...productForm, description: e.target.value })} 
+                className="bg-white border-black/5 min-h-[120px] rounded-2xl focus:border-[#ad2335]/40 text-[#660e14] text-sm" 
+                placeholder="Descreva os detalhes luxuosos deste modelo..."
+              />
             </div>
             <div className="space-y-3">
-              <Label className="text-[10px] uppercase font-black text-white/40">Imagens do Produto</Label>
+              <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Imagens do Produto</Label>
 
               <div className="grid grid-cols-4 gap-4">
                 {productForm.images.split(",").map(i => i.trim()).filter(Boolean).map((img, idx) => (
-                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-black/5 group shadow-sm">
                     <img src={img} className="size-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeImage(idx)}
-                      className="absolute top-1 right-1 size-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-1 right-1 size-6 bg-[#ad2335] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                     >
                       <X className="size-3 text-white" />
                     </button>
@@ -755,7 +767,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 ))}
 
                 <label className={cn(
-                  "aspect-square rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#ea3372]/40 hover:bg-[#ea3372]/5 transition-all",
+                  "aspect-square rounded-xl border-2 border-dashed border-[#ad2335]/20 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#ad2335]/60 hover:bg-[#ad2335]/5 transition-all bg-[#660e14]/5",
                   isUploading && "opacity-50 cursor-wait"
                 )}>
                   <input
@@ -767,45 +779,76 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     disabled={isUploading}
                   />
                   {isUploading ? (
-                    <Loader2 className="size-6 text-[#ea3372] animate-spin" />
+                    <Loader2 className="size-6 text-[#ad2335] animate-spin" />
                   ) : (
                     <>
-                      <ImagePlus className="size-6 text-white/20" />
-                      <span className="text-[8px] font-black uppercase text-white/20">Upload</span>
+                      <ImagePlus className="size-6 text-[#ad2335]/40" />
+                      <span className="text-[8px] font-black uppercase text-[#660e14]/40">Upload</span>
                     </>
                   )}
                 </label>
               </div>
 
               <div className="space-y-1">
-                <Label className="text-[9px] text-white/20 uppercase font-black">URLs Manuais (Opcional)</Label>
-                <Input value={productForm.images} onChange={e => setProductForm({ ...productForm, images: e.target.value })} className="bg-white/5 border-white/10 text-[10px]" placeholder="Cole URLs separadas por vírgula se preferir" />
+                <Label className="text-[9px] text-[#660e14]/40 uppercase font-black">URLs Manuais (Opcional)</Label>
+                <Input value={productForm.images} onChange={e => setProductForm({ ...productForm, images: e.target.value })} className="bg-white border-black/5 text-[10px] text-[#660e14]" placeholder="Cole URLs separadas por vírgula se preferir" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Tamanhos (separados por vírgula)</Label>
-                <Input required value={productForm.sizes} onChange={e => setProductForm({ ...productForm, sizes: e.target.value })} className="bg-white/5 border-white/10" placeholder="Ex: 35, 36, 37, 38" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Tamanhos (separados por vírgula)</Label>
+                <Input required value={productForm.sizes} onChange={e => setProductForm({ ...productForm, sizes: e.target.value })} className="bg-white border-black/5 text-[#660e14]" placeholder="Ex: 35, 36, 37, 38" />
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Cores (separadas por vírgula)</Label>
-                <Input value={productForm.colors} onChange={e => setProductForm({ ...productForm, colors: e.target.value })} className="bg-white/5 border-white/10" placeholder="Ex: Branco, Preto" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Cores (separadas por vírgula)</Label>
+                <Input value={productForm.colors} onChange={e => setProductForm({ ...productForm, colors: e.target.value })} className="bg-white border-black/5 text-[#660e14]" placeholder="Ex: Branco, Preto" />
+              </div>
+            </div>
+
+            {/* Logística (Melhor Envio) */}
+            <div className="p-6 rounded-2xl bg-[#ad2335]/5 border border-[#ad2335]/10 space-y-4">
+              <Label className="text-[10px] uppercase font-black text-[#ad2335] flex items-center gap-2">
+                <Truck className="size-3" /> Logística (Melhor Envio)
+              </Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-[9px] uppercase font-bold text-[#660e14]/40">CEP de Origem (Fornecedor)</Label>
+                  <Input value={productForm.fromZip} onChange={e => setProductForm({ ...productForm, fromZip: e.target.value })} className="bg-[#660e14]/5 border-black/5 h-10" placeholder="Ex: 01103-000" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[9px] uppercase font-bold text-[#660e14]/40">Peso (kg)</Label>
+                  <Input type="number" step="0.1" value={productForm.weight} onChange={e => setProductForm({ ...productForm, weight: parseFloat(e.target.value) })} className="bg-[#660e14]/5 border-black/5 h-10" />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-[9px] uppercase font-bold text-[#660e14]/40">Largura (cm)</Label>
+                  <Input type="number" value={productForm.width} onChange={e => setProductForm({ ...productForm, width: parseFloat(e.target.value) })} className="bg-[#660e14]/5 border-black/5 h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[9px] uppercase font-bold text-[#660e14]/40">Altura (cm)</Label>
+                  <Input type="number" value={productForm.height} onChange={e => setProductForm({ ...productForm, height: parseFloat(e.target.value) })} className="bg-[#660e14]/5 border-black/5 h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[9px] uppercase font-bold text-[#660e14]/40">Comprimento (cm)</Label>
+                  <Input type="number" value={productForm.length} onChange={e => setProductForm({ ...productForm, length: parseFloat(e.target.value) })} className="bg-[#660e14]/5 border-black/5 h-10" />
+                </div>
               </div>
             </div>
 
             {/* Configuração Avançada de Estoque */}
             {productForm.colors && productForm.sizes && (
-              <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
-                <Label className="text-[10px] uppercase font-black text-[#38b6ff] flex items-center gap-2">
-                  <Settings2 className="size-3" /> Configuração de Estoque por Cor
+              <div className="p-6 rounded-2xl bg-[#660e14]/5 border border-[#660e14]/10 space-y-4">
+                <Label className="text-[10px] uppercase font-black text-[#660e14] flex items-center gap-2">
+                  <Settings2 className="size-3 text-[#ad2335]" /> Configuração de Estoque por Cor
                 </Label>
                 
                 <div className="space-y-6">
                   {productForm.colors.split(",").map(c => c.trim()).filter(Boolean).map(color => (
                     <div key={color} className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <div className="size-2 rounded-full bg-[#ea3372]" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">{color}</p>
+                        <div className="size-2 rounded-full bg-[#ad2335]" />
+                        <p className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/60">{color}</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {productForm.sizes.split(",").map(s => s.trim()).filter(Boolean).map(size => {
@@ -835,8 +878,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                               className={cn(
                                 "h-8 min-w-[40px] px-2 rounded-lg border text-[10px] font-black transition-all",
                                 isSelected 
-                                  ? "bg-[#ea3372] border-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20" 
-                                  : "bg-white/5 border-white/10 text-white/40 hover:border-white/20"
+                                  ? "bg-[#ad2335] border-[#ad2335] text-white shadow-lg shadow-[#ad2335]/20" 
+                                  : "bg-[#660e14]/5 border-[#660e14]/10 text-[#660e14]/40 hover:border-[#660e14]/20"
                               )}
                             >
                               {size}
@@ -860,8 +903,9 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   <Switch
                     checked={(productForm as any)[opt.id]}
                     onCheckedChange={(v: boolean) => setProductForm({ ...productForm, [opt.id]: v })}
+                    className="data-[state=checked]:bg-[#ad2335]"
                   />
-                  <Label className="text-[9px] uppercase font-black text-white/40">{opt.label}</Label>
+                  <Label className="text-[9px] uppercase font-black text-[#660e14]/40">{opt.label}</Label>
                 </div>
               ))}
             </div>
