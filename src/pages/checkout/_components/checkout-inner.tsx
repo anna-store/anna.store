@@ -189,44 +189,47 @@ export default function CheckoutInner() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#fdf0e3] pb-20">
+      <div className="max-w-6xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <Button
           variant="ghost"
           size="icon"
-          className="cursor-pointer"
+          className="cursor-pointer hover:bg-[#660e14]/5 text-[#660e14] rounded-full"
           onClick={() => step === "confirm" ? setStep("address") : navigate("/carrinho")}
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
         <div>
-          <h1 className="text-2xl font-black">Finalizar Compra</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-5xl md:text-6xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>
+            Finalizar Compra
+          </h1>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#660e14]/40 mt-1 ml-1">
             {step === "address" ? "Passo 1 de 2 — Endereço de entrega" : "Passo 2 de 2 — Confirmar pedido"}
           </p>
         </div>
       </div>
 
       {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-8">
+      <div className="flex items-center gap-2 mb-12 ml-1">
         {(["address", "confirm"] as const).map((s, i) => (
           <div key={s} className="flex items-center gap-2">
             <div className={cn(
-              "h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors",
+              "h-10 w-10 rounded-full flex items-center justify-center text-xs font-black transition-all duration-500",
               step === s || (s === "address" && step === "confirm")
-                ? "bg-[#ea3372] text-white"
-                : "bg-muted text-muted-foreground"
+                ? "bg-[#660e14] text-white scale-110 shadow-lg"
+                : "bg-white/40 text-[#660e14]/30 border border-black/5"
             )}>
-              {i + 1}
+              0{i + 1}
             </div>
             <span className={cn(
-              "text-sm font-medium hidden sm:block",
-              step === s ? "text-foreground" : "text-muted-foreground"
+              "text-[10px] font-black uppercase tracking-[0.2em] hidden sm:block",
+              step === s ? "text-[#660e14]" : "text-[#660e14]/20"
             )}>
-              {s === "address" ? "Endereço" : "Confirmar"}
+              {s === "address" ? "Entrega" : "Pagamento"}
             </span>
-            {i < 1 && <div className="h-px w-8 bg-border mx-1" />}
+            {i < 1 && <div className="h-[2px] w-12 bg-[#660e14]/10 mx-2 rounded-full" />}
           </div>
         ))}
       </div>
@@ -244,107 +247,107 @@ export default function CheckoutInner() {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <MapPin className="h-5 w-5 text-[#ea3372]" />
+                <Card className="bg-white/40 backdrop-blur-md border-black/5 shadow-xl rounded-[32px] overflow-hidden">
+                  <CardHeader className="bg-white/20 border-b border-black/5">
+                    <CardTitle className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]">
+                      <MapPin className="h-4 w-4 text-[#ad2335]" />
                       Endereço de Entrega
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-8">
                     <form onSubmit={handleSubmit(onAddressSubmit)} className="space-y-4">
                       {currentUser && (
-                        <div className="bg-muted/50 rounded-lg px-4 py-3 text-sm text-muted-foreground">
+                        <div className="bg-[#660e14]/5 rounded-2xl px-5 py-4 text-[10px] font-black uppercase tracking-widest text-[#660e14]/60 mb-6 border border-[#660e14]/10">
                           Entregando para:{" "}
-                          <span className="font-semibold text-foreground">
+                          <span className="text-[#ad2335]">
                             {currentUser.name ?? currentUser.email}
                           </span>
                         </div>
                       )}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        <div className="sm:col-span-3 space-y-1">
-                          <Label htmlFor="street">Rua</Label>
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                        <div className="sm:col-span-3 space-y-2">
+                          <Label htmlFor="street" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Logradouro</Label>
                           <Input
                             id="street"
                             {...register("street")}
                             placeholder="Rua das Flores"
-                            className={errors.street ? "border-destructive" : ""}
+                            className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.street ? "border-destructive" : "")}
                           />
-                          {errors.street && <p className="text-xs text-destructive">{errors.street.message}</p>}
+                          {errors.street && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.street.message}</p>}
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="number">Número</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="number" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Nº</Label>
                           <Input
                             id="number"
                             {...register("number")}
                             placeholder="123"
-                            className={errors.number ? "border-destructive" : ""}
+                            className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.number ? "border-destructive" : "")}
                           />
-                          {errors.number && <p className="text-xs text-destructive">{errors.number.message}</p>}
+                          {errors.number && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.number.message}</p>}
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <Label htmlFor="neighborhood">Bairro</Label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="neighborhood" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Bairro</Label>
                           <Input
                             id="neighborhood"
                             {...register("neighborhood")}
                             placeholder="Seu bairro"
-                            className={errors.neighborhood ? "border-destructive" : ""}
+                            className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.neighborhood ? "border-destructive" : "")}
                           />
-                          {errors.neighborhood && <p className="text-xs text-destructive">{errors.neighborhood.message}</p>}
+                          {errors.neighborhood && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.neighborhood.message}</p>}
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="complement">Complemento (opcional)</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="complement" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Complemento</Label>
                           <Input
                             id="complement"
                             {...register("complement")}
                             placeholder="Apto, Bloco, etc."
-                            className={errors.complement ? "border-destructive" : ""}
+                            className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]"
                           />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <Label htmlFor="city">Cidade</Label>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="city" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Cidade</Label>
                           <Input
                             id="city"
                             {...register("city")}
                             placeholder="São Paulo"
-                            className={errors.city ? "border-destructive" : ""}
+                            className={cn("bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.city ? "border-destructive" : "")}
                           />
-                          {errors.city && <p className="text-xs text-destructive">{errors.city.message}</p>}
+                          {errors.city && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.city.message}</p>}
                         </div>
-                        <div className="space-y-1">
-                          <Label htmlFor="state">Estado (sigla)</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="state" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">UF</Label>
                           <Input
                             id="state"
                             {...register("state")}
                             placeholder="SP"
                             maxLength={2}
-                            className={cn("uppercase", errors.state ? "border-destructive" : "")}
+                            className={cn("uppercase bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.state ? "border-destructive" : "")}
                           />
-                          {errors.state && <p className="text-xs text-destructive">{errors.state.message}</p>}
+                          {errors.state && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.state.message}</p>}
                         </div>
                       </div>
 
-                      <div className="space-y-1">
-                        <Label htmlFor="zip">CEP</Label>
+                      <div className="space-y-2">
+                        <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
                         <Input
                           id="zip"
                           {...register("zip")}
                           placeholder="01310-100"
-                          className={cn("max-w-xs", errors.zip ? "border-destructive" : "")}
+                          className={cn("max-w-[200px] bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]", errors.zip ? "border-destructive" : "")}
                         />
-                        {errors.zip && <p className="text-xs text-destructive">{errors.zip.message}</p>}
+                        {errors.zip && <p className="text-[10px] font-bold text-destructive uppercase tracking-widest ml-1">{errors.zip.message}</p>}
                       </div>
 
                       <Button
                         type="submit"
-                        className="w-full h-12 bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold cursor-pointer mt-2"
+                        className="w-full h-16 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-[20px] transition-all duration-500 shadow-xl shadow-[#660e14]/10 mt-4"
                       >
                         Continuar para Pagamento
                         <ChevronRight className="ml-1 h-4 w-4" />
@@ -366,16 +369,18 @@ export default function CheckoutInner() {
                 className="space-y-4"
               >
                 {/* Address summary */}
-                <Card>
-                  <CardContent className="py-4 flex items-center justify-between gap-3">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-4 w-4 text-[#ea3372] mt-0.5 shrink-0" />
-                      <div className="text-sm">
-                        <p className="font-medium">{getValues("street")}, {getValues("number")}</p>
-                        <p className="text-muted-foreground">
+                <Card className="bg-white/40 backdrop-blur-md border-black/5 shadow-lg rounded-[24px] overflow-hidden">
+                  <CardContent className="py-5 flex items-center justify-between gap-3">
+                    <div className="flex items-start gap-4">
+                      <div className="size-10 bg-[#ad2335]/10 rounded-full flex items-center justify-center shrink-0">
+                        <MapPin className="h-5 w-5 text-[#ad2335]" />
+                      </div>
+                      <div className="text-[11px] font-black uppercase tracking-widest text-[#660e14]/60 leading-relaxed">
+                        <p className="text-[#660e14] text-xs mb-1">{getValues("street")}, {getValues("number")}</p>
+                        <p>
                           {getValues("neighborhood")}{getValues("complement") ? ` — ${getValues("complement")}` : ""}
                         </p>
-                        <p className="text-muted-foreground">
+                        <p>
                           {getValues("city")}, {getValues("state").toUpperCase()} — {getValues("zip")}
                         </p>
                       </div>
@@ -383,7 +388,7 @@ export default function CheckoutInner() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-[#38b6ff] cursor-pointer shrink-0"
+                      className="text-[#ad2335] font-black uppercase tracking-widest text-[10px] hover:bg-[#ad2335]/5 rounded-xl shrink-0"
                       onClick={() => setStep("address")}
                     >
                       Editar
@@ -392,30 +397,29 @@ export default function CheckoutInner() {
                 </Card>
 
                 {/* MP payment info */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <CreditCard className="h-5 w-5 text-[#ea3372]" />
+                <Card className="bg-white/40 backdrop-blur-md border-black/5 shadow-xl rounded-[32px] overflow-hidden">
+                  <CardHeader className="bg-white/20 border-b border-black/5">
+                    <CardTitle className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]">
+                      <CreditCard className="h-4 w-4 text-[#ad2335]" />
                       Pagamento via Mercado Pago
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-[#009ee3]/5 border border-[#009ee3]/20 rounded-xl p-4 space-y-3">
-                      <div className="flex items-center gap-3">
+                    <div className="bg-[#009ee3]/5 border border-[#009ee3]/10 rounded-3xl p-6 space-y-4">
+                      <div className="flex items-center gap-4">
                         {/* MP logo */}
-                        <div className="h-10 w-10 rounded-lg bg-[#009ee3] flex items-center justify-center shrink-0">
-                          <span className="text-white font-black text-xs">MP</span>
+                        <div className="h-12 w-12 rounded-2xl bg-[#009ee3] flex items-center justify-center shrink-0 shadow-lg shadow-[#009ee3]/20">
+                          <span className="text-white font-black text-sm">MP</span>
                         </div>
                         <div>
-                          <p className="text-sm font-semibold">Checkout Mercado Pago</p>
-                          <p className="text-xs text-muted-foreground">
-                            PIX, Boleto, Cartão de Crédito/Débito e mais
+                          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#009ee3]">Checkout Seguro</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            PIX, Boleto e Cartões
                           </p>
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        Você será redirecionado para o ambiente seguro do Mercado Pago para escolher sua forma de
-                        pagamento e concluir a compra.
+                      <p className="text-[10px] font-bold text-[#660e14]/40 uppercase tracking-widest leading-relaxed">
+                        Você será redirecionado para o ambiente seguro do Mercado Pago para concluir sua transação com total proteção de dados.
                       </p>
                     </div>
 
@@ -424,14 +428,14 @@ export default function CheckoutInner() {
                 </Card>
 
                 <Button
-                  className="w-full h-12 bg-[#009ee3] hover:bg-[#0082c8] text-white font-bold cursor-pointer gap-2"
+                  className="w-full h-16 bg-[#009ee3] hover:bg-[#0082c8] text-white font-black uppercase tracking-[0.3em] text-[11px] rounded-[24px] transition-all duration-500 shadow-xl shadow-[#009ee3]/10 gap-2"
                   onClick={onPay}
                   disabled={submitting}
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Aguarde...
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Processando...
                     </>
                   ) : (
                     <>
@@ -450,19 +454,19 @@ export default function CheckoutInner() {
         {/* ── Right: Order Summary ── */}
         <div>
           <div className="sticky top-24">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Resumo do Pedido</CardTitle>
+            <Card className="bg-white/40 backdrop-blur-md border-black/5 shadow-xl rounded-[32px] overflow-hidden">
+              <CardHeader className="bg-white/20 border-b border-black/5">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]">Resumo do Pedido</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6 pt-8">
                 {/* Items */}
-                <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
+                <div className="space-y-4 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
                   {items.map((item) => (
                     <div
                       key={`${item.productId}-${item.size}-${item.color}`}
-                      className="flex gap-3 items-center"
+                      className="flex gap-4 items-center"
                     >
-                      <div className="h-14 w-14 rounded-lg overflow-hidden bg-muted shrink-0">
+                      <div className="h-16 w-16 rounded-2xl overflow-hidden bg-white/40 border border-black/5 shrink-0">
                         <img
                           src={item.image}
                           alt={item.name}
@@ -470,37 +474,37 @@ export default function CheckoutInner() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium line-clamp-1">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-[#660e14] line-clamp-1">{item.name}</p>
+                        <p className="text-[9px] font-bold text-[#660e14]/40 uppercase tracking-widest mt-0.5">
                           Nº {item.size} · Qtd {item.quantity}
                         </p>
                       </div>
-                      <p className="text-xs font-semibold shrink-0">
+                      <p className="text-xs font-black text-[#660e14] shrink-0">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                   ))}
                 </div>
 
-                <Separator />
+                <Separator className="bg-black/5" />
 
                 {/* Pricing */}
-                <div className="space-y-2 text-sm">
+                <div className="space-y-3 text-[10px] font-black uppercase tracking-widest text-[#660e14]/60">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <span>Subtotal</span>
+                    <span className="text-[#660e14]">{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
-                    <div className="flex justify-between text-green-600">
+                    <div className="flex justify-between text-[#ad2335]">
                       <span>Desconto {appliedCoupon?.code ? `(${appliedCoupon.code})` : ""}</span>
                       <span>- {formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frete</span>
+                    <span>Frete</span>
                     <span className={cn(
-                      effectiveShipping === 0 && hasShipping ? "text-green-600 font-bold" : "",
-                      !hasShipping && !appliedCoupon?.freeShipping ? "text-muted-foreground italic text-[10px]" : ""
+                      "text-[#660e14]",
+                      effectiveShipping === 0 && hasShipping ? "text-[#ad2335] font-black" : "",
                     )}>
                       {appliedCoupon?.freeShipping 
                         ? "Grátis" 
@@ -511,17 +515,18 @@ export default function CheckoutInner() {
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-black/5" />
 
-                <div className="flex justify-between font-black text-lg">
-                  <span>Total</span>
-                  <span className="text-[#ea3372]">
+                <div className="flex justify-between font-normal text-2xl text-[#660e14]">
+                  <span style={{ fontFamily: "'Last Dream', cursive" }}>Total</span>
+                  <span className="text-[#ad2335] font-black text-xl tracking-tighter">
                     {hasShipping || appliedCoupon?.freeShipping ? formatPrice(total) : "—"}
                   </span>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </div>
     </div>

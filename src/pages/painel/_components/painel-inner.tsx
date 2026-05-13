@@ -322,42 +322,53 @@ export default function PainelInner() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+    <div className="min-h-screen bg-[#fdf0e3] pb-24">
+      <div className="max-w-5xl mx-auto px-4 py-16 space-y-10">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Meu Painel</h1>
-        <Button variant="ghost" size="sm" className="text-muted-foreground gap-2" onClick={() => removeUser()}>
+        <div>
+          <h1 className="text-5xl md:text-6xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>
+            Meu Perfil
+          </h1>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#660e14]/40 mt-1 ml-1">Dashboard de Membro VIP</p>
+        </div>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="text-[#ad2335] font-black uppercase tracking-widest text-[10px] hover:bg-[#ad2335]/5 rounded-xl gap-2 h-10 px-4" 
+          onClick={() => removeUser()}
+        >
           <LogOut className="h-4 w-4" />
-          Sair
+          Sair da Conta
         </Button>
       </div>
 
       {/* Profile Card */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
-            Meu Perfil
+      <Card className="bg-white/40 backdrop-blur-md border-black/5 shadow-xl rounded-[32px] overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between bg-white/20 border-b border-black/5 px-8 py-5">
+          <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14] flex items-center gap-2">
+            <User className="h-4 w-4 text-[#ad2335]" />
+            Informações da Conta
           </CardTitle>
           {!editing ? (
-            <Button variant="ghost" size="sm" className="gap-1 cursor-pointer" onClick={startEdit}>
+            <Button variant="ghost" size="sm" className="text-[#660e14]/60 hover:text-[#ad2335] font-black uppercase tracking-widest text-[10px] gap-2 rounded-xl h-10 px-4" onClick={startEdit}>
               <Pencil className="h-3.5 w-3.5" />
-              Editar
+              Editar Dados
             </Button>
           ) : (
-            <div className="flex gap-1">
-              <Button variant="ghost" size="sm" className="gap-1 text-green-600 cursor-pointer" onClick={saveEdit}>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="sm" className="text-green-600 hover:bg-green-50 font-black uppercase tracking-widest text-[10px] gap-2 rounded-xl h-10 px-4" onClick={saveEdit}>
                 <Check className="h-3.5 w-3.5" />
                 Salvar
               </Button>
-              <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground cursor-pointer" onClick={() => setEditing(false)}>
+              <Button variant="ghost" size="sm" className="text-[#660e14]/40 hover:bg-[#660e14]/5 font-black uppercase tracking-widest text-[10px] gap-2 rounded-xl h-10 px-4" onClick={() => setEditing(false)}>
                 <X className="h-3.5 w-3.5" />
                 Cancelar
               </Button>
             </div>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8">
           {currentUser === undefined ? (
             <div className="flex gap-4 items-center">
               <Skeleton className="h-16 w-16 rounded-full" />
@@ -367,33 +378,38 @@ export default function PainelInner() {
               </div>
             </div>
           ) : (
-            <div className="flex gap-4 items-start">
-              <Avatar className="h-16 w-16 shrink-0">
-                <AvatarImage src={avatarSrc} />
-                <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
-                  {(currentUser?.name ?? user?.name ?? "U").charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 space-y-3">
+            <div className="flex gap-6 items-start">
+              <div className="relative group">
+                <Avatar className="h-20 w-20 ring-4 ring-white shadow-xl ring-offset-0">
+                  <AvatarImage src={avatarSrc} />
+                  <AvatarFallback className="bg-[#660e14] text-white text-2xl font-black">
+                    {(currentUser?.name ?? user?.name ?? "U").charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 size-6 bg-[#ad2335] rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+                  <CircleCheck className="size-3 text-white" />
+                </div>
+              </div>
+              <div className="flex-1 space-y-6">
                 {editing ? (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <Label htmlFor="name">Nome</Label>
-                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu nome" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Nome Completo</Label>
+                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu nome" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="phone">Telefone</Label>
-                        <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(11) 99999-9999" />
+                      <div className="space-y-2">
+                        <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Telefone</Label>
+                        <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(11) 99999-9999" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
                     </div>
                     
-                    <Separator />
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Endereço de Entrega</p>
+                    <Separator className="bg-[#660e14]/5" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#ad2335]/60">Endereço de Entrega</p>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                      <div className="space-y-1">
-                        <Label htmlFor="zip">CEP</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="zip" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">CEP</Label>
                         <Input 
                           id="zip" 
                           value={zip} 
@@ -402,63 +418,72 @@ export default function PainelInner() {
                             handleZipLookup(e.target.value);
                           }} 
                           placeholder="00000-000" 
+                          className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]"
                         />
                       </div>
-                      <div className="sm:col-span-2 space-y-1">
-                        <Label htmlFor="street">Rua</Label>
-                        <Input id="street" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Sua rua" />
+                      <div className="sm:col-span-2 space-y-2">
+                        <Label htmlFor="street" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Rua</Label>
+                        <Input id="street" value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Sua rua" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="number">Número</Label>
-                        <Input id="number" value={number} onChange={(e) => setNumber(e.target.value)} placeholder="123" />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <Label htmlFor="neighborhood">Bairro</Label>
-                        <Input id="neighborhood" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Seu bairro" />
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="complement">Complemento</Label>
-                        <Input id="complement" value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto, bloco, etc." />
+                      <div className="space-y-2">
+                        <Label htmlFor="number" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Nº</Label>
+                        <Input id="number" value={number} onChange={(e) => setNumber(e.target.value)} placeholder="123" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      <div className="col-span-2 space-y-1">
-                        <Label htmlFor="city">Cidade</Label>
-                        <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Sua cidade" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="neighborhood" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Bairro</Label>
+                        <Input id="neighborhood" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Seu bairro" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="state">Estado (UF)</Label>
-                        <Input id="state" value={state} onChange={(e) => setState(e.target.value.toUpperCase())} maxLength={2} placeholder="SP" />
+                      <div className="space-y-2">
+                        <Label htmlFor="complement" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Complemento</Label>
+                        <Input id="complement" value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto, bloco, etc." className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                      <div className="col-span-2 space-y-2">
+                        <Label htmlFor="city" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Cidade</Label>
+                        <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Sua cidade" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="state" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">UF</Label>
+                        <Input id="state" value={state} onChange={(e) => setState(e.target.value.toUpperCase())} maxLength={2} placeholder="SP" className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]" />
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">Informações Pessoais</p>
-                      <p className="font-medium">{currentUser?.name ?? "—"}</p>
-                      <p className="text-muted-foreground">{currentUser?.email ?? user?.email ?? "—"}</p>
-                      <p className="text-muted-foreground">{currentUser?.phone ?? "—"}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12 text-sm">
+                    <div className="space-y-3">
+                      <p className="text-[#ad2335] text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                        <div className="size-1.5 rounded-full bg-[#ad2335]" />
+                        Informações Pessoais
+                      </p>
+                      <p className="text-xl font-black text-[#660e14] tracking-tight">{currentUser?.name ?? "Membro AnnaSt"}</p>
+                      <div className="space-y-1 text-[#660e14]/60 font-bold uppercase text-[10px] tracking-widest">
+                        <p>{currentUser?.email ?? user?.email ?? "—"}</p>
+                        <p>{currentUser?.phone ?? "Telefone não informado"}</p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">Endereço Padrão</p>
+                    <div className="space-y-3">
+                      <p className="text-[#ad2335] text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                        <div className="size-1.5 rounded-full bg-[#ad2335]" />
+                        Endereço de Entrega
+                      </p>
                       {currentUser?.zip ? (
-                        <>
-                          <p className="font-medium">{currentUser.street}, {currentUser.number}</p>
-                          <p className="text-muted-foreground">
+                        <div className="text-[11px] font-black uppercase tracking-widest text-[#660e14] leading-relaxed">
+                          <p className="text-sm mb-1">{currentUser.street}, {currentUser.number}</p>
+                          <p className="text-[#660e14]/60">
                             {currentUser.neighborhood && `${currentUser.neighborhood}`}
                             {currentUser.complement && ` — ${currentUser.complement}`}
                           </p>
-                          <p className="text-muted-foreground">
+                          <p className="text-[#660e14]/60">
                             {currentUser.city}, {currentUser.state} — {currentUser.zip}
                           </p>
-                        </>
+                        </div>
                       ) : (
-                        <p className="text-muted-foreground italic">Nenhum endereço cadastrado</p>
+                        <p className="text-[#660e14]/40 font-bold italic text-xs">Nenhum endereço cadastrado</p>
                       )}
                     </div>
                   </div>
@@ -467,62 +492,64 @@ export default function PainelInner() {
             </div>
           )}
           
-          <Separator className="my-6" />
+          <Separator className="my-8 bg-[#660e14]/5" />
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <RefreshCw className="h-4 w-4 text-primary" />
-                <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Segurança</p>
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+                  <RefreshCw className="h-4 w-4 text-[#ad2335]" />
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/60">Segurança da Conta</p>
               </div>
               {!showPasswordForm ? (
-                <Button variant="outline" size="sm" onClick={() => setShowPasswordForm(true)} className="text-xs gap-2 cursor-pointer">
+                <Button variant="outline" size="sm" onClick={() => setShowPasswordForm(true)} className="text-[10px] font-black uppercase tracking-widest gap-2 border-[#660e14]/10 text-[#660e14] hover:bg-[#660e14]/5 rounded-xl h-10 px-4">
                   <Pencil className="h-3 w-3" /> Alterar Senha
                 </Button>
               ) : (
-                <Button variant="ghost" size="sm" onClick={() => setShowPasswordForm(false)} className="text-xs cursor-pointer">
+                <Button variant="ghost" size="sm" onClick={() => setShowPasswordForm(false)} className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 hover:bg-[#660e14]/5 rounded-xl h-10 px-4">
                   Cancelar
                 </Button>
               )}
             </div>
             
             {showPasswordForm && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-xl border animate-in slide-in-from-top-2 duration-200">
-                <div className="space-y-1">
-                  <Label htmlFor="new-password">Nova Senha</Label>
-                  <div className="relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-[#660e14]/5 p-8 rounded-[24px] border border-[#660e14]/5 animate-in slide-in-from-top-4 duration-500">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Nova Senha</Label>
+                  <div className="relative group">
                     <Input 
                       id="new-password" 
                       type={showNewPassword ? "text" : "password"} 
                       value={newPassword} 
                       onChange={(e) => setNewPassword(e.target.value)} 
                       placeholder="Mínimo 6 caracteres"
-                      className="pr-10"
+                      className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14] pr-12"
                     />
                     <button 
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#660e14]/20 hover:text-[#ad2335] transition-colors"
                     >
                       {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="confirm-password">Confirmar Senha</Label>
-                  <div className="relative">
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password" className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 ml-1">Confirmar Senha</Label>
+                  <div className="relative group">
                     <Input 
                       id="confirm-password" 
                       type={showConfirmPassword ? "text" : "password"} 
                       value={confirmPassword} 
                       onChange={(e) => setConfirmPassword(e.target.value)} 
                       placeholder="Repita a nova senha"
-                      className="pr-10"
+                      className="bg-white/60 border-black/5 h-14 rounded-2xl focus:border-[#ad2335]/40 text-[#660e14] pr-12"
                     />
                     <button 
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#660e14]/20 hover:text-[#ad2335] transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -532,9 +559,9 @@ export default function PainelInner() {
                   <Button 
                     onClick={handleUpdatePassword} 
                     disabled={passwordLoading || !newPassword || !confirmPassword}
-                    className="w-full sm:w-auto h-10 px-8 gap-2 bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold"
+                    className="w-full sm:w-auto h-14 px-10 gap-2 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-widest text-[11px] rounded-2xl shadow-xl shadow-[#660e14]/10 transition-all duration-500"
                   >
-                    {passwordLoading ? "Atualizando..." : "Confirmar Nova Senha"}
+                    {passwordLoading ? "Atualizando..." : "Salvar Nova Senha"}
                   </Button>
                 </div>
               </div>
@@ -544,20 +571,20 @@ export default function PainelInner() {
       </Card>
 
       {/* Support Card */}
-      <Card className="bg-gradient-to-br from-[#ea3372]/5 to-transparent border-[#ea3372]/10 shadow-xl shadow-[#ea3372]/5">
-        <CardContent className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-5 text-center sm:text-left">
-            <div className="size-14 rounded-2xl bg-[#ea3372]/10 flex items-center justify-center border border-[#ea3372]/20 shadow-inner">
-              <MessageSquareText className="h-7 w-7 text-[#ea3372]" />
+      <Card className="bg-white/40 backdrop-blur-md border-[#ad2335]/10 shadow-xl rounded-[32px] overflow-hidden">
+        <CardContent className="p-8 flex flex-col sm:flex-row items-center justify-between gap-8">
+          <div className="flex items-center gap-6 text-center sm:text-left">
+            <div className="size-16 rounded-[20px] bg-[#ad2335]/10 flex items-center justify-center border border-[#ad2335]/20 shadow-inner">
+              <MessageSquareText className="h-8 w-8 text-[#ad2335]" />
             </div>
             <div>
-              <h3 className="font-black italic uppercase tracking-tight text-xl leading-tight">Dúvidas com seu pedido?</h3>
-              <p className="text-xs text-muted-foreground font-medium mt-1">Nossa equipe de suporte está online para te atender agora.</p>
+              <h3 className="text-xl font-black text-[#660e14] tracking-tight">Dúvidas com seu pedido?</h3>
+              <p className="text-[10px] font-bold text-[#660e14]/40 uppercase tracking-[0.2em] mt-1">Nossa equipe VIP está pronta para te ajudar.</p>
             </div>
           </div>
           <Button
             asChild
-            className="bg-[#25d366] hover:bg-[#128c7e] text-white font-black px-8 py-6 rounded-2xl shadow-xl shadow-[#25d366]/20 gap-3 w-full sm:w-auto transition-all hover:scale-105 active:scale-95"
+            className="bg-[#25d366] hover:bg-[#128c7e] text-white font-black uppercase tracking-widest text-[11px] px-10 py-8 rounded-2xl shadow-xl shadow-[#25d366]/10 gap-3 w-full sm:w-auto transition-all duration-500 hover:scale-105"
           >
             <a href="https://wa.me/5531998523315" target="_blank" rel="noopener noreferrer">
               <MessageSquareText className="h-5 w-5" />
@@ -756,6 +783,7 @@ export default function PainelInner() {
         );
       })()}
 
+      </div>
     </div>
   );
 }

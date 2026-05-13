@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@700;900&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Last Dream';
+  src: url('/fontes/Last Dream.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-background: hsl(0 0% 0%);
   --color-foreground: hsl(0 0% 100%);
@@ -92,9 +99,17 @@ body {
 
 /* Global Print Styles */
 @media print {
+
   /* Hide specific UI elements and FORCE hide VLibras */
-  nav, footer, header, button, .no-print, 
-  [vw], .vpw-container, #vlibras-widget, .vw-plugin-wrapper {
+  nav,
+  footer,
+  header,
+  button,
+  .no-print,
+  [vw],
+  .vpw-container,
+  #vlibras-widget,
+  .vw-plugin-wrapper {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;

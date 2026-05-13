@@ -39,14 +39,14 @@ type Tab = "overview" | "orders" | "products" | "users" | "coupons" | "exchanges
 const ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"] as const;
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
-  pending: { label: "Pendente", color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/5" },
-  confirmed: { label: "Confirmado", color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
-  shipped: { label: "Enviado", color: "text-purple-500 border-purple-500/20 bg-purple-500/5" },
-  delivered: { label: "Entregue", color: "text-green-500 border-green-500/20 bg-green-500/5" },
-  cancelled: { label: "Cancelado", color: "text-red-500 border-red-500/20 bg-red-500/5" },
-  approved: { label: "Aprovado", color: "text-green-500 border-green-500/20 bg-green-500/5" },
-  rejected: { label: "Rejeitado", color: "text-red-500 border-red-500/20 bg-red-500/5" },
-  completed: { label: "Concluído", color: "text-blue-500 border-blue-500/20 bg-blue-500/5" },
+  pending: { label: "Pendente", color: "text-amber-600 border-amber-200 bg-amber-50" },
+  confirmed: { label: "Confirmado", color: "text-blue-600 border-blue-200 bg-blue-50" },
+  shipped: { label: "Enviado", color: "text-purple-600 border-purple-200 bg-purple-50" },
+  delivered: { label: "Entregue", color: "text-green-600 border-green-200 bg-green-50" },
+  cancelled: { label: "Cancelado", color: "text-red-600 border-red-200 bg-red-50" },
+  approved: { label: "Aprovado", color: "text-green-600 border-green-200 bg-green-50" },
+  rejected: { label: "Rejeitado", color: "text-red-600 border-red-200 bg-red-50" },
+  completed: { label: "Concluído", color: "text-blue-600 border-blue-200 bg-blue-50" },
 };
 
 function fmt(n: number | undefined | null) {
@@ -362,10 +362,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       {/* Componente de Recibo para Admin (Ordem de Entrega) */}
       <Receipt order={printingOrder} type="admin" />
 
-      <div className="flex min-h-screen bg-[#020202] text-white relative overflow-hidden font-sans print:hidden">
+      <div className="flex min-h-screen bg-[#fdf0e3] text-[#660e14] relative overflow-hidden font-sans print:hidden">
         {/* LUZES ATMOSFÉRICAS REFINADAS */}
-        <div className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-[#ea3372]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[#38b6ff]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-[#ad2335]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[#660e14]/5 blur-[160px] rounded-full pointer-events-none animate-pulse" style={{ animationDelay: '3s' }} />
 
         {/* Sidebar Sidebar Overlay (Mobile Only) */}
         <AnimatePresence>
@@ -382,19 +382,19 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
         {/* Sidebar com Glassmorphism */}
         <aside className={cn(
-          "fixed inset-y-0 left-0 w-72 border-r border-white/[0.03] bg-black/40 backdrop-blur-3xl p-6 flex flex-col gap-10 z-[50] transition-all duration-500 lg:relative lg:translate-x-0 lg:w-64",
-          isSidebarOpen ? "translate-x-0 shadow-2xl shadow-black" : "-translate-x-full"
+          "fixed inset-y-0 left-0 w-72 border-r border-black/5 bg-white/80 backdrop-blur-3xl p-6 flex flex-col gap-10 z-[50] transition-all duration-500 lg:relative lg:translate-x-0 lg:w-64",
+          isSidebarOpen ? "translate-x-0 shadow-2xl shadow-black/10" : "-translate-x-full"
         )}>
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3 px-1 group">
-              <div className="size-11 rounded-2xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] p-[1.5px] group-hover:scale-110 transition-all duration-700 shadow-lg shadow-[#ea3372]/10">
-                <div className="size-full bg-black rounded-2xl flex items-center justify-center">
-                  <span className="font-black text-white italic text-2xl tracking-tighter">A</span>
+              <div className="size-11 rounded-2xl bg-gradient-to-br from-[#660e14] to-[#ad2335] p-[1.5px] group-hover:scale-110 transition-all duration-700 shadow-lg shadow-[#660e14]/10">
+                <div className="size-full bg-white rounded-2xl flex items-center justify-center border border-white/50">
+                  <span className="font-black text-[#660e14] italic text-2xl tracking-tighter">A</span>
                 </div>
               </div>
               <div>
-                <p className="font-black italic text-xl leading-none tracking-tighter">ANNA<span className="text-[#ea3372]"> CORE</span></p>
-                <p className="text-[7px] font-black uppercase tracking-[0.4em] text-white/20 mt-1">Management Hub</p>
+                <p className="font-black italic text-xl leading-none tracking-tighter text-[#660e14]">ANNA<span className="text-[#ad2335]"> CORE</span></p>
+                <p className="text-[7px] font-black uppercase tracking-[0.4em] text-[#660e14]/20 mt-1">Management Hub</p>
               </div>
             </Link>
             <Button variant="ghost" size="icon" className="lg:hidden text-white/40" onClick={() => setIsSidebarOpen(false)}>
@@ -413,11 +413,11 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 className={cn(
                   "group flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden",
                   activeTab === item.id
-                    ? "bg-gradient-to-r from-[#ea3372] to-[#ea3372]/80 text-white shadow-xl shadow-[#ea3372]/20"
-                    : "text-white/30 hover:bg-white/5 hover:text-white"
+                    ? "bg-[#660e14] text-white shadow-xl shadow-[#660e14]/20"
+                    : "text-[#660e14]/30 hover:bg-[#660e14]/5 hover:text-[#660e14]"
                 )}
               >
-                <div className={cn("transition-all duration-300 group-hover:scale-125 group-hover:rotate-6", activeTab === item.id ? "text-white" : "text-white/30")}>
+                <div className={cn("transition-all duration-300 group-hover:scale-125 group-hover:rotate-6", activeTab === item.id ? "text-white" : "text-[#ad2335]")}>
                   {item.icon}
                 </div>
                 {item.label}
@@ -429,13 +429,13 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
           </nav>
 
           <div className="mt-auto space-y-4">
-            <div className="p-5 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.05] group hover:border-[#ea3372]/20 transition-colors duration-500">
-              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/10 mb-3">Administrador</p>
+            <div className="p-5 rounded-3xl bg-[#660e14]/5 border border-[#660e14]/5 group hover:border-[#ad2335]/20 transition-colors duration-500">
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#660e14]/20 mb-3">Administrador</p>
               <div className="flex items-center gap-3">
-                <div className="size-8 rounded-full bg-[#ea3372]/20 border border-[#ea3372]/30 flex items-center justify-center font-black italic text-[#ea3372] text-[10px]">
+                <div className="size-8 rounded-full bg-[#ad2335]/10 border border-[#ad2335]/30 flex items-center justify-center font-black italic text-[#ad2335] text-[10px]">
                   AS
                 </div>
-                <p className="text-[10px] font-bold text-white/40 truncate">{callerId.slice(0, 12)}...</p>
+                <p className="text-[10px] font-bold text-[#660e14]/40 truncate uppercase tracking-widest">{callerId.slice(0, 12)}...</p>
               </div>
             </div>
           </div>
@@ -443,21 +443,21 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto relative z-10 flex flex-col">
-          <header className="h-24 border-b border-white/[0.03] px-6 lg:px-10 flex items-center justify-between bg-black/20 backdrop-blur-xl sticky top-0 z-30">
+          <header className="h-24 border-b border-black/5 px-6 lg:px-10 flex items-center justify-between bg-white/20 backdrop-blur-xl sticky top-0 z-30">
             <div className="flex items-center gap-5">
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-white/60 hover:bg-white/5"
+                className="lg:hidden text-[#660e14]/60 hover:bg-[#660e14]/5"
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <LayoutDashboard className="size-6" />
               </Button>
               <div>
-                <h2 className="hidden lg:block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-1">Central de Comando</h2>
+                <h2 className="hidden lg:block text-[9px] font-black uppercase tracking-[0.4em] text-[#660e14]/20 mb-1">Central de Comando</h2>
                 <div className="flex items-center gap-3">
-                  <div className="size-1.5 rounded-full bg-[#ea3372] animate-pulse shadow-lg shadow-[#ea3372]/50" />
-                  <p className="text-xl lg:text-2xl font-black italic tracking-tighter">{NAV.find(n => n.id === activeTab)?.label}</p>
+                  <div className="size-1.5 rounded-full bg-[#ad2335] animate-pulse shadow-lg shadow-[#ad2335]/50" />
+                  <p className="text-xl lg:text-3xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>{NAV.find(n => n.id === activeTab)?.label}</p>
                 </div>
               </div>
             </div>
@@ -466,7 +466,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               {!notificationsEnabled ? (
                 <Button
                   onClick={requestNotificationPermission}
-                  className="bg-[#ea3372] hover:bg-[#c9295f] text-white h-11 px-5 rounded-2xl gap-3 text-[10px] font-black uppercase shadow-xl shadow-[#ea3372]/20 border border-white/10 transition-all active:scale-95"
+                  className="bg-[#ad2335] hover:bg-[#660e14] text-white h-11 px-6 rounded-2xl gap-3 text-[10px] font-black uppercase shadow-xl shadow-[#ad2335]/20 border-0 transition-all active:scale-95"
                 >
                   <Star className="size-3.5 animate-pulse" /> Ativar Alertas
                 </Button>
@@ -477,17 +477,17 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                     audio.play().catch(() => toast.error("Permita o áudio no navegador"));
                     toast.success("Sistema de Áudio Operacional! 💰", {
                       icon: "🔊",
-                      style: { background: "#0b0b0b", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }
+                      style: { background: "#ffffff", color: "#660e14", border: "1px solid rgba(0,0,0,0.05)" }
                     });
                   }}
                   variant="ghost"
-                  className="text-white/20 hover:text-[#38b6ff] hover:bg-white/5 h-11 px-4 rounded-2xl gap-3 text-[9px] font-black uppercase transition-all"
+                  className="text-[#660e14]/20 hover:text-[#ad2335] hover:bg-[#660e14]/5 h-11 px-4 rounded-2xl gap-3 text-[9px] font-black uppercase transition-all"
                 >
                   <TrendingUp className="size-3.5" /> Testar Terminal
                 </Button>
               )}
               {activeTab === "products" && (
-                <Button onClick={() => openProductModal()} className="bg-white text-black hover:bg-white/90 font-black h-11 px-5 rounded-2xl gap-2 shadow-xl shadow-white/5 transition-all active:scale-95">
+                <Button onClick={() => openProductModal()} className="bg-[#660e14] text-white hover:bg-[#ad2335] font-black h-11 px-6 rounded-2xl gap-2 shadow-xl shadow-[#660e14]/10 transition-all active:scale-95">
                   <Plus className="size-4" /> <span className="hidden sm:inline text-[10px] uppercase tracking-widest">Novo Item</span>
                 </Button>
               )}
@@ -507,62 +507,62 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                   <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {[
-                        { label: "Receita Bruta", value: fmt(stats.totalRevenue), icon: ShoppingBag, color: "text-[#ea3372]", bg: "bg-[#ea3372]/5" },
-                        { label: "Volume de Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#38b6ff]", bg: "bg-[#38b6ff]/5" },
-                        { label: "Base de Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-purple-500", bg: "bg-purple-500/5" },
-                        { label: "Ticket Médio", value: fmt(avgValue), icon: TrendingUp, color: "text-green-500", bg: "bg-green-500/5" },
+                        { label: "Receita Bruta", value: fmt(stats.totalRevenue), icon: ShoppingBag, color: "text-[#ad2335]", bg: "bg-[#ad2335]/10" },
+                        { label: "Volume de Pedidos", value: stats.totalOrders, icon: Package, color: "text-[#660e14]", bg: "bg-[#660e14]/10" },
+                        { label: "Base de Usuários", value: stats.totalUsers, icon: UsersRound, color: "text-[#660e14]", bg: "bg-[#660e14]/10" },
+                        { label: "Ticket Médio", value: fmt(avgValue), icon: TrendingUp, color: "text-green-600", bg: "bg-green-600/10" },
                       ].map((s, i) => (
-                        <div key={i} className="p-8 rounded-[32px] bg-white/[0.015] border border-white/[0.03] backdrop-blur-3xl group hover:border-white/10 transition-all duration-500 relative overflow-hidden">
-                          <div className={cn("absolute top-0 right-0 size-24 blur-[60px] opacity-20 transition-opacity group-hover:opacity-40", s.bg)} />
-                          <div className={cn("size-12 rounded-2xl flex items-center justify-center mb-6 border border-white/[0.05] transition-transform duration-500 group-hover:scale-110", s.bg)}>
+                        <div key={i} className="p-8 rounded-[32px] bg-white/40 border border-black/5 backdrop-blur-3xl group hover:border-[#660e14]/10 transition-all duration-500 relative overflow-hidden shadow-sm hover:shadow-xl">
+                          <div className={cn("absolute top-0 right-0 size-24 blur-[60px] opacity-10 transition-opacity group-hover:opacity-20", s.bg)} />
+                          <div className={cn("size-12 rounded-2xl flex items-center justify-center mb-6 border border-black/5 transition-transform duration-500 group-hover:scale-110", s.bg)}>
                             <s.icon className={cn("size-6", s.color)} />
                           </div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-2">{s.label}</p>
-                          <p className="text-3xl font-black text-white italic tracking-tighter">{s.value}</p>
+                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]/40 mb-2">{s.label}</p>
+                          <p className="text-3xl font-black text-[#660e14] italic tracking-tighter">{s.value}</p>
                         </div>
                       ))}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5">
-                        <h3 className="text-sm font-black uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
-                          <Package className="size-4" /> Pedidos Recentes
+                      <div className="p-8 rounded-[32px] bg-white/60 border border-black/5 shadow-sm">
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 mb-6 flex items-center gap-2">
+                          <Package className="size-4 text-[#ad2335]" /> Pedidos Recentes
                         </h3>
                         <div className="space-y-4">
                           {orders?.slice(0, 5).map(o => (
-                            <div key={o._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03]">
+                            <div key={o._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/40 border border-black/5 group hover:border-[#ad2335]/20 transition-all">
                               <div className="flex items-center gap-4">
-                                <div className="size-10 rounded-xl bg-white/5 flex items-center justify-center font-black text-[#ea3372] italic border border-white/10">
+                                <div className="size-10 rounded-xl bg-[#660e14]/5 flex items-center justify-center font-black text-[#660e14] italic border border-black/5 uppercase">
                                   {o.userName?.charAt(0) || "C"}
                                 </div>
                                 <div>
-                                  <p className="text-xs font-black text-white">{o.userName}</p>
-                                  <p className="text-[10px] text-white/20 font-mono">#{o._id.slice(-6).toUpperCase()}</p>
+                                  <p className="text-xs font-black text-[#660e14]">{o.userName}</p>
+                                  <p className="text-[10px] text-[#660e14]/40 font-bold uppercase tracking-tighter">#{o._id.slice(-6).toUpperCase()}</p>
                                 </div>
                               </div>
-                              <p className="text-xs font-black text-[#38b6ff]">{fmt(o.total)}</p>
+                              <p className="text-xs font-black text-[#ad2335]">{fmt(o.total)}</p>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <div className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5">
-                        <h3 className="text-sm font-black uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
-                          <TrendingUp className="size-4" /> Performance de Cupons
+                      <div className="p-8 rounded-[32px] bg-white/60 border border-black/5 shadow-sm">
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 mb-6 flex items-center gap-2">
+                          <TrendingUp className="size-4 text-[#ad2335]" /> Performance de Cupons
                         </h3>
                         <div className="space-y-4">
                           {coupons?.map(c => (
-                            <div key={c._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03]">
+                            <div key={c._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/40 border border-black/5 group hover:border-[#ad2335]/20 transition-all">
                               <div className="flex items-center gap-4">
-                                <div className={cn("size-10 rounded-xl flex items-center justify-center", c.isActive ? "bg-green-500/10 text-green-500" : "bg-white/5 text-white/20")}>
+                                <div className={cn("size-10 rounded-xl flex items-center justify-center", c.isActive ? "bg-green-100 text-green-600" : "bg-[#660e14]/5 text-[#660e14]/20")}>
                                   <Tag className="size-4" />
                                 </div>
                                 <div>
-                                  <p className="text-xs font-black text-white tracking-widest">{c.code}</p>
-                                  <p className="text-[10px] text-white/20">{c.discountType === "percentage" ? `${c.discountValue}% OFF` : `R$ ${c.discountValue} OFF`}</p>
+                                  <p className="text-xs font-black text-[#660e14] tracking-widest">{c.code}</p>
+                                  <p className="text-[10px] text-[#660e14]/40 font-bold uppercase">{c.discountType === "percentage" ? `${c.discountValue}% OFF` : `R$ ${c.discountValue} OFF`}</p>
                                 </div>
                               </div>
-                              <Badge className={c.isActive ? "bg-green-500/10 text-green-500" : "bg-white/5 text-white/20"}>
+                              <Badge className={c.isActive ? "bg-green-100 text-green-600 border-green-200" : "bg-[#660e14]/5 text-[#660e14]/20 border-transparent"}>
                                 {c.isActive ? "Ativo" : "Inativo"}
                               </Badge>
                             </div>
@@ -575,23 +575,23 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
                 {activeTab === "orders" && (
                   <div className="space-y-6">
-                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/[0.02] p-6 rounded-3xl border border-white/5">
+                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/60 p-6 rounded-[32px] border border-black/5 shadow-sm">
                       <div className="relative flex-1 w-full max-w-md">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20" />
                         <Input
                           placeholder="Buscar por ID ou Cliente..."
-                          className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl focus:border-[#ea3372]/40"
+                          className="bg-white/40 border-black/5 pl-12 h-12 text-xs font-bold tracking-wide rounded-2xl focus:border-[#ad2335]/40 text-[#660e14]"
                           value={orderSearch}
                           onChange={e => setOrderSearch(e.target.value)}
                         />
                       </div>
                       <div className="flex items-center gap-3 w-full sm:w-auto">
                         <Select value={orderStatusFilter} onValueChange={setOrderStatusFilter}>
-                          <SelectTrigger className="w-full sm:w-48 bg-black/40 border-white/5 h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest">
-                            <Filter className="size-3 mr-2 text-white/40" />
+                          <SelectTrigger className="w-full sm:w-48 bg-white/40 border-black/5 h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#660e14]">
+                            <Filter className="size-3 mr-2 text-[#660e14]/40" />
                             <SelectValue placeholder="Status" />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
+                          <SelectContent className="bg-white border-black/10 text-[#660e14]">
                             <SelectItem value="all">Todos os Status</SelectItem>
                             {ORDER_STATUSES.map(s => (
                               <SelectItem key={s} value={s}>{STATUS_META[s].label}</SelectItem>
@@ -631,10 +631,10 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 {activeTab === "users" && (
                   <div className="space-y-6">
                     <div className="relative max-w-md">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/20" />
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]" />
                       <Input
                         placeholder="Buscar por Email ou Nome..."
-                        className="bg-black/40 border-white/5 pl-12 h-12 text-xs font-medium tracking-wide rounded-2xl"
+                        className="bg-white border-black/10 pl-12 h-12 text-xs font-bold tracking-wide rounded-2xl text-[#660e14] placeholder:text-[#660e14]/30 shadow-sm"
                         value={userSearch}
                         onChange={e => setUserSearch(e.target.value)}
                       />
@@ -694,33 +694,33 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
       {/* Product Modal */}
       <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
-        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-auto custom-scrollbar">
+        <DialogContent className="bg-white border-black/10 text-[#660e14] max-w-2xl max-h-[90vh] overflow-auto custom-scrollbar rounded-[32px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
+            <DialogTitle className="text-2xl font-normal tracking-tight italic" style={{ fontFamily: "'Last Dream', cursive" }}>{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleProductSubmit} className="space-y-6 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Nome do Produto</Label>
-                <Input required value={productForm.name} onChange={e => setProductForm({ ...productForm, name: e.target.value })} className="bg-white/5 border-white/10" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Nome do Produto</Label>
+                <Input required value={productForm.name} onChange={e => setProductForm({ ...productForm, name: e.target.value })} className="bg-[#660e14]/5 border-black/5" />
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Marca</Label>
-                <Input required value={productForm.brand} onChange={e => setProductForm({ ...productForm, brand: e.target.value })} className="bg-white/5 border-white/10" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Marca</Label>
+                <Input required value={productForm.brand} onChange={e => setProductForm({ ...productForm, brand: e.target.value })} className="bg-[#660e14]/5 border-black/5" />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Categoria</Label>
-                <Input required value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })} className="bg-white/5 border-white/10" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Categoria</Label>
+                <Input required value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })} className="bg-[#660e14]/5 border-black/5" />
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Público</Label>
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Público</Label>
                 <Select value={productForm.gender} onValueChange={(v: any) => setProductForm({ ...productForm, gender: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10 h-10">
+                  <SelectTrigger className="bg-[#660e14]/5 border-black/5 h-10">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
+                  <SelectContent className="bg-white border-black/10 text-[#660e14]">
                     <SelectItem value="Feminino">Feminino</SelectItem>
                     <SelectItem value="Masculino">Masculino</SelectItem>
                     <SelectItem value="Kids">Kids</SelectItem>
@@ -729,17 +729,13 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 </Select>
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Preço (R$)</Label>
-                <Input type="number" required value={productForm.price} onChange={e => setProductForm({ ...productForm, price: parseFloat(e.target.value) })} className="bg-white/5 border-white/10" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-[10px] uppercase font-black text-white/40">Preço Original (R$)</Label>
-                <Input type="number" value={productForm.originalPrice} onChange={e => setProductForm({ ...productForm, originalPrice: parseFloat(e.target.value) })} className="bg-white/5 border-white/10" />
+                <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Preço (R$)</Label>
+                <Input type="number" required value={productForm.price} onChange={e => setProductForm({ ...productForm, price: parseFloat(e.target.value) })} className="bg-[#660e14]/5 border-black/5" />
               </div>
             </div>
             <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Descrição <span className="text-[8px] opacity-50 lowercase">(Opcional)</span></Label>
-              <Textarea value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-white/5 border-white/10 min-h-24" />
+              <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Descrição <span className="text-[8px] opacity-50 lowercase">(Opcional)</span></Label>
+              <Textarea value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className="bg-[#660e14]/5 border-black/5 min-h-24" />
             </div>
             <div className="space-y-3">
               <Label className="text-[10px] uppercase font-black text-white/40">Imagens do Produto</Label>
@@ -870,8 +866,8 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
               ))}
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setIsProductModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold px-8">Salvar Produto</Button>
+              <Button type="button" variant="ghost" onClick={() => setIsProductModalOpen(false)} className="text-[#660e14]/40">Cancelar</Button>
+              <Button type="submit" className="bg-[#660e14] hover:bg-[#ad2335] text-white font-bold px-8 rounded-xl shadow-lg shadow-[#660e14]/10 transition-all">Salvar Produto</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -879,28 +875,28 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
 
       {/* Password Change Modal */}
       <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
-        <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-sm">
+        <DialogContent className="bg-white border-black/10 text-[#660e14] max-w-sm rounded-[32px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black uppercase tracking-widest italic">Alterar Senha</DialogTitle>
+            <DialogTitle className="text-2xl font-normal tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>Alterar Senha</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleConfirmPasswordChange} className="space-y-6 py-4">
             <div className="space-y-1">
-              <Label className="text-[10px] uppercase font-black text-white/40">Nova Senha</Label>
+              <Label className="text-[10px] uppercase font-black text-[#660e14]/40">Nova Senha</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/20" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20" />
                 <Input
                   type="password"
                   required
                   placeholder="Mínimo 6 caracteres"
                   value={newPasswordValue}
                   onChange={e => setNewPasswordValue(e.target.value)}
-                  className="bg-white/5 border-white/10 pl-10"
+                  className="bg-[#660e14]/5 border-black/5 pl-10 text-[#660e14]"
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setIsPasswordModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-bold px-8">Confirmar</Button>
+              <Button type="button" variant="ghost" onClick={() => setIsPasswordModalOpen(false)} className="text-[#660e14]/40">Cancelar</Button>
+              <Button type="submit" className="bg-[#ad2335] hover:bg-[#660e14] text-white font-bold px-8 rounded-xl transition-all">Confirmar</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -990,35 +986,35 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden group">
+    <div className="rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all overflow-hidden group shadow-sm hover:shadow-md">
       <div 
         className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-4">
-          <div className="size-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 shadow-lg cursor-pointer" onClick={() => setExpanded(!expanded)}>
-            <Package className={cn("size-6 text-white/40 transition-transform", expanded && "rotate-180")} />
+          <div className="size-12 rounded-2xl bg-[#660e14]/5 flex items-center justify-center border border-black/5 shadow-sm transition-transform group-hover:scale-105" onClick={() => setExpanded(!expanded)}>
+            <Package className={cn("size-6 text-[#660e14]/40 transition-transform", expanded && "rotate-180")} />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <h4 className="font-bold text-sm text-white">{order.userName || "Cliente"}</h4>
+              <h4 className="font-bold text-sm text-[#660e14]">{order.userName || "Cliente"}</h4>
               <Badge variant="outline" className={cn(meta.color, "text-[8px] uppercase font-black px-2 py-0 border")}>{meta.label}</Badge>
             </div>
-            <p className="text-[10px] font-mono text-white/20">#{order._id?.slice(-8).toUpperCase()} · {order.createdAt ? format(new Date(order.createdAt), "dd/MM/yyyy HH:mm") : "Sem data"}</p>
+            <p className="text-[10px] font-bold uppercase tracking-tighter text-[#660e14]/20">#{order._id?.slice(-8).toUpperCase()} · {order.createdAt ? format(new Date(order.createdAt), "dd/MM/yyyy HH:mm") : "Sem data"}</p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 lg:gap-8">
           <div className="text-left md:text-right min-w-[80px]">
-            <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-1">Total</p>
-            <p className="text-base lg:text-lg font-black text-white leading-none">{fmt(order.total)}</p>
+            <p className="text-[10px] text-[#660e14]/30 font-black uppercase tracking-[0.2em] mb-1">Total</p>
+            <p className="text-base lg:text-lg font-black text-[#660e14] leading-none">{fmt(order.total)}</p>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/5 border-white/10 hover:bg-[#ea3372]/10 hover:text-[#ea3372] text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 gap-2 cursor-pointer transition-all flex-1 sm:flex-none"
+              className="bg-white/40 border-black/5 hover:bg-[#ad2335]/10 hover:text-[#ad2335] text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 gap-2 cursor-pointer transition-all flex-1 sm:flex-none rounded-xl"
               onClick={onPrint}
             >
               <Printer className="size-3" />
@@ -1031,17 +1027,17 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-white/5 border-white/10 hover:bg-white/10 text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 flex-1 sm:flex-none"
+                  className="bg-white/40 border-black/5 hover:bg-[#660e14]/5 text-[9px] lg:text-[10px] font-black uppercase tracking-widest h-10 px-3 lg:px-4 flex-1 sm:flex-none rounded-xl text-[#660e14]"
                   onClick={(e) => e.stopPropagation()} // Impede de fechar o card ao mudar status
                 >
                   Status <ChevronDown className="ml-1 lg:ml-2 size-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
+              <DropdownMenuContent className="bg-white border-black/10">
                 {ORDER_STATUSES.map(s => (
                   <DropdownMenuItem
                     key={s}
-                    className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
+                    className="text-xs text-[#660e14]/60 focus:text-[#ad2335] focus:bg-[#ad2335]/5 cursor-pointer"
                     onClick={() => onStatusChange(order._id, s)}
                   >
                     {STATUS_META[s].label}
@@ -1059,51 +1055,51 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-white/5 bg-black/20"
+            className="border-t border-black/5 bg-[#660e14]/5"
           >
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-4 flex items-center gap-2">
-                  <ShoppingBag className="size-3" /> Itens do Pedido
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 mb-4 flex items-center gap-2">
+                  <ShoppingBag className="size-3 text-[#ad2335]" /> Itens do Pedido
                 </h5>
                 <div className="space-y-3">
                   {order.items.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center gap-3 bg-white/5 p-2 rounded-lg">
-                      <img src={item.image} className="size-10 rounded object-cover" />
+                    <div key={idx} className="flex items-center gap-3 bg-white/40 p-2 rounded-xl border border-black/5">
+                      <img src={item.image} className="size-10 rounded-lg object-cover" />
                       <div className="flex-1">
-                        <p className="text-xs font-bold text-white leading-tight">{item.name}</p>
-                        <p className="text-[10px] text-white/40">Qtd: {item.quantity} · {fmt(item.price)}</p>
+                        <p className="text-xs font-bold text-[#660e14] leading-tight">{item.name}</p>
+                        <p className="text-[10px] text-[#660e14]/40 font-bold uppercase">Qtd: {item.quantity} · {fmt(item.price)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-4 flex items-center gap-2">
-                  <MapPin className="size-3" /> Endereço de Entrega
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#660e14]/40 mb-4 flex items-center gap-2">
+                  <MapPin className="size-3 text-[#ad2335]" /> Endereço de Entrega
                 </h5>
-                <div className="bg-white/5 p-4 rounded-xl space-y-1">
-                  <p className="text-xs font-bold text-white">{order.address?.street}</p>
-                  <p className="text-[10px] text-white/60">{order.address?.city}, {order.address?.state}</p>
-                  <p className="text-[10px] text-white/60">CEP: {order.address?.zip}</p>
-                  <p className="text-[10px] text-white/40 mt-2 font-mono">{order.userEmail}</p>
+                <div className="bg-white/40 p-4 rounded-xl space-y-1 border border-black/5">
+                  <p className="text-xs font-bold text-[#660e14]">{order.address?.street}</p>
+                  <p className="text-[10px] text-[#660e14]/60 font-bold uppercase tracking-tighter">{order.address?.city}, {order.address?.state}</p>
+                  <p className="text-[10px] text-[#660e14]/60 font-bold uppercase tracking-tighter">CEP: {order.address?.zip}</p>
+                  <p className="text-[10px] text-[#660e14]/40 mt-2 font-bold uppercase">{order.userEmail}</p>
                 </div>
               </div>
-              <div className="md:col-span-2 pt-6 border-t border-white/5">
-                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#ea3372] mb-4 flex items-center gap-2">
+              <div className="md:col-span-2 pt-6 border-t border-black/5">
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#ad2335] mb-4 flex items-center gap-2">
                   <TrendingUp className="size-3" /> Gestão de Rastreio
                 </h5>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="flex-1 relative group">
                     <Input
                       placeholder="CÓDIGO DE RASTREIO (EX: AA123456789BR)"
-                      className="bg-white/5 border-white/10 h-12 text-xs font-bold tracking-widest pl-4 uppercase rounded-2xl focus:border-[#ea3372]/40 transition-all"
+                      className="bg-white/60 border-black/5 h-12 text-xs font-bold tracking-[0.2em] pl-4 uppercase rounded-2xl focus:border-[#ad2335]/40 transition-all text-[#660e14]"
                       defaultValue={order.trackingCode || ""}
                       id={`tracking-${order._id}`}
                     />
                   </div>
                   <Button
-                    className="bg-[#38b6ff] hover:bg-[#2d93cf] text-white font-black px-8 h-12 rounded-2xl transition-all shadow-xl shadow-[#38b6ff]/20 flex items-center gap-2"
+                    className="bg-[#660e14] hover:bg-[#ad2335] text-white font-black px-8 h-12 rounded-2xl transition-all shadow-xl shadow-[#660e14]/10 flex items-center gap-2 uppercase text-[10px] tracking-widest"
                     onClick={async () => {
                       const input = document.getElementById(`tracking-${order._id}`) as HTMLInputElement;
                       const val = input.value.trim().toUpperCase();
@@ -1126,7 +1122,7 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
                   </Button>
                 </div>
                 {order.trackingCode && (
-                  <p className="text-[9px] text-green-500 font-black mt-3 uppercase tracking-widest flex items-center gap-1 opacity-70">
+                  <p className="text-[9px] text-green-600 font-black mt-3 uppercase tracking-widest flex items-center gap-1 opacity-70">
                     <CheckCircle2 className="size-3" /> Código de rastreio ativo: {order.trackingCode}
                   </p>
                 )}
@@ -1141,42 +1137,42 @@ function OrderRow({ order, callerId, updateTracking, onStatusChange, onPrint }: 
 
 function ProductRow({ product, onEdit, onDelete }: { product: any; onEdit: any; onDelete: any }) {
   return (
-    <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex items-center justify-between gap-4">
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all flex items-center justify-between gap-4 shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="size-14 rounded-xl overflow-hidden border border-white/10">
+        <div className="size-14 rounded-2xl overflow-hidden border border-black/5 shadow-sm">
           <img src={product.images[0]} className="size-full object-cover" />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-bold text-sm text-white">{product.name}</h4>
-            <Badge variant="outline" className="text-[8px] uppercase font-black px-2 py-0 border-white/10 text-white/40">{product.brand}</Badge>
+            <h4 className="font-bold text-sm text-[#660e14]">{product.name}</h4>
+            <Badge variant="outline" className="text-[8px] uppercase font-black px-2 py-0 border-black/5 text-[#660e14]/40">{product.brand}</Badge>
             {product.inStock ? (
-              <Badge className="bg-green-500/10 text-green-500 text-[8px] font-black uppercase px-2 py-0 border-0">Em Estoque</Badge>
+              <Badge className="bg-green-100 text-green-600 text-[8px] font-black uppercase px-2 py-0 border-0">Em Estoque</Badge>
             ) : (
-              <Badge className="bg-red-500/10 text-red-500 text-[8px] font-black uppercase px-2 py-0 border-0">Esgotado</Badge>
+              <Badge className="bg-red-100 text-red-600 text-[8px] font-black uppercase px-2 py-0 border-0">Esgotado</Badge>
             )}
           </div>
-          <p className="text-[10px] font-medium text-white/30 tracking-wider capitalize">{product.category} · {product.sizes.length} Tamanhos</p>
+          <p className="text-[10px] font-bold text-[#660e14]/30 tracking-widest uppercase">{product.category} · {product.sizes.length} Tamanhos</p>
         </div>
       </div>
 
       <div className="flex items-center gap-10">
         <div className="text-right hidden sm:block">
-          <p className="text-xs text-white/30 font-bold uppercase tracking-widest mb-1">Preço</p>
-          <p className="text-lg font-black text-white leading-none">{fmt(product.price)}</p>
+          <p className="text-[10px] text-[#660e14]/30 font-black uppercase tracking-widest mb-1">Preço</p>
+          <p className="text-lg font-black text-[#660e14] leading-none">{fmt(product.price)}</p>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="hover:bg-white/5">
-              <Settings className="size-4 text-white/20" />
+            <Button variant="ghost" size="icon" className="hover:bg-[#660e14]/5 rounded-xl">
+              <Settings className="size-4 text-[#660e14]/20" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
-            <DropdownMenuItem className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer" onClick={onEdit}>
+          <DropdownMenuContent className="bg-white border-black/10">
+            <DropdownMenuItem className="text-xs text-[#660e14]/60 focus:text-[#ad2335] focus:bg-[#ad2335]/5 cursor-pointer" onClick={onEdit}>
               Editar Produto
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs text-red-500 focus:text-red-400 focus:bg-red-500/5 cursor-pointer" onClick={onDelete}>
+            <DropdownMenuItem className="text-xs text-red-500 focus:text-red-600 focus:bg-red-500/5 cursor-pointer" onClick={onDelete}>
               Excluir Produto
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -1189,26 +1185,26 @@ function ProductRow({ product, onEdit, onDelete }: { product: any; onEdit: any; 
 function ExchangeRow({ exchange, onStatusChange }: { exchange: any; onStatusChange: any }) {
   const meta = STATUS_META[exchange.status] || STATUS_META.pending;
   return (
-    <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="size-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-          <Clock className="size-6 text-purple-500" />
+        <div className="size-12 rounded-2xl bg-purple-100 flex items-center justify-center border border-purple-200">
+          <Clock className="size-6 text-purple-600" />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-bold text-sm text-white">{exchange.userName}</h4>
+            <h4 className="font-bold text-sm text-[#660e14]">{exchange.userName}</h4>
             <Badge variant="outline" className={cn(meta.color, "text-[8px] uppercase font-black px-2 py-0 border")}>{meta.label}</Badge>
           </div>
-          <p className="text-[10px] text-white/30">Motivo: {exchange.reason}</p>
+          <p className="text-[10px] text-[#660e14]/40 font-bold uppercase tracking-widest">Motivo: {exchange.reason}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
         <Select value={exchange.status} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-40 bg-white/5 border-white/10 h-10 text-[10px] font-black uppercase tracking-widest">
+          <SelectTrigger className="w-40 bg-white/40 border-black/5 h-10 text-[10px] font-black uppercase tracking-widest text-[#660e14] rounded-xl">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-[#0b0b0b] border-white/10 text-white">
+          <SelectContent className="bg-white border-black/10 text-[#660e14]">
             <SelectItem value="pending">Pendente</SelectItem>
             <SelectItem value="approved">Aprovado</SelectItem>
             <SelectItem value="rejected">Rejeitado</SelectItem>
@@ -1222,51 +1218,51 @@ function ExchangeRow({ exchange, onStatusChange }: { exchange: any; onStatusChan
 
 function ReviewRow({ review, onDelete }: { review: any; onDelete: any }) {
   return (
-    <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex flex-col gap-4">
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all flex flex-col gap-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="size-10 rounded-full bg-white/5 flex items-center justify-center font-bold text-xs border border-white/10">
+          <div className="size-10 rounded-full bg-[#660e14]/5 flex items-center justify-center font-black text-xs border border-black/5 text-[#660e14] uppercase italic">
             {(review.userName || "?").charAt(0)}
           </div>
           <div>
-            <p className="text-xs font-bold text-white">{review.userName || "Usuário"}</p>
+            <p className="text-xs font-black text-[#660e14]">{review.userName || "Usuário"}</p>
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
-                <TrendingUp key={i} className={cn("size-2", i < review.rating ? "text-yellow-500" : "text-white/10")} />
+                <Star key={i} className={cn("size-2", i < review.rating ? "text-amber-500 fill-amber-500" : "text-[#660e14]/10")} />
               ))}
             </div>
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="text-red-500 hover:bg-red-500/5" onClick={onDelete}>
-          <Clock className="size-4" />
+        <Button variant="ghost" size="icon" className="text-red-500 hover:bg-red-50 rounded-xl" onClick={onDelete}>
+          <Trash2 className="size-4" />
         </Button>
       </div>
-      <p className="text-xs text-white/60 leading-relaxed italic">"{review.comment}"</p>
-      <p className="text-[9px] text-white/20 font-mono uppercase tracking-widest">ID Pedido: {review.orderId?.slice(-8).toUpperCase()}</p>
+      <p className="text-xs text-[#660e14]/70 leading-relaxed italic">"{review.comment}"</p>
+      <p className="text-[9px] text-[#660e14]/30 font-black uppercase tracking-widest">ID Pedido: {review.orderId?.slice(-8).toUpperCase()}</p>
     </div>
   );
 }
 
 function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any; onDelete: any }) {
   return (
-    <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex items-center justify-between gap-4">
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white/60 hover:bg-white/80 transition-all flex items-center justify-between gap-4 shadow-sm">
       <div className="flex items-center gap-4">
         <div className={cn(
-          "size-12 rounded-xl flex items-center justify-center border shadow-lg",
-          coupon.isActive ? "bg-green-500/10 border-green-500/20" : "bg-white/5 border-white/10"
+          "size-12 rounded-2xl flex items-center justify-center border shadow-sm",
+          coupon.isActive ? "bg-green-100 border-green-200" : "bg-[#660e14]/5 border-black/5"
         )}>
-          <Tag className={cn("size-6", coupon.isActive ? "text-green-500" : "text-white/20")} />
+          <Tag className={cn("size-6", coupon.isActive ? "text-green-600" : "text-[#660e14]/20")} />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-bold text-sm text-white tracking-widest uppercase">{coupon.code}</h4>
+            <h4 className="font-black text-sm text-[#660e14] tracking-widest uppercase">{coupon.code}</h4>
             {coupon.isActive ? (
-              <Badge className="bg-green-500 text-white text-[8px] font-black uppercase px-2 py-0">Ativo</Badge>
+              <Badge className="bg-green-100 text-green-600 text-[8px] font-black uppercase px-2 py-0 border-0">Ativo</Badge>
             ) : (
-              <Badge variant="outline" className="text-white/20 border-white/10 text-[8px] font-black uppercase px-2 py-0">Inativo</Badge>
+              <Badge variant="outline" className="text-[#660e14]/20 border-black/5 text-[8px] font-black uppercase px-2 py-0">Inativo</Badge>
             )}
           </div>
-          <p className="text-[10px] font-medium text-white/30 tracking-wider">
+          <p className="text-[10px] font-bold text-[#660e14]/30 tracking-widest uppercase">
             {coupon.discountType === "percentage" ? `${coupon.discountValue}% OFF` : `R$ ${coupon.discountValue} OFF`}
             {coupon.freeShipping && " · + Frete Grátis"}
             {coupon.minOrderValue > 0 && ` · Mínimo: ${fmt(coupon.minOrderValue)}`}
@@ -1279,8 +1275,8 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
           variant="ghost"
           size="sm"
           className={cn(
-            "text-[9px] font-black uppercase tracking-widest h-9 px-4 rounded-lg",
-            coupon.isActive ? "text-red-400 hover:text-red-300 hover:bg-red-500/5" : "text-green-400 hover:text-green-300 hover:bg-green-500/5"
+            "text-[9px] font-black uppercase tracking-widest h-9 px-4 rounded-xl",
+            coupon.isActive ? "text-red-500 hover:text-red-600 hover:bg-red-50" : "text-green-600 hover:text-green-700 hover:bg-green-50"
           )}
           onClick={() => onToggle(!coupon.isActive)}
         >
@@ -1288,7 +1284,7 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
           {coupon.isActive ? "Desativar" : "Ativar"}
         </Button>
 
-        <Button variant="ghost" size="icon" className="text-white/10 hover:text-red-500 hover:bg-red-500/5 h-9 w-9" onClick={onDelete}>
+        <Button variant="ghost" size="icon" className="text-[#660e14]/10 hover:text-red-600 hover:bg-red-50 h-9 w-9 rounded-xl" onClick={onDelete}>
           <Trash2 className="size-4" />
         </Button>
       </div>
@@ -1298,47 +1294,47 @@ function CouponRow({ coupon, onToggle, onDelete }: { coupon: any; onToggle: any;
 
 function UserRow({ user, onToggleAdmin, onDelete, onChangePassword }: { user: any; onToggleAdmin: any; onDelete: any; onChangePassword: any }) {
   return (
-    <div className="p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all flex items-center justify-between gap-4">
+    <div className="p-6 rounded-[32px] border border-black/5 bg-white transition-all flex items-center justify-between gap-4 shadow-sm hover:shadow-md">
       <div className="flex items-center gap-4">
-        <div className="size-12 rounded-full bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center border border-white/10 font-black text-white/60 italic">
+        <div className="size-12 rounded-full bg-[#660e14]/10 flex items-center justify-center border border-[#660e14]/20 font-black text-[#660e14] italic">
           {(user.name || user.email || "?").charAt(0).toUpperCase()}
         </div>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-bold text-sm text-white">{user.name || "Sem Nome"}</h4>
-            {user.isAdmin && <Badge className="bg-[#ea3372] text-white text-[8px] font-black uppercase px-2 py-0 border-0">Admin</Badge>}
+            <h4 className="font-black text-sm text-[#660e14]">{user.name || "Sem Nome"}</h4>
+            {user.isAdmin && <Badge className="bg-[#ad2335] text-white text-[8px] font-black uppercase px-2 py-0 border-0">Admin</Badge>}
           </div>
-          <p className="text-[10px] font-medium text-white/30 tracking-wider">{user.email}</p>
+          <p className="text-[10px] font-bold text-[#660e14]/60 tracking-widest uppercase">{user.email}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-10">
         <div className="text-right hidden sm:block">
-          <p className="text-xs text-white/30 font-bold uppercase tracking-widest mb-1">Gasto Total</p>
-          <p className="text-lg font-black text-white leading-none">{fmt(user.totalSpent)}</p>
+          <p className="text-[10px] text-[#660e14]/40 font-black uppercase tracking-widest mb-1">Gasto Total</p>
+          <p className="text-lg font-black text-[#660e14] leading-none">{fmt(user.totalSpent)}</p>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="hover:bg-white/5">
-              <Settings className="size-4 text-white/20" />
+            <Button variant="ghost" size="icon" className="hover:bg-[#660e14]/5 rounded-xl text-[#660e14]">
+              <Settings className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#0b0b0b] border-white/10">
+          <DropdownMenuContent className="bg-white border-black/10">
             <DropdownMenuItem
-              className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
+              className="text-xs text-[#660e14]/60 focus:text-[#ad2335] focus:bg-[#ad2335]/5 cursor-pointer font-bold"
               onClick={() => onToggleAdmin(user._id, user.isAdmin)}
             >
               {user.isAdmin ? "Remover Privilégios Admin" : "Tornar Administrador"}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-xs text-white/60 focus:text-white focus:bg-white/5 cursor-pointer"
+              className="text-xs text-[#660e14]/60 focus:text-[#ad2335] focus:bg-[#ad2335]/5 cursor-pointer font-bold"
               onClick={() => onChangePassword(user._id)}
             >
               Alterar Senha
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-xs text-red-500 focus:text-red-400 focus:bg-red-500/5 cursor-pointer"
+              className="text-xs text-red-600 focus:text-red-700 focus:bg-red-50 cursor-pointer font-bold"
               onClick={() => onDelete(user._id)}
             >
               Excluir Usuário

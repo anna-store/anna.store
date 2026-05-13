@@ -48,45 +48,20 @@ export default function Index() {
   const newProducts = dbNewArrivals.map(normalize).slice(0, 4);
 
   return (
-    <div className="bg-[#050505] min-h-screen selection:bg-[#ea3372]/30 overflow-x-hidden">
+    <div className="bg-[#fdf0e3] min-h-screen selection:bg-[#ad2335]/30 overflow-x-hidden">
       {/* Global Atmosphere */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#ea3372]/5 to-transparent" />
-        <div className="absolute bottom-0 right-0 w-full h-[50vh] bg-gradient-to-t from-[#38b6ff]/5 to-transparent" />
-        <div className="absolute inset-0 bg-noise opacity-[0.02]" />
+        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#ff97ad]/10 to-transparent" />
+        <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-multiply" />
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#050505] z-10">
-        {/* Cinematic Background with Parallax effect simulation */}
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#660e14] z-10 pt-20">
+        {/* Background Atmosphere */}
         <div className="absolute inset-0 z-0">
-          <motion.div
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{
-              scale: [1, 1.05, 1], // Soft Ken Burns effect
-              opacity: 1
-            }}
-            transition={{
-              scale: { duration: 20, repeat: Infinity, ease: "linear" },
-              opacity: { duration: 1.5, ease: "easeOut" }
-            }}
-            className="w-full h-full"
-          >
-            <img
-              src="/luxury_fashion_hero_bg_1778080704577.png"
-              alt="Luxury Sneaker Concept"
-              className="w-full h-full object-cover brightness-[0.6] contrast-[1.1] object-center"
-            />
-          </motion.div>
-
-          {/* Advanced Atmosphere Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/40 to-transparent z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay z-10 pointer-events-none" />
-
-          {/* Animated Light Rays - Harmonized with sneaker store neons */}
-          <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ea3372]/10 blur-[180px] rounded-full animate-pulse pointer-events-none" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#38b6ff]/15 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.08] mix-blend-overlay z-10 pointer-events-none" />
+          <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#ad2335]/10 blur-[180px] rounded-full animate-pulse pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#ff97ad]/5 blur-[150px] rounded-full animate-pulse pointer-events-none" style={{ animationDelay: "3s" }} />
         </div>
 
         {/* Side Branding - Nova Coleção */}
@@ -96,30 +71,30 @@ export default function Index() {
           transition={{ duration: 1, delay: 0.8 }}
           className="absolute left-10 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-10 z-20"
         >
-          <div className="w-[1px] h-32 bg-gradient-to-t from-white/20 to-transparent" />
-          <span className="text-[10px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] rotate-180">
+          <div className="w-[1px] h-32 bg-gradient-to-t from-[#fdf0e3]/20 to-transparent" />
+          <span className="text-[10px] text-[#fdf0e3]/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] rotate-180">
             Nova Coleção
           </span>
-          <div className="w-[1px] h-32 bg-gradient-to-b from-white/20 to-transparent" />
+          <div className="w-[1px] h-32 bg-gradient-to-b from-[#fdf0e3]/20 to-transparent" />
         </motion.div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-6 py-24 w-full">
-          <div className="max-w-4xl">
-            {/* Exclusive Badge */}
+        <div className="relative z-20 max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-16">
+          {/* Left: Content */}
+          <div className="flex-1 text-center lg:text-left">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass border-white/10 mb-10"
+              className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#fdf0e3]/10 bg-white/5 backdrop-blur-md mb-10"
             >
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="size-6 rounded-full border-2 border-[#050505] bg-muted overflow-hidden">
+                  <div key={i} className="size-6 rounded-full border-2 border-[#660e14] bg-muted overflow-hidden">
                     <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
-              <span className="text-[9px] text-white/70 font-black uppercase tracking-[0.2em]">
+              <span className="text-[9px] text-[#fdf0e3]/70 font-black uppercase tracking-[0.2em]">
                 +2.5k clientes satisfeitos este mês
               </span>
             </motion.div>
@@ -128,10 +103,10 @@ export default function Index() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-4 mb-6"
+              className="flex items-center gap-4 mb-6 justify-center lg:justify-start"
             >
-              <div className="h-[1px] w-12 bg-[#ea3372]" />
-              <span className="text-[11px] text-[#ea3372] font-black uppercase tracking-[0.6em] whitespace-nowrap">
+              <div className="h-[1px] w-12 bg-[#fdf0e3]" />
+              <span className="text-[11px] text-[#fdf0e3] font-black uppercase tracking-[0.6em] whitespace-nowrap">
                 Premium Footwear Concept
               </span>
             </motion.div>
@@ -140,22 +115,20 @@ export default function Index() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-6xl md:text-8xl lg:text-[90px] font-black text-white leading-[0.95] tracking-tight uppercase mb-10"
-              style={{ fontFamily: "'Outfit', sans-serif" }}
+              className="text-7xl md:text-8xl lg:text-[130px] font-normal leading-[0.9] tracking-normal mb-10"
+              style={{ 
+                fontFamily: "'Last Dream', cursive",
+                color: "#fdf0e3",
+              }}
             >
-              Pise com<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-[#ea3372] italic pr-4">Estilo</span>
-              <span className="text-[#38b6ff] relative inline-block">
-                Único
-                <span className="absolute -bottom-2 left-0 w-full h-1.5 bg-[#38b6ff] rounded-full blur-[2px] opacity-50" />
-              </span>
+              Pise com<br />Estilo Único
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white/50 text-sm md:text-base font-medium tracking-wide mb-12 max-w-xl leading-relaxed uppercase"
+              className="text-[#fdf0e3]/60 text-sm md:text-base font-medium tracking-wide mb-12 max-w-xl leading-relaxed uppercase mx-auto lg:mx-0"
             >
               A curadoria exclusiva de sneakers e calçados premium que une conforto absoluto e o design das ruas.
             </motion.p>
@@ -164,19 +137,14 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap gap-5 items-center"
+              className="flex flex-wrap gap-5 items-center justify-center lg:justify-start"
             >
               <Link to="/catalogo">
-                <Button size="lg" className="bg-[#ea3372] text-white hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(234,51,114,0.3)] group cursor-pointer" aria-label="Ver catálogo completo de produtos">
-                  Explorar Catálago
+                <Button size="lg" className="bg-[#fdf0e3] text-[#660e14] hover:bg-white font-black uppercase tracking-[0.2em] text-[12px] px-12 h-16 rounded-2xl transition-all duration-500 shadow-[0_20px_50px_rgba(253,240,227,0.3)] group cursor-pointer" aria-label="Ver catálogo completo de produtos">
+                  Explorar Catálogo
                   <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <a href="#mais-vendidos">
-                <Button size="lg" variant="outline" className="glass border-white/10 text-white hover:bg-white/5 font-black uppercase tracking-[0.2em] text-[12px] px-10 h-16 rounded-2xl transition-all duration-500 group cursor-pointer" aria-label="Mais vendidos">
-                  Mais Vendidos
-                </Button>
-              </a>
             </motion.div>
 
             {/* Enhanced Stats */}
@@ -184,23 +152,72 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-3 gap-16 mt-24 pt-12 border-t border-white/10 max-w-2xl"
+              className="grid grid-cols-3 gap-8 md:gap-16 mt-24 pt-12 border-t border-[#fdf0e3]/10 max-w-2xl mx-auto lg:mx-0"
             >
               {[
-                { value: "15k+", label: "Elite Members", color: "#ea3372" },
-                { value: "120+", label: "Global Brands", color: "#38b6ff" },
-                { value: "100%", label: "Authentic Only", color: "#fff" }
+                { value: "15k+", label: "Elite Members", color: "#ad2335" },
+                { value: "120+", label: "Global Brands", color: "#ad2335" },
+                { value: "100%", label: "Authentic Only", color: "#fdf0e3" }
               ].map((stat) => (
                 <div key={stat.label} className="space-y-2">
-                  <p className="text-3xl md:text-4xl font-black text-white tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                  <p className="text-2xl md:text-4xl font-black text-[#fdf0e3] tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {stat.value}
                   </p>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: `${stat.color}80` }}>
+                  <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: `${stat.color}80` }}>
                     {stat.label}
                   </p>
                 </div>
               ))}
             </motion.div>
+          </div>
+
+          {/* Right: Scrapbook Collage */}
+          <div className="flex-1 relative w-full flex items-center justify-center lg:justify-end">
+            <div className="relative">
+              {/* Main Polaroid Frame */}
+              <motion.div
+                initial={{ rotate: 10, y: 40, opacity: 0 }}
+                animate={{ rotate: -4, y: 0, opacity: 1 }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="relative z-10 p-5 bg-[#fdf0e3] shadow-[0_30px_60px_rgba(0,0,0,0.6)] border-b-[60px] border-[#fdf0e3] rotate-[-4deg]"
+              >
+                <div className="relative overflow-hidden bg-[#660e14] aspect-[4/5] w-[280px] md:w-[400px]">
+                  <img
+                    src="/retro_modern_sneaker_collage_hero_1778671927941.png"
+                    alt="Sneaker Collage"
+                    className="w-full h-full object-cover contrast-[1.1] brightness-[0.9]"
+                  />
+                </div>
+
+                {/* Tape Effect */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-40 h-12 bg-white/20 backdrop-blur-md border border-white/30 -rotate-3 z-20 mix-blend-overlay" />
+                <div className="absolute -bottom-4 -right-10 w-32 h-10 bg-white/10 backdrop-blur-md border border-white/20 rotate-12 z-20 mix-blend-overlay" />
+              </motion.div>
+
+              {/* Floating Heart Logo */}
+              <motion.div
+                animate={{ y: [0, -30, 0], rotate: [0, 10, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-10 -right-10 z-20"
+              >
+                <img
+                  src="/ientidade_visual/logo-secundária.png"
+                  alt="Heart Icon"
+                  className="size-40 md:size-50 object-contain drop-shadow-xl"
+                />
+              </motion.div>
+
+              <motion.div
+                animate={{ y: [0, 25, 0], x: [0, -15, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="absolute -bottom-10 -left-20 z-0 text-[#ad2335]/40"
+              >
+                {/* Cloud/Doodle SVG */}
+                <svg width="150" height="100" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M30 60C10 60 10 40 30 40C30 20 60 20 70 40C90 20 120 20 120 40C140 40 140 60 120 60H30Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </motion.div>
+            </div>
           </div>
         </div>
 
@@ -212,13 +229,13 @@ export default function Index() {
           transition={{ delay: 1.2 }}
         >
           <div className="flex flex-col items-center gap-3 group cursor-pointer">
-            <span className="text-[9px] text-white/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] group-hover:text-[#ea3372] transition-colors">
+            <span className="text-[9px] text-[#fdf0e3]/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] group-hover:text-[#ad2335] transition-colors">
               Explore
             </span>
             <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-[1px] h-24 bg-gradient-to-b from-[#ea3372] via-[#ea3372]/50 to-transparent"
+              className="w-[1px] h-24 bg-gradient-to-b from-[#ad2335] via-[#ad2335]/50 to-transparent"
             />
           </div>
         </motion.div>
@@ -226,8 +243,8 @@ export default function Index() {
 
       {/* Infinite Scrolling Ticker Section */}
       <section className="relative z-30 -mt-10 overflow-hidden">
-        {/* Tier: Benefits Marquee (Pink) */}
-        <div className="bg-[#ea3372] py-4 flex whitespace-nowrap overflow-hidden shadow-[0_0_50px_rgba(234,51,114,0.3)] border-y border-white/10">
+        {/* Tier: Benefits Marquee (Red) */}
+        <div className="bg-[#ad2335] py-4 flex whitespace-nowrap overflow-hidden shadow-[0_0_50px_rgba(173,35,53,0.3)] border-y border-white/10">
           <motion.div
             animate={{ x: [-1500, 0] }}
             transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
@@ -251,7 +268,7 @@ export default function Index() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#ea3372] to-[#ea3372]/80 p-8 md:p-12 shadow-2xl"
+            className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#660e14] to-[#ad2335] p-8 md:p-12 shadow-2xl"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <ShoppingCart className="size-40 rotate-12" />
@@ -269,7 +286,7 @@ export default function Index() {
               </div>
 
               <Link to="/carrinho">
-                <Button size="lg" className="bg-white text-[#ea3372] hover:bg-black hover:text-white h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-xl transition-all duration-500">
+                <Button size="lg" className="bg-white text-[#660e14] hover:bg-[#ad2335] hover:text-white h-16 px-10 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-xl transition-all duration-500">
                   Finalizar Pedido Agora
                   <ArrowRight className="ml-2 size-4" />
                 </Button>
@@ -284,71 +301,84 @@ export default function Index() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="size-2 bg-[#38b6ff] rounded-full animate-ping" />
-              <span className="text-[10px] text-[#38b6ff] font-black uppercase tracking-[0.5em]">Collections</span>
+              <div className="size-2 bg-[#660e14] rounded-full animate-ping" />
+              <span className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.5em]">Collections</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
-              Navegar<span className="text-[#ea3372]">.</span>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Navegar<span className="text-[#660e14]">.</span>
             </h2>
           </div>
-          <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-white font-black uppercase tracking-[0.4em] hover:text-[#ea3372] transition-colors">
+          <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-[#660e14] font-black uppercase tracking-[0.4em] hover:text-[#ad2335] transition-colors">
             Ver Todo o Acervo
-            <div className="size-10 rounded-full glass border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="size-10 rounded-full bg-white/20 border-[#660e14]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <ChevronRight className="size-4" />
             </div>
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {CATEGORY_DATA.map((cat, i) => (
             <Link
               key={cat.name}
               to={`/catalogo?categoria=${encodeURIComponent(cat.name)}`}
-              className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden group cursor-pointer border border-white/5 shadow-2xl"
+              className="group relative aspect-[3/4] rounded-[3rem] overflow-hidden bg-[#660e14] border-4 border-[#660e14] shadow-2xl transition-all duration-500 hover:-translate-y-2"
             >
+              {/* Image with Artistic Overlay */}
               <div className="absolute inset-0 z-0">
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-60"
+                  className="w-full h-full object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-[0.5]"
                 />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10" />
-              <div className="absolute inset-0 glass opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
-
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 z-30">
-                <span className="text-[10px] font-black text-[#ea3372] uppercase tracking-[0.5em] mb-4 transition-all group-hover:mb-6">0{i + 1}</span>
-                <h3 className="text-sm font-black text-white uppercase tracking-widest text-center group-hover:scale-110 transition-transform duration-700">{cat.name}</h3>
+                <div className="absolute inset-0 bg-[#ad2335]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
               </div>
 
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#ea3372] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+              {/* Artistic Numbering */}
+              <div className="absolute top-4 left-6 text-6xl font-black text-[#fdf0e3]/10 select-none uppercase tracking-tighter">
+                0{i + 1}
+              </div>
+
+              {/* Category Badge */}
+              <div className="absolute bottom-4 left-4 right-4 z-20">
+                <div className="bg-[#fdf0e3] p-4 rounded-2xl shadow-xl transform transition-transform duration-500 group-hover:scale-105">
+                  <h3 className="text-[10px] font-black text-[#660e14] uppercase tracking-[0.3em] text-center">
+                    {cat.name}
+                  </h3>
+                  <div className="mt-2 h-[1px] w-0 bg-[#ad2335] mx-auto transition-all duration-500 group-hover:w-full" />
+                </div>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
       {/* Featured Products: Gallery Style */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <div className="mb-20 text-center space-y-4">
-          <p className="text-[10px] text-[#ea3372] font-black uppercase tracking-[0.6em]">Curated Drops</p>
-          <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
-            Destaques<span className="text-[#38b6ff]">.</span>
-          </h2>
-        </div>
+      <section className="bg-[#660e14] py-32 relative overflow-hidden">
+        {/* Subtle depth gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
 
-        <motion.div
-          variants={stagger.container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
-        >
-          {featuredProducts.map((product) => (
-            <motion.div key={product.id} variants={stagger.item} className="relative">
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </motion.div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="mb-20 text-center space-y-4">
+            <p className="text-[10px] text-[#ff97ad] font-black uppercase tracking-[0.6em]">Curated Drops</p>
+            <h2 className="text-6xl md:text-8xl font-normal text-[#fdf0e3] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Destaques<span className="text-[#ad2335]">.</span>
+            </h2>
+          </div>
+
+          <motion.div
+            variants={stagger.container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+          >
+            {featuredProducts.map((product) => (
+              <motion.div key={product.id} variants={stagger.item} className="relative">
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
 
@@ -357,25 +387,25 @@ export default function Index() {
       <section id="mais-vendidos" className="max-w-7xl mx-auto px-6 py-40">
         <div className="flex flex-col md:flex-row items-center justify-between mb-24 gap-12">
           <div className="text-center md:text-left">
-            <p className="text-[10px] text-[#38b6ff] font-black uppercase tracking-[0.5em] mb-4">Elite Sales</p>
-            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
-              Mais Vendidos<span className="text-white/10">.</span>
+            <p className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.5em] mb-4">Elite Sales</p>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Mais Vendidos<span className="text-[#660e14]/10">.</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-auto">
             {[
-              { cat: "Infantil", price: "79,90", color: "#38b6ff" },
-              { cat: "Casual", price: "129,90", color: "#ea3372" },
-              { cat: "Sport", price: "189,90", color: "#38b6ff" }
+              { cat: "Infantil", price: "79,90", color: "#ad2335" },
+              { cat: "Casual", price: "129,90", color: "#660e14" },
+              { cat: "Sport", price: "189,90", color: "#ad2335" }
             ].map((item) => (
               <motion.div
                 key={item.cat}
                 whileHover={{ y: -5 }}
-                className="glass p-6 rounded-2xl border-white/5 flex flex-col items-center text-center group cursor-pointer"
+                className="bg-white/30 backdrop-blur-md p-6 rounded-2xl border-[#660e14]/5 flex flex-col items-center text-center group cursor-pointer"
               >
-                <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.3em] mb-2">From</p>
-                <p className="text-xl font-black text-white mb-1">R$ {item.price}</p>
+                <p className="text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.3em] mb-2">From</p>
+                <p className="text-xl font-black text-[#660e14] mb-1">R$ {item.price}</p>
                 <p className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: item.color }}>{item.cat}</p>
               </motion.div>
             ))}
@@ -397,13 +427,13 @@ export default function Index() {
         </motion.div>
       </section>
 
-      {/* Testimonials: Premium Carousel Feel */}
-      <section className="bg-gradient-to-b from-transparent to-[#080808] py-40">
+      {/* Feedback Elite: Mural Style */}
+      <section className="bg-[#fdf0e3] py-40 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-32 space-y-4">
-            <p className="text-[10px] text-[#ea3372] font-black uppercase tracking-[0.8em]">Voice of the Community</p>
-            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
-              Feedback Elite<span className="text-[#ea3372]">.</span>
+            <p className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.8em]">Voice of the Community</p>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Feedback Elite<span className="text-[#ad2335]">.</span>
             </h2>
           </div>
 
@@ -412,30 +442,40 @@ export default function Index() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8"
+            className="grid md:grid-cols-3 gap-12"
           >
             {TESTIMONIALS.map((t, i) => (
               <motion.div
                 key={t.name}
                 variants={stagger.item}
-                className="glass p-10 rounded-[2.5rem] border-white/5 relative group hover:bg-white/5 transition-all duration-700"
+                className={`relative p-10 rounded-3xl shadow-xl transition-all duration-500 hover:scale-105 ${
+                  i % 2 === 0 ? 'bg-[#ad2335] text-[#fdf0e3] rotate-[-1deg]' : 'bg-white text-[#660e14] rotate-[1deg] border-2 border-[#660e14]/5'
+                }`}
               >
-                <div className="absolute -top-6 -left-2 text-8xl font-serif text-white/5 pointer-events-none italic group-hover:text-[#ea3372]/10 transition-colors">"</div>
+                {/* Tape Effect */}
+                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 backdrop-blur-sm border -rotate-2 z-10 ${
+                  i % 2 === 0 ? 'bg-white/20 border-white/10' : 'bg-[#ad2335]/20 border-[#ad2335]/10'
+                }`} />
+
                 <div className="flex mb-8 gap-1">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="size-3 fill-[#ea3372] text-[#ea3372]" />
+                  {Array.from({ length: t.rating }).map((_, idx) => (
+                    <Star key={idx} className={`size-3 fill-current ${i % 2 === 0 ? 'text-[#ff97ad]' : 'text-[#ad2335]'}`} />
                   ))}
                 </div>
-                <p className="text-xs md:text-sm text-white/60 leading-[2] uppercase tracking-widest mb-10 italic">
-                  {t.comment}
+                
+                <p className="text-sm leading-[1.8] font-bold uppercase tracking-wider mb-10 italic opacity-90">
+                  "{t.comment}"
                 </p>
+
                 <div className="flex items-center gap-4">
-                  <div className="size-10 rounded-full glass border-white/10 flex items-center justify-center font-black text-[10px] text-white">
+                  <div className={`size-10 rounded-full flex items-center justify-center font-black text-[10px] ${
+                    i % 2 === 0 ? 'bg-[#fdf0e3] text-[#ad2335]' : 'bg-[#ad2335] text-[#fdf0e3]'
+                  }`}>
                     {t.name[0]}
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">{t.name}</p>
-                    <p className="text-[8px] text-white/20 font-bold uppercase tracking-[0.3em]">{t.city}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em]">{t.name}</p>
+                    <p className={`text-[8px] font-bold uppercase tracking-[0.3em] opacity-40`}>{t.city}</p>
                   </div>
                 </div>
               </motion.div>
@@ -444,12 +484,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Branding Footer Signal */}
-      <div className="py-20 text-center">
-        <p className="text-[8px] text-white/5 font-black uppercase tracking-[1em]">
-          Anna Shoes &bull; Defining Digital Luxury &bull; Est. 2026
-        </p>
-      </div>
     </div>
   );
 }

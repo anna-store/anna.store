@@ -176,7 +176,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col md:flex-row overflow-hidden font-sans selection:bg-[#ea3372]/30">
+    <div className="min-h-screen bg-[#fdf0e3] flex flex-col md:flex-row overflow-hidden font-sans selection:bg-[#ad2335]/20">
       
       {/* Lado Esquerdo: Imagem */}
       <div className="hidden md:block md:w-1/2 lg:w-3/5 relative overflow-hidden bg-[#0a0a0a]">
@@ -187,11 +187,11 @@ export default function AuthPage() {
           className="absolute inset-0"
         >
           <img
-            src="/luxury_fashion_auth_bg_1778003172409.png"
+            src="/retro_sneaker_premium.png"
             alt="Anna Shoes Luxury"
-            className="w-full h-full object-cover opacity-70 grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
+            className="w-full h-full object-cover transition-all duration-1000"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#fdf0e3]/40 via-transparent to-transparent" />
         </motion.div>
 
         <div className="absolute bottom-16 left-16 z-10 max-w-lg">
@@ -201,16 +201,16 @@ export default function AuthPage() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="space-y-6"
           >
-            <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-full">
-              <span className="text-[10px] text-white/80 font-black uppercase tracking-[0.3em]">Coleção de Elite 2026</span>
+            <div className="inline-block px-4 py-1.5 bg-white/40 backdrop-blur-md border border-black/5 rounded-full">
+              <span className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.3em]">Curadoria Exclusiva 2026</span>
             </div>
-            <h2 className="text-7xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
-              VIVA A<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-[#ea3372] italic">EXCELÊNCIA</span>
-              <span className="text-[#ea3372]">.</span>
+            <h2 className="text-8xl md:text-9xl font-normal text-[#660e14] leading-[0.7] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Viva a<br />
+              <span className="italic text-[#ad2335]">Excelência</span>
+              <span className="text-[#660e14]">.</span>
             </h2>
-            <p className="text-white/40 text-sm font-medium tracking-[0.15em] uppercase italic leading-relaxed max-w-sm">
-              Sua jornada para o luxo começa aqui. Acesse curadorias exclusivas e peças limitadas.
+            <p className="text-[#660e14]/40 text-xs font-black tracking-[0.2em] uppercase leading-relaxed max-w-sm pl-2">
+              Sua jornada para o luxo começa aqui. Acesse peças limitadas e coleções de elite.
             </p>
           </motion.div>
         </div>
@@ -218,16 +218,16 @@ export default function AuthPage() {
         <div className="absolute top-12 left-12 z-10">
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="/logo.png"
+              src="/ientidade_visual/logo-principal(2).png"
               alt="Anna Shoes Logo"
-              className="h-32 w-auto"
+              className="h-28 w-auto"
             />
           </Link>
         </div>
       </div>
 
       {/* Lado Direito */}
-      <div className="w-full md:w-1/2 lg:w-2/5 bg-[#050505] flex items-center justify-center p-8 md:p-20 relative border-l border-white/5">
+      <div className="w-full md:w-1/2 lg:w-2/5 bg-[#fdf0e3] flex items-center justify-center p-8 md:p-20 relative border-l border-black/5">
         <div className="w-full max-w-[420px] space-y-12">
           
           <AnimatePresence mode="wait">
@@ -242,33 +242,33 @@ export default function AuthPage() {
                 <div className="space-y-3">
                   <button 
                     onClick={() => { setMode("auth"); setIsSuccess(false); }}
-                    className="text-white/30 hover:text-white transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6 group"
+                    className="text-[#660e14]/30 hover:text-[#ad2335] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6 group"
                   >
                     <ChevronLeft className="size-3 group-hover:-translate-x-1 transition-transform" /> Voltar
                   </button>
-                  <h1 className="text-5xl font-black text-white tracking-tighter uppercase leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    Recuperar<span className="text-[#ea3372]">.</span>
+                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight leading-none" style={{ fontFamily: "'Last Dream', cursive" }}>
+                    Recuperar<span className="text-[#ad2335]">.</span>
                   </h1>
-                  <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.4em] ml-1">Enviaremos um link de acesso seguro</p>
+                  <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1">Enviaremos um link seguro</p>
                 </div>
 
                 {isSuccess ? (
                   <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-white/[0.03] border border-white/10 p-10 rounded-2xl text-center space-y-6 shadow-2xl"
+                    className="bg-white/40 backdrop-blur-md border border-black/5 p-10 rounded-[32px] text-center space-y-6 shadow-xl"
                   >
-                    <div className="size-16 bg-[#ea3372]/10 rounded-full flex items-center justify-center mx-auto">
-                      <CheckCircle2 className="size-8 text-[#ea3372]" />
+                    <div className="size-16 bg-[#ad2335]/10 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="size-8 text-[#ad2335]" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-white text-sm font-black uppercase tracking-widest">E-mail Enviado</p>
-                      <p className="text-white/40 text-[11px] leading-relaxed">Verifique sua caixa de entrada e também a pasta de <strong>Spam</strong>.</p>
+                      <p className="text-[#660e14] text-sm font-black uppercase tracking-widest">E-mail Enviado</p>
+                      <p className="text-[#660e14]/40 text-[11px] leading-relaxed font-bold uppercase tracking-widest">Verifique sua caixa de entrada e também a pasta de <strong>Spam</strong>.</p>
                     </div>
                     <Button 
                       onClick={() => { setMode("auth"); setIsSuccess(false); }}
                       variant="outline" 
-                      className="w-full border-white/10 text-white/40 hover:text-white text-[10px] font-black uppercase tracking-widest h-12"
+                      className="w-full border-black/5 text-[#660e14]/40 hover:text-[#660e14] text-[10px] font-black uppercase tracking-widest h-12 rounded-2xl"
                     >
                       Voltar ao Início
                     </Button>
@@ -276,13 +276,13 @@ export default function AuthPage() {
                 ) : (
                   <form onSubmit={handleForgotSubmit} className="space-y-8">
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">E-mail Cadastrado</Label>
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">E-mail Cadastrado</Label>
                       <div className="relative group">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
-                        <Input 
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
+                        <Input
                           required
                           type="email" 
-                          className="bg-white/[0.03] border-white/10 h-14 pl-12 text-white rounded-xl focus:border-[#ea3372]/40" 
+                          className="bg-white/90 border-black/5 h-14 pl-12 text-[#660e14] rounded-2xl focus:border-[#ad2335]/40 shadow-sm" 
                           placeholder="seu@email.com"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -292,7 +292,7 @@ export default function AuthPage() {
                     <Button 
                       type="submit" 
                       disabled={isLoading}
-                      className="w-full h-16 bg-white text-black hover:bg-[#ea3372] hover:text-white font-black uppercase tracking-[0.3em] text-[11px] rounded-xl transition-all duration-500 shadow-2xl shadow-white/5"
+                      className="w-full h-16 bg-[#660e14] text-white hover:bg-[#ad2335] font-black uppercase tracking-[0.3em] text-[11px] rounded-2xl transition-all duration-500 shadow-xl shadow-[#660e14]/10"
                     >
                       {isLoading ? "Processando..." : "Enviar Link Seguro"}
                     </Button>
@@ -308,47 +308,47 @@ export default function AuthPage() {
                 className="space-y-10"
               >
                 <div className="space-y-3">
-                  <div className="size-12 bg-[#38b6ff]/10 rounded-xl flex items-center justify-center mb-6">
-                    <ShieldCheck className="size-6 text-[#38b6ff]" />
+                  <div className="size-12 bg-[#ad2335]/10 rounded-2xl flex items-center justify-center mb-6">
+                    <ShieldCheck className="size-6 text-[#ad2335]" />
                   </div>
-                  <h1 className="text-5xl font-black text-white tracking-tighter uppercase leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    Nova Senha<span className="text-[#38b6ff]">.</span>
+                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight uppercase leading-none" style={{ fontFamily: "'Last Dream', cursive" }}>
+                    Nova Senha<span className="text-[#ad2335]">.</span>
                   </h1>
-                  <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.4em] ml-1">Defina sua nova credencial</p>
+                  <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1">Defina sua nova credencial</p>
                 </div>
 
                 <form onSubmit={handleResetSubmit} className="space-y-8">
                   <div className="space-y-4">
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Nova Senha</Label>
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">Nova Senha</Label>
                       <div className="relative group">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#38b6ff] transition-colors" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
                         <Input 
                           required
                           type={showPassword ? "text" : "password"} 
                           placeholder="Mínimo 8 caracteres"
-                          className="bg-white/[0.03] border-white/10 h-14 pl-12 text-white rounded-xl focus:border-[#38b6ff]/40" 
+                          className="bg-white/90 border-black/5 h-14 pl-12 text-[#660e14] rounded-2xl focus:border-[#ad2335]/40 shadow-sm" 
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                         />
                         <button 
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-[#660e14]/20 hover:text-[#ad2335] transition-colors"
                         >
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                         </button>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Confirmar Senha</Label>
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">Confirmar Senha</Label>
                       <div className="relative group">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#38b6ff] transition-colors" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
                         <Input 
                           required
                           type="password" 
                           placeholder="Repita a nova senha"
-                          className="bg-white/[0.03] border-white/10 h-14 pl-12 text-white rounded-xl focus:border-[#38b6ff]/40" 
+                          className="bg-white/90 border-black/5 h-14 pl-12 text-[#660e14] rounded-2xl focus:border-[#ad2335]/40 shadow-sm" 
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                         />
@@ -358,7 +358,7 @@ export default function AuthPage() {
                   <Button 
                     type="submit" 
                     disabled={isLoading}
-                    className="w-full h-16 bg-[#38b6ff] text-white hover:bg-[#38b6ff]/80 font-black uppercase tracking-[0.3em] text-[11px] rounded-xl transition-all duration-500 shadow-2xl shadow-[#38b6ff]/10"
+                    className="w-full h-16 bg-[#660e14] text-white hover:bg-[#ad2335] font-black uppercase tracking-[0.3em] text-[11px] rounded-2xl transition-all duration-500 shadow-xl shadow-[#660e14]/10"
                   >
                     {isLoading ? "Atualizando..." : "Confirmar Nova Senha"}
                   </Button>
@@ -373,26 +373,26 @@ export default function AuthPage() {
                 className="space-y-12"
               >
                 <div className="flex flex-col space-y-3">
-                  <Link to="/" className="text-white/30 hover:text-white transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6 group">
+                  <Link to="/" className="text-[#660e14]/30 hover:text-[#ad2335] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6 group">
                     <ChevronLeft className="size-3 group-hover:-translate-x-1 transition-transform" /> Voltar para a Boutique
                   </Link>
-                  <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    Minha Conta<span className="text-[#ea3372]">.</span>
+                  <h1 className="text-7xl font-normal text-[#660e14] tracking-tight leading-[0.8]" style={{ fontFamily: "'Last Dream', cursive" }}>
+                    Meu Acesso<span className="text-[#ad2335]">.</span>
                   </h1>
-                  <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.4em] ml-1">Bem-vindo de volta ao extraordinário</p>
+                  <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1 mt-2">Bem-vindo de volta ao extraordinário</p>
                 </div>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 bg-white/[0.03] p-1.5 h-16 rounded-xl mb-10 border border-white/5">
+                  <TabsList className="grid w-full grid-cols-2 bg-white/50 backdrop-blur-sm p-1.5 h-16 rounded-[20px] mb-10 border-2 border-black/5">
                     <TabsTrigger 
                       value="login" 
-                      className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-black text-white/40 font-black uppercase tracking-widest text-[10px] transition-all duration-300"
+                      className="rounded-xl data-[state=active]:bg-[#ad2335] data-[state=active]:text-white text-[#660e14]/40 font-black uppercase tracking-widest text-[10px] transition-all duration-300"
                     >
                       Acessar
                     </TabsTrigger>
                     <TabsTrigger 
                       value="register" 
-                      className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-black text-white/40 font-black uppercase tracking-widest text-[10px] transition-all duration-300"
+                      className="rounded-xl data-[state=active]:bg-[#ad2335] data-[state=active]:text-white text-[#660e14]/40 font-black uppercase tracking-widest text-[10px] transition-all duration-300"
                     >
                       Cadastrar
                     </TabsTrigger>
@@ -413,11 +413,11 @@ export default function AuthPage() {
                         >
                           <div className="space-y-6">
                             <div className="space-y-3">
-                              <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 ml-1">E-mail de Membro</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]/30 ml-1">E-mail de Membro</Label>
                               <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
                                 <Input 
-                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  className="bg-white/90 border-black/5 h-14 pl-12 focus:border-[#ad2335]/40 text-[#660e14] rounded-2xl placeholder:text-[#660e14]/20 shadow-sm" 
                                   placeholder="exemplo@annashoes.com"
                                   type="email"
                                   autoComplete="email"
@@ -428,20 +428,20 @@ export default function AuthPage() {
                             </div>
                             <div className="space-y-3">
                               <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">Sua Senha</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]/30">Sua Senha</Label>
                                 <button 
                                   type="button"
                                   onClick={() => setMode("forgot")}
-                                  className="text-[9px] font-bold text-[#ea3372] uppercase tracking-[0.3em] hover:brightness-125 transition-all italic"
+                                  className="text-[9px] font-black text-[#ad2335] uppercase tracking-[0.3em] hover:brightness-125 transition-all italic"
                                 >
                                   Esqueci a senha?
                                 </button>
                               </div>
                               <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#ea3372] transition-colors" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
                                 <Input 
                                   type={showPassword ? "text" : "password"}
-                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#ea3372]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  className="bg-white/90 border-black/5 h-14 pl-12 focus:border-[#ad2335]/40 text-[#660e14] rounded-2xl placeholder:text-[#660e14]/20 shadow-sm" 
                                   placeholder="••••••••"
                                   autoComplete="current-password"
                                   value={password}
@@ -450,7 +450,7 @@ export default function AuthPage() {
                                 <button 
                                   type="button"
                                   onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#660e14]/20 hover:text-[#ad2335] transition-colors"
                                 >
                                   {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </button>
@@ -461,7 +461,7 @@ export default function AuthPage() {
                           <Button 
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-16 bg-white text-black hover:bg-[#ea3372] hover:text-white font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-white/5"
+                            className="w-full h-16 bg-[#660e14] text-white hover:bg-[#ad2335] font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-2xl shadow-xl shadow-[#660e14]/10"
                           >
                             {isLoading ? "Validando..." : "Entrar na Boutique"}
                             {!isLoading && <ArrowRight className="ml-2 size-4" />}
@@ -482,9 +482,9 @@ export default function AuthPage() {
                         >
                           <div className="space-y-6">
                             <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Nome Completo</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">Nome Completo</Label>
                               <Input 
-                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
+                                className="bg-white/90 border-black/5 h-14 px-6 focus:border-[#ad2335]/40 text-[#660e14] rounded-2xl shadow-sm" 
                                 placeholder="Nome Completo"
                                 autoComplete="name"
                                 value={name}
@@ -492,10 +492,10 @@ export default function AuthPage() {
                               />
                             </div>
                             <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">E-mail</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">E-mail</Label>
                               <Input 
                                 type="email"
-                                className="bg-white/[0.03] border-white/10 h-14 px-6 focus:border-[#38b6ff]/40 text-white rounded-xl" 
+                                className="bg-white/90 border-black/5 h-14 px-6 focus:border-[#ad2335]/40 text-[#660e14] rounded-2xl shadow-sm" 
                                 placeholder="email@exemplo.com"
                                 autoComplete="email"
                                 value={email}
@@ -503,12 +503,12 @@ export default function AuthPage() {
                               />
                             </div>
                             <div className="space-y-3">
-                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Definir Senha</Label>
+                              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#660e14]/40 ml-1">Definir Senha</Label>
                               <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-white/10 group-focus-within:text-[#38b6ff] transition-colors" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#660e14]/20 group-focus-within:text-[#ad2335] transition-colors" />
                                 <Input 
                                   type={showPassword ? "text" : "password"}
-                                  className="bg-white/[0.03] border-white/10 h-14 pl-12 focus:border-[#38b6ff]/40 text-white rounded-xl placeholder:text-white/10" 
+                                  className="bg-white/90 border-black/5 h-14 pl-12 focus:border-[#ad2335]/40 text-[#660e14] rounded-2xl placeholder:text-[#660e14]/20 shadow-sm" 
                                   placeholder="••••••••"
                                   autoComplete="new-password"
                                   value={password}
@@ -517,7 +517,7 @@ export default function AuthPage() {
                                 <button 
                                   type="button"
                                   onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 hover:text-white transition-colors"
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#660e14]/20 hover:text-[#ad2335] transition-colors"
                                 >
                                   {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </button>
@@ -528,7 +528,7 @@ export default function AuthPage() {
                           <Button 
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-16 bg-[#38b6ff] text-white hover:bg-[#38b6ff]/80 font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-xl shadow-2xl shadow-[#38b6ff]/10"
+                            className="w-full h-16 bg-[#660e14] text-white hover:bg-[#ad2335] font-black uppercase tracking-[0.3em] text-[11px] transition-all duration-500 rounded-2xl shadow-xl shadow-[#660e14]/10"
                           >
                             {isLoading ? "Processando..." : "Tornar-se Membro"}
                           </Button>
@@ -541,7 +541,7 @@ export default function AuthPage() {
             )}
           </AnimatePresence>
 
-          <p className="text-center text-[9px] text-white/10 font-black uppercase tracking-[0.4em] pt-8">
+          <p className="text-center text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.4em] pt-8">
             Anna Shoes &copy; 2026 &bull; Todos os direitos reservados
           </p>
         </div>

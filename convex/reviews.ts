@@ -51,3 +51,13 @@ export const createReview = mutation({
     return reviewId;
   },
 });
+
+export const getMyReviews = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("reviews")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .collect();
+  },
+});

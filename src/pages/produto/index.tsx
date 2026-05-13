@@ -114,19 +114,20 @@ export default function ProdutoPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#fdf0e3]">
+      <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       {/* Breadcrumb */}
-      <nav className="text-xs text-muted-foreground mb-6 flex items-center gap-1 flex-wrap">
-        <Link to="/" className="hover:text-[#ea3372]">Início</Link>
+      <nav className="text-xs text-[#660e14]/60 mb-6 flex items-center gap-1 flex-wrap font-medium">
+        <Link to="/" className="hover:text-[#ad2335]">Início</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/catalogo" className="hover:text-[#ea3372]">Catálogo</Link>
+        <Link to="/catalogo" className="hover:text-[#ad2335]">Catálogo</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to={`/catalogo?categoria=${encodeURIComponent(product.category)}`} className="hover:text-[#ea3372]">
+        <Link to={`/catalogo?categoria=${encodeURIComponent(product.category)}`} className="hover:text-[#ad2335]">
           {product.category}
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground truncate max-w-32">{product.name}</span>
+        <span className="text-[#660e14] truncate max-w-32 font-bold">{product.name}</span>
       </nav>
 
 
@@ -146,12 +147,12 @@ export default function ProdutoPage() {
               className="w-full h-full object-cover"
             />
             {discount > 0 && (
-              <Badge className="absolute top-4 left-4 bg-[#ea3372] text-white text-sm border-0 px-3 py-1">
+              <Badge className="absolute top-4 left-4 bg-[#ad2335] text-white text-sm border-0 px-3 py-1 shadow-lg">
                 -{discount}% OFF
               </Badge>
             )}
             {product.isNew && (
-              <Badge className="absolute top-4 right-4 bg-[#38b6ff] text-white border-0 px-3 py-1">
+              <Badge className="absolute top-4 right-4 bg-[#660e14] text-white border-0 px-3 py-1 shadow-lg">
                 NOVO
               </Badge>
             )}
@@ -165,7 +166,7 @@ export default function ProdutoPage() {
                   key={i}
                   onClick={() => setSelectedImage(i)}
                   className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                    selectedImage === i ? "border-[#ea3372]" : "border-border hover:border-[#ea3372]/50"
+                    selectedImage === i ? "border-[#ad2335] shadow-md" : "border-black/5 hover:border-[#ad2335]/50"
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
@@ -179,7 +180,7 @@ export default function ProdutoPage() {
         <div className="space-y-5">
           {/* Brand & Share */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#38b6ff] uppercase tracking-widest">
+            <span className="text-[10px] font-black text-[#ad2335] uppercase tracking-[0.4em]">
               {product.brand}
             </span>
             <button
@@ -191,8 +192,8 @@ export default function ProdutoPage() {
           </div>
 
           <div>
-            <h1 className="text-3xl font-black text-foreground leading-tight">{product.name}</h1>
-            <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
+            <h1 className="text-5xl font-normal text-[#660e14] leading-[0.9] mb-2" style={{ fontFamily: "'Last Dream', cursive" }}>{product.name}</h1>
+            <p className="text-sm text-[#660e14]/60 font-bold uppercase tracking-widest">{product.category}</p>
           </div>
 
           {/* Rating */}
@@ -202,34 +203,34 @@ export default function ProdutoPage() {
                 <Star
                   key={i}
                   className="h-4 w-4"
-                  fill={i < Math.floor(product.rating) ? "#ea3372" : "none"}
-                  stroke={i < Math.floor(product.rating) ? "#ea3372" : "#ccc"}
+                  fill={i < Math.floor(product.rating) ? "#ad2335" : "none"}
+                  stroke={i < Math.floor(product.rating) ? "#ad2335" : "#660e1440"}
                 />
               ))}
             </div>
-            <span className="text-sm font-semibold">{product.rating}</span>
-            <span className="text-sm text-muted-foreground">({product.reviews} avaliações)</span>
+            <span className="text-sm font-black text-[#660e14]">{product.rating}</span>
+            <span className="text-xs text-[#660e14]/40 font-bold">({product.reviews} avaliações)</span>
           </div>
 
           {/* Price */}
-          <div className="bg-muted rounded-xl p-4">
+          <div className="bg-[#660e14]/5 rounded-2xl p-6 border border-[#660e14]/10">
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-black text-foreground">{formatPrice(product.price)}</span>
+              <span className="text-4xl font-black text-[#660e14] tracking-tighter">{formatPrice(product.price)}</span>
               {product.originalPrice && (
-                <span className="text-lg text-muted-foreground line-through">
+                <span className="text-lg text-[#660e14]/30 line-through font-bold">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
               {discount > 0 && (
-                <Badge className="bg-[#ea3372] text-white border-0">-{discount}%</Badge>
+                <Badge className="bg-[#ad2335] text-white border-0 font-black">-{discount}%</Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              ou <strong>3x de {formatPrice(product.price / 3)}</strong> sem juros no cartão
+            <p className="text-sm text-[#660e14]/60 mt-2 font-medium">
+              ou <strong className="text-[#660e14]">3x de {formatPrice(product.price / 3)}</strong> sem juros no cartão
             </p>
-            <p className="text-sm text-green-600 font-medium mt-1">
-              💳 PIX: {formatPrice(product.price * 0.95)} (5% de desconto)
-            </p>
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 rounded-full text-xs font-black uppercase tracking-wider">
+              <CheckCircle className="size-3" /> PIX: {formatPrice(product.price * 0.95)} (5% OFF)
+            </div>
           </div>
 
           {/* Color selector - Só exibe se houver cores cadastradas */}
@@ -244,10 +245,10 @@ export default function ProdutoPage() {
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl border-2 text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${
                       selectedColor === color
-                        ? "border-[#ea3372] bg-[#ea3372]/5 text-[#ea3372]"
-                        : "border-border hover:border-[#ea3372]/50 text-foreground"
+                        ? "border-[#ad2335] bg-[#ad2335] text-white shadow-lg shadow-[#ad2335]/20"
+                        : "border-black/5 hover:border-[#ad2335]/50 text-[#660e14]"
                     }`}
                   >
                     {color}
@@ -271,14 +272,11 @@ export default function ProdutoPage() {
             <div className="flex flex-wrap gap-2">
               {product.sizes
                 .filter((size) => {
-                  // Se houver variantes de cor
                   if (product.colorVariants && product.colorVariants.length > 0) {
-                    // Se uma cor estiver selecionada, mostra apenas os tamanhos daquela cor
                     if (selectedColor) {
                       const variant = product.colorVariants.find(v => v.color === selectedColor);
                       return variant ? variant.sizes.includes(size) : false;
                     }
-                    // Se nenhuma cor estiver selecionada, mostra tamanhos que existem em PELO MENOS UMA cor
                     return product.colorVariants.some(v => v.sizes.includes(size));
                   }
                   return true;
@@ -288,10 +286,10 @@ export default function ProdutoPage() {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`w-12 h-12 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer ${
+                      className={`w-12 h-12 rounded-2xl border-2 text-sm font-black transition-all cursor-pointer ${
                         selectedSize === size
-                          ? "border-[#ea3372] bg-[#ea3372] text-white shadow-lg shadow-[#ea3372]/20"
-                          : "border-border hover:border-[#ea3372] text-foreground"
+                          ? "border-[#660e14] bg-[#660e14] text-white shadow-lg shadow-[#660e14]/20"
+                          : "border-black/5 hover:border-[#660e14] text-[#660e14]"
                       }`}
                     >
                       {size}
@@ -303,18 +301,18 @@ export default function ProdutoPage() {
 
           {/* Quantity */}
           <div className="flex items-center gap-4">
-            <span className="text-sm font-semibold">Quantidade</span>
-            <div className="flex items-center border border-border rounded-lg overflow-hidden">
+            <span className="text-sm font-bold text-[#660e14]">Quantidade</span>
+            <div className="flex items-center border-2 border-black/5 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+                className="w-12 h-12 flex items-center justify-center hover:bg-[#660e14]/5 transition-colors cursor-pointer text-[#660e14]"
               >
                 <Minus className="h-4 w-4" />
               </button>
-              <span className="w-12 text-center text-sm font-semibold">{quantity}</span>
+              <span className="w-12 text-center text-sm font-black text-[#660e14]">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+                className="w-12 h-12 flex items-center justify-center hover:bg-[#660e14]/5 transition-colors cursor-pointer text-[#660e14]"
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -322,30 +320,30 @@ export default function ProdutoPage() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Button
               onClick={handleAddToCart}
-              className={`flex-1 h-12 font-bold cursor-pointer transition-all ${
+              className={`flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs cursor-pointer transition-all ${
                 addedToCart
-                  ? "bg-green-500 hover:bg-green-600 text-white"
-                  : "bg-[#0b0b0b] hover:bg-[#222] text-white"
+                  ? "bg-green-600 text-white"
+                  : "bg-[#660e14] hover:bg-[#4d0a0f] text-white shadow-xl shadow-[#660e14]/20"
               }`}
             >
               <AnimatePresence mode="wait">
                 {addedToCart ? (
                   <motion.span key="added" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5" /> Adicionado!
+                    <CheckCircle className="h-5 w-5" /> No Carrinho!
                   </motion.span>
                 ) : (
                   <motion.span key="add" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
-                    <ShoppingCart className="h-5 w-5" /> Adicionar ao Carrinho
+                    <ShoppingCart className="h-5 w-5" /> Adicionar
                   </motion.span>
                 )}
               </AnimatePresence>
             </Button>
             <Button
               onClick={handleBuyNow}
-              className="flex-1 h-12 bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold cursor-pointer"
+              className="flex-1 h-14 rounded-2xl bg-[#ad2335] hover:bg-[#8b1c2b] text-white font-black uppercase tracking-widest text-xs cursor-pointer shadow-xl shadow-[#ad2335]/20"
             >
               Comprar Agora
             </Button>
@@ -353,23 +351,23 @@ export default function ProdutoPage() {
               variant="secondary"
               size="icon"
               onClick={() => { toggle(product._id as string); toast(isWishlisted ? "Removido dos favoritos" : "Adicionado aos favoritos!"); }}
-              className={`h-12 w-12 cursor-pointer ${isWishlisted ? "bg-[#ea3372] text-white hover:bg-[#c9295f]" : ""}`}
+              className={`h-14 w-14 rounded-2xl border-2 transition-all cursor-pointer ${isWishlisted ? "bg-[#ad2335] border-[#ad2335] text-white shadow-lg shadow-[#ad2335]/20" : "border-black/5 hover:border-[#ad2335]/50 bg-white"}`}
             >
               <Heart className="h-5 w-5" fill={isWishlisted ? "currentColor" : "none"} />
             </Button>
           </div>
 
           {/* Benefits */}
-          <div className="grid grid-cols-3 gap-3 pt-2">
+          <div className="grid grid-cols-3 gap-4 pt-4">
             {[
-              { icon: Truck, label: "Entrega rápida", desc: "em todo Brasil" },
-              { icon: RotateCcw, label: "Troca fácil", desc: "até 7 dias" },
-              { icon: Shield, label: "Compra segura", desc: "100% protegida" },
+              { icon: Truck, label: "Envio Expresso", desc: "Todo o Brasil", color: "#660e14" },
+              { icon: RotateCcw, label: "Troca Grátis", desc: "Até 7 dias", color: "#ad2335" },
+              { icon: Shield, label: "Seguro Elite", desc: "Compra Protegida", color: "#660e14" },
             ].map((b) => (
-              <div key={b.label} className="text-center p-3 bg-muted rounded-xl">
-                <b.icon className="h-5 w-5 mx-auto mb-1 text-[#ea3372]" />
-                <p className="text-xs font-semibold text-foreground">{b.label}</p>
-                <p className="text-[10px] text-muted-foreground">{b.desc}</p>
+              <div key={b.label} className="text-center p-4 bg-white/40 border border-black/5 rounded-2xl backdrop-blur-sm transition-all hover:scale-105">
+                <b.icon className="h-6 w-6 mx-auto mb-2" style={{ color: b.color }} />
+                <p className="text-[10px] font-black text-[#660e14] uppercase tracking-wider">{b.label}</p>
+                <p className="text-[9px] text-[#660e14]/40 font-bold uppercase mt-1">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -383,7 +381,7 @@ export default function ProdutoPage() {
       {/* Related products */}
       {related.length > 0 && (
         <div>
-          <h2 className="text-2xl font-black mb-6">Produtos Relacionados</h2>
+          <h2 className="text-4xl font-normal text-[#660e14] mb-8" style={{ fontFamily: "'Last Dream', cursive" }}>Produtos Relacionados</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -397,6 +395,7 @@ export default function ProdutoPage() {
         isOpen={isSizeGuideOpen} 
         onOpenChange={setIsSizeGuideOpen} 
       />
+      </div>
     </div>
   );
 }
@@ -422,10 +421,10 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`pb-3 text-sm font-semibold transition-colors cursor-pointer border-b-2 -mb-px ${
+            className={`pb-3 text-xs font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
               tab === t.id
-                ? "border-[#ea3372] text-[#ea3372]"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-[#ad2335] text-[#ad2335]"
+                : "border-transparent text-[#660e14]/40 hover:text-[#660e14]"
             }`}
           >
             {t.label}
@@ -439,20 +438,20 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
             <motion.div key="desc" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <p className="text-muted-foreground leading-relaxed">{product.description}</p>
               <div className="mt-6 grid sm:grid-cols-2 gap-4">
-                <div className="bg-muted rounded-xl p-4">
-                  <h4 className="font-semibold mb-3 text-sm">Especificações</h4>
-                  <dl className="space-y-2 text-sm">
-                    <div className="flex justify-between"><dt className="text-muted-foreground">Marca</dt><dd className="font-medium">{product.brand}</dd></div>
-                    <div className="flex justify-between"><dt className="text-muted-foreground">Categoria</dt><dd className="font-medium">{product.category}</dd></div>
-                    <div className="flex justify-between"><dt className="text-muted-foreground">Tamanhos</dt><dd className="font-medium">{product.sizes[0]} – {product.sizes[product.sizes.length - 1]}</dd></div>
-                    <div className="flex justify-between"><dt className="text-muted-foreground">Disponível</dt><dd className="text-green-600 font-medium">Em estoque</dd></div>
+                <div className="bg-[#660e14]/5 rounded-2xl p-6 border border-[#660e14]/10">
+                  <h4 className="font-black uppercase tracking-widest text-xs mb-4 text-[#660e14]">Especificações</h4>
+                  <dl className="space-y-3 text-sm">
+                    <div className="flex justify-between border-b border-[#660e14]/5 pb-1"><dt className="text-[#660e14]/40 font-bold uppercase text-[10px]">Marca</dt><dd className="font-black text-[#660e14]">{product.brand}</dd></div>
+                    <div className="flex justify-between border-b border-[#660e14]/5 pb-1"><dt className="text-[#660e14]/40 font-bold uppercase text-[10px]">Categoria</dt><dd className="font-black text-[#660e14]">{product.category}</dd></div>
+                    <div className="flex justify-between border-b border-[#660e14]/5 pb-1"><dt className="text-[#660e14]/40 font-bold uppercase text-[10px]">Tamanhos</dt><dd className="font-black text-[#660e14]">{product.sizes[0]} – {product.sizes[product.sizes.length - 1]}</dd></div>
+                    <div className="flex justify-between"><dt className="text-[#660e14]/40 font-bold uppercase text-[10px]">Disponível</dt><dd className="text-green-600 font-black">Pronta Entrega</dd></div>
                   </dl>
                 </div>
-                <div className="bg-muted rounded-xl p-4">
-                  <h4 className="font-semibold mb-3 text-sm">Tags</h4>
+                <div className="bg-[#660e14]/5 rounded-2xl p-6 border border-[#660e14]/10">
+                  <h4 className="font-black uppercase tracking-widest text-xs mb-4 text-[#660e14]">Tags</h4>
                   <div className="flex flex-wrap gap-2">
                     {product.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                      <Badge key={tag} className="bg-[#660e14]/10 text-[#660e14] hover:bg-[#660e14]/20 border-0 text-[10px] font-black uppercase px-3 py-1">{tag}</Badge>
                     ))}
                   </div>
                 </div>
@@ -462,15 +461,15 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
           {tab === "reviews" && (
             <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
               {/* Summary */}
-              <div className="flex flex-col md:flex-row items-center gap-8 bg-muted/50 border border-border/50 rounded-2xl p-8 mb-8">
+              <div className="flex flex-col md:flex-row items-center gap-8 bg-[#660e14]/5 border border-[#660e14]/10 rounded-3xl p-8 mb-8">
                 <div className="text-center">
-                  <p className="text-5xl font-black text-foreground italic tracking-tighter">{product.rating}</p>
+                  <p className="text-6xl font-black text-[#660e14] tracking-tighter" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>{product.rating}</p>
                   <div className="flex justify-center my-2">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-5 w-5" fill={i < Math.floor(product.rating) ? "#ea3372" : "none"} stroke={i < Math.floor(product.rating) ? "#ea3372" : "#ccc"} />
+                      <Star key={i} className="h-5 w-5" fill={i < Math.floor(product.rating) ? "#ad2335" : "none"} stroke={i < Math.floor(product.rating) ? "#ad2335" : "#660e1420"} />
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{reviews.length} avaliações</p>
+                  <p className="text-[10px] text-[#660e14]/40 uppercase font-black tracking-widest">{reviews.length} avaliações</p>
                 </div>
                 
                 <Separator orientation="vertical" className="hidden md:block h-20" />
@@ -481,11 +480,11 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
                     const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
                     return (
                       <div key={star} className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-muted-foreground w-4">{star}</span>
-                        <div className="flex-1 h-2.5 bg-border/30 rounded-full overflow-hidden">
-                          <div className="h-full bg-[#ea3372] rounded-full" style={{ width: `${pct}%` }} />
+                        <span className="text-[10px] font-black text-[#660e14]/40 w-4">{star}</span>
+                        <div className="flex-1 h-2 bg-[#660e14]/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#ad2335] rounded-full" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-[10px] font-black text-muted-foreground w-8">{Math.round(pct)}%</span>
+                        <span className="text-[10px] font-black text-[#660e14]/60 w-8">{Math.round(pct)}%</span>
                       </div>
                     );
                   })}
@@ -493,7 +492,7 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
 
                 <div className="shrink-0 w-full md:w-auto">
                    <Button 
-                    className="w-full bg-[#0b0b0b] hover:bg-[#111] text-white font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl border border-white/5"
+                    className="w-full bg-[#660e14] hover:bg-[#4d0a0f] text-white font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl shadow-xl shadow-[#660e14]/20 border-0"
                     onClick={() => {
                       if (!isAuthenticated) {
                         toast.error("Você precisa estar logado para avaliar");
@@ -511,19 +510,19 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
               <div className="grid gap-4">
                 {reviews.length > 0 ? (
                   reviews.map((r, i) => (
-                    <div key={i} className="group bg-muted/30 border border-border/40 hover:border-[#ea3372]/30 rounded-2xl p-6 transition-all">
+                    <div key={i} className="group bg-white/40 border border-black/5 hover:border-[#ad2335]/20 rounded-3xl p-8 transition-all backdrop-blur-sm">
                       <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="size-10 rounded-full bg-gradient-to-br from-[#ea3372] to-[#38b6ff] p-[1px]">
-                            <div className="size-full bg-muted rounded-full flex items-center justify-center font-black text-[10px]">
+                        <div className="flex items-center gap-4">
+                          <div className="size-12 rounded-2xl bg-gradient-to-br from-[#660e14] to-[#ad2335] p-[1px] shadow-lg shadow-[#660e14]/10">
+                            <div className="size-full bg-white rounded-2xl flex items-center justify-center font-black text-xs text-[#660e14]">
                               {(r.userName || "U").charAt(0)}
                             </div>
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="font-bold text-sm text-foreground">{r.userName}</p>
-                              <Badge className="bg-green-500/10 text-green-500 text-[8px] font-black uppercase px-2 py-0 border-0 flex items-center gap-1">
-                                <CheckCircle className="size-2" /> Compra Verificada
+                              <p className="font-black text-[#660e14] text-sm">{r.userName}</p>
+                              <Badge className="bg-green-500/10 text-green-600 text-[8px] font-black uppercase px-2 py-0.5 border-0 flex items-center gap-1">
+                                <CheckCircle className="size-2" /> Verificado
                               </Badge>
                             </div>
                             <p className="text-[10px] text-muted-foreground uppercase font-medium tracking-wider">
@@ -535,12 +534,12 @@ function ProductTabs({ product, reviews }: { product: any, reviews: any[] }) {
                           {Array.from({ length: 5 }).map((_, j) => (
                             <Star 
                               key={j} 
-                              className={cn("h-3 w-3", j < r.rating ? "fill-[#ea3372] text-[#ea3372]" : "text-border")} 
+                              className={cn("h-3.5 w-3.5", j < r.rating ? "fill-[#ad2335] text-[#ad2335]" : "text-[#660e1410]")} 
                             />
                           ))}
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed italic">"{r.comment}"</p>
+                      <p className="text-sm text-[#660e14]/70 leading-relaxed font-medium italic">"{r.comment}"</p>
                     </div>
                   ))
                 ) : (

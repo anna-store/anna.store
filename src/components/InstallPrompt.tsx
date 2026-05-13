@@ -57,35 +57,35 @@ export default function InstallPrompt() {
         exit={{ opacity: 0, y: 50 }}
         className="fixed bottom-24 left-4 right-4 z-[100] md:hidden"
       >
-        <div className="bg-[#0b0b0b] border border-white/10 rounded-2xl shadow-2xl p-4 flex flex-col gap-3 backdrop-blur-xl">
+        <div className="bg-white/90 border border-black/5 rounded-[32px] shadow-2xl p-6 flex flex-col gap-4 backdrop-blur-xl">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea3372] to-[#38b6ff] flex items-center justify-center text-white font-bold text-xl italic">
+            <div className="flex items-center gap-4">
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-[#660e14] to-[#ad2335] flex items-center justify-center text-white font-black text-2xl italic shadow-lg shadow-[#660e14]/20" style={{ fontFamily: "'Last Dream', cursive" }}>
                 A
               </div>
               <div>
-                <p className="text-white font-bold text-sm">Instalar Anna Shoes</p>
-                <p className="text-white/40 text-[10px] uppercase tracking-wider">App Premium de Calçados</p>
+                <p className="text-[#660e14] font-black text-sm tracking-tight">Instalar Anna Shoes</p>
+                <p className="text-[#660e14]/40 text-[10px] font-bold uppercase tracking-[0.2em]">App Premium de Calçados</p>
               </div>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              className="text-white/40 h-8 w-8"
+              className="text-[#660e14]/20 h-10 w-10 hover:bg-[#660e14]/5 rounded-full"
               onClick={() => setShowPrompt(false)}
             >
-              <X className="size-4" />
+              <X className="size-5" />
             </Button>
           </div>
 
           {isIOS ? (
-            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3 text-xs text-white/70">
-              <Share className="size-4 text-[#38b6ff]" />
-              <p>Toque em <span className="text-white font-bold">Compartilhar</span> e depois em <span className="text-white font-bold">Adicionar à Tela de Início</span></p>
+            <div className="bg-[#660e14]/5 rounded-2xl p-4 flex items-center gap-3 text-[11px] text-[#660e14]/70 font-bold leading-snug">
+              <Share className="size-4 text-[#ad2335]" />
+              <p>Toque em <span className="text-[#660e14] font-black uppercase">Compartilhar</span> e depois em <span className="text-[#660e14] font-black uppercase">Adicionar à Tela de Início</span></p>
             </div>
           ) : (
             <Button 
-              className="w-full bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold gap-2 h-11"
+              className="w-full bg-[#ad2335] hover:bg-[#660e14] text-white font-black gap-2 h-12 rounded-2xl shadow-xl shadow-[#ad2335]/20 uppercase text-[10px] tracking-widest transition-all active:scale-95"
               onClick={handleInstall}
             >
               <Download className="size-4" />
