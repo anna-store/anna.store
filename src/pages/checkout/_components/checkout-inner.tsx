@@ -15,6 +15,7 @@ import {
   Truck,
   Clock,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import { api } from "@/convex/_generated/api.js";
 import { useAuth } from "@/hooks/use-auth.ts";
@@ -63,6 +64,7 @@ export default function CheckoutInner() {
   const discount = getDiscount();
   const shippingPrice = selectedShipping?.price ?? 0;
   const effectiveShipping = appliedCoupon?.freeShipping ? 0 : shippingPrice;
+  const hasShipping = !!selectedShipping;
   const total = getFinalTotal() + effectiveShipping;
 
   const {
@@ -76,16 +78,7 @@ export default function CheckoutInner() {
 
   const zipValue = watch("zip");
 
-  const calculateShipping = (state: string) => {
-    const uf = state.toUpperCase();
-    let value = 19.90;
-    if (["SP", "RJ", "MG", "ES"].includes(uf)) value = 15.00;
-    else if (["PR", "SC", "RS"].includes(uf)) value = 22.00;
-    else if (["DF", "GO", "MS", "MT"].includes(uf)) value = 28.00;
-    else if (["BA", "PE", "CE", "RN", "PB", "AL", "SE", "MA", "PI"].includes(uf)) value = 35.00;
-    else if (["AM", "PA", "AC", "RO", "RR", "AP", "TO"].includes(uf)) value = 45.00;
-    setShipping(value);
-  };
+
 
   const handleZipLookup = async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, "");
@@ -132,11 +125,12 @@ export default function CheckoutInner() {
       if (currentUser.neighborhood) setValue("neighborhood", currentUser.neighborhood);
       if (currentUser.complement) setValue("complement", currentUser.complement);
       if (currentUser.city) setValue("city", currentUser.city);
-      if (currentUser.state) {
-        setValue("state", currentUser.state);
-        calculateShipping(currentUser.state);
+      if (currentUser.state) setValue("state", currentUser.state);
+      if (currentUser.zip) {
+        setValue("zip", currentUser.zip);
+        // Dispara cotação automática do Melhor Envio com o CEP do perfil
+        handleZipLookup(currentUser.zip.replace(/\D/g, ""));
       }
-      if (currentUser.zip) setValue("zip", currentUser.zip);
     }
   }, [currentUser, setValue]);
 
