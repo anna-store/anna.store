@@ -144,7 +144,8 @@ export default defineSchema({
     // Promoções
     isOnSale: v.optional(v.boolean()),
   }).index("by_category", ["category"])
-    .index("by_sale", ["isOnSale"]),
+    .index("by_sale", ["isOnSale"])
+    .index("by_price", ["price"]),
 
   coupons: defineTable({
     code: v.string(),

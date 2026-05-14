@@ -7,7 +7,6 @@ import ProductCard from "@/components/ProductCard.tsx";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { useCartStore } from "@/hooks/use-cart.ts";
-import { CATEGORIES, formatPrice } from "@/lib/products-data.ts";
 
 const BENEFITS = [
   { icon: Truck, title: "Envio Rápido", description: "Entrega em todo o Brasil", color: "#38b6ff" },
@@ -22,12 +21,7 @@ const TESTIMONIALS = [
   { name: "Juliana Matos", rating: 5, comment: "Melhor loja de calçados online! Preço justo e entrega rápida.", city: "Belo Horizonte, MG" }
 ];
 
-const CATEGORY_DATA = [
-  { name: "Tênis Masculino", category: "Tênis", gender: "Masculino", image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80" },
-  { name: "Tênis Feminino", category: "Tênis", gender: "Feminino", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80" },
-  { name: "Infantil", category: "Infantil", gender: "Todos", image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&q=80" },
-  { name: "Casual", category: "Casual", gender: "Todos", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80" },
-];
+
 
 const stagger = {
   container: { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } },
@@ -37,15 +31,15 @@ const stagger = {
 export default function Index() {
   const { items } = useCartStore();
 
-  const dbFeatured = useQuery(api.products.getFeatured) || [];
-  const dbBestSellers = useQuery(api.products.getBestSellers) || [];
-  const dbNewArrivals = useQuery(api.products.getNewArrivals) || [];
+  // Queries por faixa de preço
+  const lineEntry = useQuery(api.products.getByPriceRange, { minPrice: 189, maxPrice: 219 }) || [];
+  const linePremium = useQuery(api.products.getByPriceRange, { minPrice: 249, maxPrice: 329 }) || [];
+  const lineHype = useQuery(api.products.getByPriceRange, { minPrice: 349 }) || [];
 
-  // Normalize products for existing components (ensure 'id' exists)
   const normalize = (p: any) => ({ ...p, id: p._id || p.id });
-  const featuredProducts = dbFeatured.map(normalize).slice(0, 4);
-  const bestSellers = dbBestSellers.map(normalize).slice(0, 4);
-  const newProducts = dbNewArrivals.map(normalize).slice(0, 4);
+  const entryProducts = lineEntry.map(normalize).slice(0, 4);
+  const premiumProducts = linePremium.map(normalize).slice(0, 4);
+  const hypeProducts = lineHype.map(normalize).slice(0, 4);
 
   return (
     <div className="bg-[#fdf0e3] min-h-screen selection:bg-[#ad2335]/30 overflow-x-hidden">
@@ -72,7 +66,7 @@ export default function Index() {
           className="absolute left-10 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-10 z-20"
         >
           <div className="w-[1px] h-32 bg-gradient-to-t from-[#fdf0e3]/20 to-transparent" />
-          <span className="text-[10px] text-[#fdf0e3]/30 font-black uppercase tracking-[1em] [writing-mode:vertical-lr] rotate-180">
+          <span className="text-[10px] text-[#ff97ad] font-black uppercase tracking-[1em] [writing-mode:vertical-lr] rotate-180">
             Nova Coleção
           </span>
           <div className="w-[1px] h-32 bg-gradient-to-b from-[#fdf0e3]/20 to-transparent" />
@@ -94,7 +88,7 @@ export default function Index() {
                   </div>
                 ))}
               </div>
-              <span className="text-[9px] text-[#fdf0e3]/70 font-black uppercase tracking-[0.2em]">
+              <span className="text-[9px] text-[#ffe5f0] font-black uppercase tracking-[0.2em]">
                 +2.5k clientes satisfeitos este mês
               </span>
             </motion.div>
@@ -116,7 +110,7 @@ export default function Index() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-7xl md:text-8xl lg:text-[130px] font-normal leading-[0.9] tracking-normal mb-10"
-              style={{ 
+              style={{
                 fontFamily: "'Last Dream', cursive",
                 color: "#fdf0e3",
               }}
@@ -128,7 +122,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[#fdf0e3]/60 text-sm md:text-base font-medium tracking-wide mb-12 max-w-xl leading-relaxed uppercase mx-auto lg:mx-0"
+              className="text-[#ffe5f0] text-sm md:text-base font-medium tracking-wide mb-12 max-w-xl leading-relaxed uppercase mx-auto lg:mx-0"
             >
               A curadoria exclusiva de sneakers e calçados premium que une conforto absoluto e o design das ruas.
             </motion.p>
@@ -163,7 +157,7 @@ export default function Index() {
                   <p className="text-2xl md:text-4xl font-black text-[#fdf0e3] tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {stat.value}
                   </p>
-                  <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: `${stat.color}80` }}>
+                  <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: stat.color === "#fdf0e3" ? "#ff97ad" : stat.color }}>
                     {stat.label}
                   </p>
                 </div>
@@ -296,125 +290,27 @@ export default function Index() {
         </section>
       )}
 
-      {/* Categories: Asymmetrical Layout */}
+      {/* ═══════════════ SELEÇÃO ESSENTIAL ═══════════════ */}
       <section className="max-w-7xl mx-auto px-6 py-32 relative">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="size-2 bg-[#660e14] rounded-full animate-ping" />
-              <span className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.5em]">Collections</span>
+              <div className="size-2 bg-[#ad2335] rounded-full animate-ping" />
+              <span className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.5em]">Acessível & Estiloso</span>
             </div>
             <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
-              Navegar<span className="text-[#660e14]">.</span>
+              Seleção Essential<span className="text-[#660e14]/10">.</span>
             </h2>
+            <p className="text-sm text-[#660e14]/50 font-bold uppercase tracking-wider max-w-md">
+              De R$189 a R$219 — O ponto de partida perfeito para o seu estilo.
+            </p>
           </div>
           <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-[#660e14] font-black uppercase tracking-[0.4em] hover:text-[#ad2335] transition-colors">
-            Ver Todo o Acervo
+            Ver Todos
             <div className="size-10 rounded-full bg-white/20 border-[#660e14]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <ChevronRight className="size-4" />
             </div>
           </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {CATEGORY_DATA.map((cat, i) => (
-            <Link
-              key={cat.name}
-              to={`/catalogo?categoria=${encodeURIComponent(cat.category)}&genero=${encodeURIComponent(cat.gender)}`}
-              className="group relative aspect-[3/4] rounded-[3rem] overflow-hidden bg-[#660e14] border-4 border-[#660e14] shadow-2xl transition-all duration-500 hover:-translate-y-2"
-            >
-              {/* Image with Artistic Overlay */}
-              <div className="absolute inset-0 z-0">
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-full object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-[0.5]"
-                />
-                <div className="absolute inset-0 bg-[#ad2335]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
-              </div>
-
-              {/* Artistic Numbering */}
-              <div className="absolute top-4 left-6 text-6xl font-black text-[#fdf0e3]/10 select-none uppercase tracking-tighter">
-                0{i + 1}
-              </div>
-
-              {/* Category Badge */}
-              <div className="absolute bottom-4 left-4 right-4 z-20">
-                <div className="bg-[#fdf0e3] p-4 rounded-2xl shadow-xl transform transition-transform duration-500 group-hover:scale-105">
-                  <h3 className="text-[10px] font-black text-[#660e14] uppercase tracking-[0.3em] text-center">
-                    {cat.name}
-                  </h3>
-                  <div className="mt-2 h-[1px] w-0 bg-[#ad2335] mx-auto transition-all duration-500 group-hover:w-full" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products: Gallery Style */}
-      <section className="bg-[#660e14] py-32 relative overflow-hidden">
-        {/* Subtle depth gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="mb-20 text-center space-y-4">
-            <p className="text-[10px] text-[#ff97ad] font-black uppercase tracking-[0.6em]">Curated Drops</p>
-            <h2 className="text-6xl md:text-8xl font-normal text-[#fdf0e3] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
-              Destaques<span className="text-[#ad2335]">.</span>
-            </h2>
-          </div>
-
-          <motion.div
-            variants={stagger.container}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
-          >
-            {featuredProducts.map((product) => (
-              <motion.div key={product.id} variants={stagger.item} className="relative">
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-
-
-      {/* Best Sellers & Quick Filters */}
-      <section id="mais-vendidos" className="max-w-7xl mx-auto px-6 py-40">
-        <div className="flex flex-col md:flex-row items-center justify-between mb-24 gap-12">
-          <div className="text-center md:text-left">
-            <p className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.5em] mb-4">Elite Sales</p>
-            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
-              Mais Vendidos<span className="text-[#660e14]/10">.</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-auto">
-            {[
-              { label: "Infantil", cat: "Infantil", price: "79,90", color: "#ad2335" },
-              { label: "Casual", cat: "Casual", price: "129,90", color: "#660e14" },
-              { label: "Sport", cat: "Esportivo", price: "189,90", color: "#ad2335" }
-            ].map((item) => (
-              <Link
-                key={item.label}
-                to={`/catalogo?categoria=${encodeURIComponent(item.cat)}`}
-                className="block"
-              >
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="bg-white/30 backdrop-blur-md p-6 rounded-2xl border-[#660e14]/5 flex flex-col items-center text-center group cursor-pointer h-full"
-                >
-                  <p className="text-[9px] text-[#660e14]/20 font-black uppercase tracking-[0.3em] mb-2">From</p>
-                  <p className="text-xl font-black text-[#660e14] mb-1">R$ {item.price}</p>
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: item.color }}>{item.label}</p>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
         </div>
 
         <motion.div
@@ -424,12 +320,103 @@ export default function Index() {
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-8"
         >
-          {bestSellers.map((product) => (
+          {entryProducts.length > 0 ? entryProducts.map((product) => (
             <motion.div key={product.id} variants={stagger.item}>
               <ProductCard product={product} />
             </motion.div>
-          ))}
+          )) : (
+            <div className="col-span-full text-center py-16">
+              <p className="text-[#660e14]/30 text-xs font-black uppercase tracking-widest">Em breve novos modelos</p>
+            </div>
+          )}
         </motion.div>
+      </section>
+
+      {/* ═══════════════ LINHA PREMIUM ═══════════════ */}
+      <section className="bg-[#660e14] py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="mb-20 text-center space-y-4">
+            <p className="text-[10px] text-[#ff97ad] font-black uppercase tracking-[0.6em]">Sofisticação & Conforto</p>
+            <h2 className="text-6xl md:text-8xl font-normal text-[#fdf0e3] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              Linha Premium<span className="text-[#ad2335]">.</span>
+            </h2>
+            <p className="text-sm text-[#ff97ad] font-bold uppercase tracking-wider max-w-lg mx-auto">
+              De R$249 a R$329 — Qualidade superior para quem busca o melhor.
+            </p>
+          </div>
+
+          <motion.div
+            variants={stagger.container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+          >
+            {premiumProducts.length > 0 ? premiumProducts.map((product) => (
+              <motion.div key={product.id} variants={stagger.item} className="relative">
+                <ProductCard product={product} />
+              </motion.div>
+            )) : (
+              <div className="col-span-full text-center py-16">
+                <p className="text-[#ff97ad] text-xs font-black uppercase tracking-widest">Em breve novos modelos</p>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════════ MODELOS HYPE / DIFERENCIADOS ═══════════════ */}
+      <section className="relative py-32 overflow-hidden">
+        {/* Background gradiente especial */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf0e3] via-[#ffe5f0] to-[#ff97ad]/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-multiply pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="size-2 bg-[#ad2335] rounded-full" />
+                  <div className="absolute inset-0 size-2 bg-[#ad2335] rounded-full animate-ping" />
+                  <div className="absolute -inset-1 size-4 bg-[#ad2335]/20 rounded-full animate-pulse" />
+                </div>
+                <span className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.5em]">Exclusive Drops</span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+                Modelos Hype<span className="text-[#ad2335]">.</span>
+              </h2>
+              <p className="text-sm text-[#660e14]/50 font-bold uppercase tracking-wider max-w-md">
+                A partir de R$349 — Peças diferenciadas para quem quer se destacar.
+              </p>
+            </div>
+            <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-[#660e14] font-black uppercase tracking-[0.4em] hover:text-[#ad2335] transition-colors">
+              Ver Coleção Completa
+              <div className="size-10 rounded-full bg-[#ad2335]/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#ad2335]/20 transition-all">
+                <ChevronRight className="size-4" />
+              </div>
+            </Link>
+          </div>
+
+          <motion.div
+            variants={stagger.container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+          >
+            {hypeProducts.length > 0 ? hypeProducts.map((product) => (
+              <motion.div key={product.id} variants={stagger.item}>
+                <ProductCard product={product} />
+              </motion.div>
+            )) : (
+              <div className="col-span-full text-center py-16">
+                <p className="text-[#660e14]/30 text-xs font-black uppercase tracking-widest">Em breve novos modelos</p>
+              </div>
+            )}
+          </motion.div>
+        </div>
       </section>
 
       {/* Feedback Elite: Mural Style */}
@@ -453,34 +440,31 @@ export default function Index() {
               <motion.div
                 key={t.name}
                 variants={stagger.item}
-                className={`relative p-10 rounded-3xl shadow-xl transition-all duration-500 hover:scale-105 ${
-                  i % 2 === 0 ? 'bg-[#ad2335] text-[#fdf0e3] rotate-[-1deg]' : 'bg-white text-[#660e14] rotate-[1deg] border-2 border-[#660e14]/5'
-                }`}
+                className={`relative p-10 rounded-3xl shadow-xl transition-all duration-500 hover:scale-105 ${i % 2 === 0 ? 'bg-[#ad2335] text-[#ffe5f0] rotate-[-1deg]' : 'bg-white text-[#660e14] rotate-[1deg] border-2 border-[#660e14]/5'
+                  }`}
               >
                 {/* Tape Effect */}
-                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 backdrop-blur-sm border -rotate-2 z-10 ${
-                  i % 2 === 0 ? 'bg-white/20 border-white/10' : 'bg-[#ad2335]/20 border-[#ad2335]/10'
-                }`} />
+                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 backdrop-blur-sm border -rotate-2 z-10 ${i % 2 === 0 ? 'bg-white/20 border-white/10' : 'bg-[#ad2335]/20 border-[#ad2335]/10'
+                  }`} />
 
                 <div className="flex mb-8 gap-1">
                   {Array.from({ length: t.rating }).map((_, idx) => (
                     <Star key={idx} className={`size-3 fill-current ${i % 2 === 0 ? 'text-[#ff97ad]' : 'text-[#ad2335]'}`} />
                   ))}
                 </div>
-                
-                <p className="text-sm leading-[1.8] font-bold uppercase tracking-wider mb-10 italic opacity-90">
+
+                <p className="text-sm leading-[1.8] font-bold uppercase tracking-wider mb-10 italic opacity-100">
                   "{t.comment}"
                 </p>
 
                 <div className="flex items-center gap-4">
-                  <div className={`size-10 rounded-full flex items-center justify-center font-black text-[10px] ${
-                    i % 2 === 0 ? 'bg-[#fdf0e3] text-[#ad2335]' : 'bg-[#ad2335] text-[#fdf0e3]'
-                  }`}>
+                  <div className={`size-10 rounded-full flex items-center justify-center font-black text-[10px] ${i % 2 === 0 ? 'bg-[#ffe5f0] text-[#ad2335]' : 'bg-[#ad2335] text-[#ffe5f0]'
+                    }`}>
                     {t.name[0]}
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em]">{t.name}</p>
-                    <p className={`text-[8px] font-bold uppercase tracking-[0.3em] opacity-40`}>{t.city}</p>
+                    <p className={`text-[8px] font-bold uppercase tracking-[0.3em] ${i % 2 === 0 ? 'text-[#ff97ad]' : 'opacity-60'}`}>{t.city}</p>
                   </div>
                 </div>
               </motion.div>

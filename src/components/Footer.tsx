@@ -62,7 +62,7 @@ export default function Footer() {
           <ul className="space-y-4">
             {["Início", "Catálogo", "Promoções", "Novidades"].map((item) => (
               <li key={item}>
-                <Link to="/" className="text-[11px] font-black uppercase tracking-widest text-[#fdf0e3]/40 hover:text-white transition-colors">
+                <Link to="/" className="text-[11px] font-black uppercase tracking-widest text-[#ffe5f0] hover:text-white transition-colors">
                   {item}
                 </Link>
               </li>
@@ -75,7 +75,7 @@ export default function Footer() {
           <ul className="space-y-4">
             {["Privacidade", "Termos", "Trocas", "Entrega"].map((item) => (
               <li key={item}>
-                <Link to="/" className="text-[11px] font-black uppercase tracking-widest text-[#fdf0e3]/40 hover:text-white transition-colors">
+                <Link to="/" className="text-[11px] font-black uppercase tracking-widest text-[#ffe5f0] hover:text-white transition-colors">
                   {item}
                 </Link>
               </li>
@@ -88,14 +88,14 @@ export default function Footer() {
           <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#ad2335]">Contato</h4>
           <ul className="space-y-6">
             <li>
-              <a href="mailto:contato.annast@gmail.com" className="group flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#fdf0e3]/40 hover:text-white transition-colors">
+              <a href="mailto:contato.annast@gmail.com" className="group flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#ffe5f0] hover:text-white transition-colors">
                 <div className="size-10 rounded-xl flex items-center justify-center transition-colors">
                   <Mail className="size-4" />
                 </div>
                 Email
               </a>
             </li>
-            <li className="flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#fdf0e3]/40">
+            <li className="flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#ffe5f0]">
               <div className="size-10 rounded-xl flex items-center justify-center">
                 <MapPin className="size-4" />
               </div>
@@ -107,7 +107,7 @@ export default function Footer() {
 
       {/* Credits Bar integrated */}
       <div className="mt-32 text-center">
-        <p className="text-[9px] font-black uppercase tracking-[0.6em] text-[#fdf0e3]/20">
+        <p className="text-[9px] font-black uppercase tracking-[0.6em] text-[#ff97ad]/50">
           © {year} Anna Shoes — Defining Digital Luxury
         </p>
       </div>

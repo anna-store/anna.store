@@ -68,7 +68,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm font-medium text-[#660e14]/80 hover:text-[#ad2335] transition-colors duration-200"
+              className="text-sm font-bold text-[#660e14] hover:text-[#ad2335] transition-colors duration-200"
             >
               {link.label}
             </Link>
@@ -81,7 +81,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
           <Button
             variant="ghost"
             size="icon"
-            className="text-[#660e14]/70 hover:text-[#ad2335] cursor-pointer"
+            className="text-[#660e14] hover:text-[#ad2335] cursor-pointer"
             onClick={onAccessClick}
             aria-label="Acessibilidade"
           >
@@ -92,7 +92,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
           <div className="hidden md:flex items-center gap-2">
             {/* Cart — Hidden on Mobile (Moved to Bottom Nav) */}
             <Link to="/carrinho" aria-label="Ver carrinho de compras" className="hidden md:block">
-              <Button variant="ghost" size="icon" className="text-[#660e14]/70 hover:text-[#ad2335] relative cursor-pointer" aria-label="Carrinho">
+              <Button variant="ghost" size="icon" className="text-[#660e14] hover:text-[#ad2335] relative cursor-pointer" aria-label="Carrinho">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-[#ad2335] border-0">
@@ -110,7 +110,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-[#660e14]/70 hover:text-[#660e14] cursor-pointer relative outline-none"
+                      className="text-[#660e14] hover:text-[#ad2335] cursor-pointer relative outline-none"
                     >
                       {user?.avatar ? (
                         <img
@@ -129,7 +129,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
                     {/* Cabeçalho com nome e email */}
                     <DropdownMenuLabel className="px-4 py-3">
                       <p className="font-black text-xs uppercase tracking-widest">{user?.name ?? "Membro AnnaSt"}</p>
-                      <p className="text-[10px] text-[#660e14]/40 font-bold truncate uppercase tracking-tighter mt-0.5">{user?.email}</p>
+                      <p className="text-[10px] text-[#660e14]/70 font-bold truncate uppercase tracking-tighter mt-0.5">{user?.email}</p>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-[#660e14]/5 mx-2" />
 

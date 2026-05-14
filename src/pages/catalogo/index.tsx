@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal, X, ChevronDown, Search, Grid2X2, LayoutList } from "lucide-react";
@@ -80,16 +80,62 @@ export default function CatalogoPage() {
     setActiveGender(genderParam);
   }, [genderParam]);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 600]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const hasInitializedPrice = useRef(false);
+
+  // Sincronizar URL com busca (Debounce)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const newParams = new URLSearchParams(searchParams);
+      if (search) {
+        newParams.set("search", search);
+      } else {
+        newParams.delete("search");
+      }
+      // Evita loops infinitos verificando se mudou
+      if (newParams.toString() !== searchParams.toString()) {
+        setSearchParams(newParams, { replace: true });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search, setSearchParams, searchParams]);
+
+  // Sincronizar URL com Categorias e Gêneros
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams);
+    if (activeCategory !== "Todos") newParams.set("categoria", activeCategory);
+    else newParams.delete("categoria");
+    
+    if (activeGender !== "Todos") newParams.set("genero", activeGender);
+    else newParams.delete("genero");
+
+    if (newParams.toString() !== searchParams.toString()) {
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [activeCategory, activeGender, setSearchParams, searchParams]);
   const [sort, setSort] = useState("relevance");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const dbProducts = useQuery(api.products.getAll) || [];
-  const PRODUCTS_DYNAMIC = useMemo(() => dbProducts.map(p => ({ ...p, id: p._id })), [dbProducts]);
+  const dbProducts = useQuery(api.products.getAll);
+  const PRODUCTS_DYNAMIC = useMemo(() => (dbProducts || []).map(p => ({ ...p, id: p._id })), [dbProducts]);
   
+  // Cálculo dinâmico do preço máximo para o filtro
+  const MAX_PRICE_DYNAMIC = useMemo(() => {
+    if (PRODUCTS_DYNAMIC.length === 0) return 1000;
+    return Math.ceil(Math.max(...PRODUCTS_DYNAMIC.map(p => p.price)) / 50) * 50 + 50;
+  }, [PRODUCTS_DYNAMIC]);
+
+  // Inicializa o priceRange com o valor real do banco uma única vez
+  useEffect(() => {
+    if (dbProducts && dbProducts.length > 0 && !hasInitializedPrice.current) {
+      setPriceRange([0, MAX_PRICE_DYNAMIC]);
+      hasInitializedPrice.current = true;
+    }
+  }, [dbProducts, MAX_PRICE_DYNAMIC]);
+
   const ALL_BRANDS = useMemo(() => {
     const rawBrands = PRODUCTS_DYNAMIC.map((p) => p.brand?.trim()).filter(Boolean);
     const uniqueNormalized = [...new Set(rawBrands.map(b => b.toLowerCase()))];
@@ -174,7 +220,7 @@ export default function CatalogoPage() {
   const clearFilters = () => {
     setActiveCategory("Todos");
     setActiveGender("Todos");
-    setPriceRange([0, 600]);
+    setPriceRange([0, MAX_PRICE_DYNAMIC]);
     setSelectedSizes([]);
     setSelectedBrands([]);
     setSearch("");
@@ -186,7 +232,7 @@ export default function CatalogoPage() {
     (activeGender !== "Todos" ? 1 : 0) +
     selectedSizes.length +
     selectedBrands.length +
-    (priceRange[0] > 0 || priceRange[1] < 600 ? 1 : 0);
+    (priceRange[0] > 0 || priceRange[1] < MAX_PRICE_DYNAMIC ? 1 : 0);
 
   const FiltersPanel = () => (
     <div className="space-y-6">
@@ -215,7 +261,7 @@ export default function CatalogoPage() {
         <h3 className="font-black uppercase tracking-widest text-[10px] mb-4 text-[#660e14]">Faixa de Preço</h3>
         <Slider
           min={0}
-          max={600}
+          max={MAX_PRICE_DYNAMIC}
           step={10}
           value={priceRange}
           onValueChange={(v) => setPriceRange(v as [number, number])}
@@ -303,13 +349,21 @@ export default function CatalogoPage() {
       {/* Search + Controls */}
       <div className="flex gap-3 mb-6 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#660e14]/30" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar peças..."
-            className="pl-9 bg-white/50 border-2 border-black/5 rounded-2xl text-[#660e14] placeholder:text-[#660e14]/30"
+            placeholder="O que você está procurando?"
+            className="pl-9 pr-10 bg-white/60 border-2 border-black/5 rounded-2xl text-[#660e14] placeholder:text-[#660e14]/30 focus:border-[#ad2335]/20 focus:ring-0 transition-all h-12"
           />
+          {search && (
+            <button 
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-black/5 rounded-full transition-colors cursor-pointer"
+            >
+              <X className="h-3 w-3 text-[#660e14]/40" />
+            </button>
+          )}
         </div>
 
         <Select value={sort} onValueChange={setSort}>
@@ -405,7 +459,13 @@ export default function CatalogoPage() {
 
         {/* Products grid */}
         <div className="flex-1 min-w-0">
-          {filtered.length === 0 ? (
+          {dbProducts === undefined ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="aspect-[3/4] rounded-[3rem] bg-black/5 animate-pulse" />
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-4xl mb-4">{isPromo ? "✨" : "👟"}</p>
               <p className="text-xs text-[#660e14]/40 font-black uppercase tracking-widest">

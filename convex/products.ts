@@ -115,7 +115,7 @@ export const createReview = mutation({
         .query("reviews")
         .withIndex("by_product", (q) => q.eq("productId", args.productId))
         .collect();
-      
+
       const avg = all.reduce((acc, r) => acc + r.rating, 0) / all.length;
       await ctx.db.patch(product._id, {
         rating: Number(avg.toFixed(1)),
@@ -179,5 +179,25 @@ export const toggleSale = mutation({
         originalPrice: undefined,
       });
     }
+  },
+});
+
+/**
+ * Busca produtos dentro de uma faixa de preço.
+ * Usa o index by_price para performance otimizada.
+ */
+export const getByPriceRange = query({
+  args: { minPrice: v.number(), maxPrice: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    let q = ctx.db
+      .query("products")
+      .withIndex("by_price", (q) => {
+        const withMin = q.gte("price", args.minPrice);
+        if (args.maxPrice !== undefined) {
+          return withMin.lte("price", args.maxPrice);
+        }
+        return withMin;
+      });
+    return await q.take(8);
   },
 });
