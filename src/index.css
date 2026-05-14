@@ -2,8 +2,8 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Last Dream';
-  src: url('/fontes/Last Dream.woff') format('woff');
+  font-family: 'Glamour Absolute';
+  src: url('/fontes/GlamourAbsolute_Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

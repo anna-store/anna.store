@@ -267,7 +267,7 @@ export default function CheckoutInner() {
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div>
-          <h1 className="text-5xl md:text-6xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>
+          <h1 className="text-5xl md:text-6xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
             Finalizar Compra
           </h1>
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#660e14]/40 mt-1 ml-1">
@@ -656,7 +656,7 @@ export default function CheckoutInner() {
                 <Separator className="bg-black/5" />
 
                 <div className="flex justify-between font-normal text-2xl text-[#660e14]">
-                  <span style={{ fontFamily: "'Last Dream', cursive" }}>Total</span>
+                  <span style={{ fontFamily: "'Glamour Absolute', cursive" }}>Total</span>
                   <span className="text-[#ad2335] font-black text-xl tracking-tighter">
                     {selectedShipping || freeShippingActive ? formatPrice(total) : "—"}
                   </span>

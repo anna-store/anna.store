@@ -194,7 +194,7 @@ export default function ProdutoPage() {
           </div>
 
           <div>
-            <h1 className="text-5xl font-normal text-[#660e14] leading-[0.9] mb-2" style={{ fontFamily: "'Last Dream', cursive" }}>{product.name}</h1>
+            <h1 className="text-5xl font-normal text-[#660e14] leading-[0.9] mb-2" style={{ fontFamily: "'Glamour Absolute', cursive" }}>{product.name}</h1>
             <p className="text-sm text-[#660e14]/60 font-bold uppercase tracking-widest">{product.category}</p>
           </div>
 
@@ -211,14 +211,16 @@ export default function ProdutoPage() {
               ))}
             </div>
             <span className="text-sm font-black text-[#660e14]">{product.rating}</span>
-            <span className="text-xs text-[#660e14]/40 font-bold">({product.reviews} avaliações)</span>
+            {product.reviews > 0 && (
+              <span className="text-xs text-[#660e14]/40 font-bold">({product.reviews} avaliações)</span>
+            )}
           </div>
 
           {/* Price */}
           <div className="bg-[#660e14]/5 rounded-2xl p-6 border border-[#660e14]/10">
             <div className="flex items-baseline gap-3">
               <span className="text-4xl font-black text-[#660e14] tracking-tighter">{formatPrice(product.price)}</span>
-              {product.originalPrice && (
+              {product.originalPrice > 0 && (
                 <span className="text-lg text-[#660e14]/30 line-through font-bold">
                   {formatPrice(product.originalPrice)}
                 </span>
@@ -383,7 +385,7 @@ export default function ProdutoPage() {
       {/* Related products */}
       {related.length > 0 && (
         <div>
-          <h2 className="text-4xl font-normal text-[#660e14] mb-8" style={{ fontFamily: "'Last Dream', cursive" }}>Produtos Relacionados</h2>
+          <h2 className="text-4xl font-normal text-[#660e14] mb-8" style={{ fontFamily: "'Glamour Absolute', cursive" }}>Produtos Relacionados</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />

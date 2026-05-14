@@ -31,9 +31,9 @@ const stagger = {
 export default function Index() {
   const { items } = useCartStore();
 
-  // Queries por faixa de preço
-  const lineEntry = useQuery(api.products.getByPriceRange, { minPrice: 189, maxPrice: 219 }) || [];
-  const linePremium = useQuery(api.products.getByPriceRange, { minPrice: 249, maxPrice: 329 }) || [];
+  // Queries por faixa de preço contíguas para cobrir todo o catálogo
+  const lineEntry = useQuery(api.products.getByPriceRange, { minPrice: 0, maxPrice: 219 }) || [];
+  const linePremium = useQuery(api.products.getByPriceRange, { minPrice: 220, maxPrice: 348 }) || [];
   const lineHype = useQuery(api.products.getByPriceRange, { minPrice: 349 }) || [];
 
   const normalize = (p: any) => ({ ...p, id: p._id || p.id });
@@ -109,13 +109,13 @@ export default function Index() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-7xl md:text-8xl lg:text-[130px] font-normal leading-[0.9] tracking-normal mb-10"
+              className="text-6xl md:text-7xl lg:text-[100px] font-normal leading-[0.9] tracking-tight mb-10"
               style={{
-                fontFamily: "'Last Dream', cursive",
+                fontFamily: "'Glamour Absolute', cursive",
                 color: "#fdf0e3",
               }}
             >
-              Pise com<br />Estilo Único
+              Exclusividade<br />em cada passo
             </motion.h1>
 
             <motion.p
@@ -298,11 +298,11 @@ export default function Index() {
               <div className="size-2 bg-[#ad2335] rounded-full animate-ping" />
               <span className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.5em]">Acessível & Estiloso</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
               Seleção Essential<span className="text-[#660e14]/10">.</span>
             </h2>
             <p className="text-sm text-[#660e14]/50 font-bold uppercase tracking-wider max-w-md">
-              De R$189 a R$219 — O ponto de partida perfeito para o seu estilo.
+              Até R$219 — O ponto de partida perfeito para o seu estilo.
             </p>
           </div>
           <Link to="/catalogo" className="group flex items-center gap-4 text-[10px] text-[#660e14] font-black uppercase tracking-[0.4em] hover:text-[#ad2335] transition-colors">
@@ -339,11 +339,11 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="mb-20 text-center space-y-4">
             <p className="text-[10px] text-[#ff97ad] font-black uppercase tracking-[0.6em]">Sofisticação & Conforto</p>
-            <h2 className="text-6xl md:text-8xl font-normal text-[#fdf0e3] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+            <h2 className="text-6xl md:text-8xl font-normal text-[#fdf0e3] tracking-normal" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
               Linha Premium<span className="text-[#ad2335]">.</span>
             </h2>
             <p className="text-sm text-[#ff97ad] font-bold uppercase tracking-wider max-w-lg mx-auto">
-              De R$249 a R$329 — Qualidade superior para quem busca o melhor.
+              De R$220 a R$348 — Qualidade superior para quem busca o melhor.
             </p>
           </div>
 
@@ -384,7 +384,7 @@ export default function Index() {
                 </div>
                 <span className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.5em]">Exclusive Drops</span>
               </div>
-              <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+              <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
                 Modelos Hype<span className="text-[#ad2335]">.</span>
               </h2>
               <p className="text-sm text-[#660e14]/50 font-bold uppercase tracking-wider max-w-md">
@@ -424,7 +424,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-32 space-y-4">
             <p className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.8em]">Voice of the Community</p>
-            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Last Dream', cursive" }}>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
               Feedback Elite<span className="text-[#ad2335]">.</span>
             </h2>
           </div>

@@ -467,7 +467,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
                 <h2 className="hidden lg:block text-[9px] font-black uppercase tracking-[0.4em] text-[#660e14]/20 mb-1">Central de Comando</h2>
                 <div className="flex items-center gap-3">
                   <div className="size-1.5 rounded-full bg-[#ad2335] animate-pulse shadow-lg shadow-[#ad2335]/50" />
-                  <p className="text-xl lg:text-3xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>{NAV.find(n => n.id === activeTab)?.label}</p>
+                  <p className="text-xl lg:text-3xl font-normal text-[#660e14] tracking-tight" style={{ fontFamily: "'Glamour Absolute', cursive" }}>{NAV.find(n => n.id === activeTab)?.label}</p>
                 </div>
               </div>
             </div>
@@ -727,7 +727,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
         <DialogContent className="bg-white border-black/10 text-[#660e14] max-w-2xl max-h-[90vh] overflow-auto custom-scrollbar rounded-[32px]">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-normal tracking-tight italic" style={{ fontFamily: "'Last Dream', cursive" }}>{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
+            <DialogTitle className="text-2xl font-normal tracking-tight italic" style={{ fontFamily: "'Glamour Absolute', cursive" }}>{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleProductSubmit} className="space-y-6 py-4">
             <div className="grid grid-cols-2 gap-4">
@@ -945,7 +945,7 @@ export default function AdminDashboard({ callerId }: { callerId: string }) {
       <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
         <DialogContent className="bg-white border-black/10 text-[#660e14] max-w-sm rounded-[32px]">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-normal tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>Alterar Senha</DialogTitle>
+            <DialogTitle className="text-2xl font-normal tracking-tight" style={{ fontFamily: "'Glamour Absolute', cursive" }}>Alterar Senha</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleConfirmPasswordChange} className="space-y-6 py-4">
             <div className="space-y-1">

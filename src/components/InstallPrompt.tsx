@@ -60,7 +60,7 @@ export default function InstallPrompt() {
         <div className="bg-white/90 border border-black/5 rounded-[32px] shadow-2xl p-6 flex flex-col gap-4 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="size-12 rounded-2xl bg-gradient-to-br from-[#660e14] to-[#ad2335] flex items-center justify-center text-white font-black text-2xl italic shadow-lg shadow-[#660e14]/20" style={{ fontFamily: "'Last Dream', cursive" }}>
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-[#660e14] to-[#ad2335] flex items-center justify-center text-white font-black text-2xl italic shadow-lg shadow-[#660e14]/20" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
                 A
               </div>
               <div>

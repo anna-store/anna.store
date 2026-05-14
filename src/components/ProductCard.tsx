@@ -120,13 +120,15 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                 />
               ))}
             </div>
-            <span className="text-[10px] font-bold text-[#660e14]/20">({product.reviews})</span>
+            {product.reviews > 0 && (
+              <span className="text-[10px] font-bold text-[#660e14]/20">({product.reviews})</span>
+            )}
           </div>
 
           {/* Price */}
           <div className="mt-4 flex items-baseline gap-3">
             <span className="text-lg font-black text-[#ad2335] tracking-tight">{formatPrice(product.price)}</span>
-            {product.originalPrice && (
+            {product.originalPrice > 0 && (
               <span className="text-xs text-[#660e14]/30 line-through font-bold">
                 {formatPrice(product.originalPrice)}
               </span>

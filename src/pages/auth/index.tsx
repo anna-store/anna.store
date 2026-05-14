@@ -204,7 +204,7 @@ export default function AuthPage() {
             <div className="inline-block px-4 py-1.5 bg-white/40 backdrop-blur-md border border-black/5 rounded-full">
               <span className="text-[10px] text-[#660e14] font-black uppercase tracking-[0.3em]">Curadoria Exclusiva 2026</span>
             </div>
-            <h2 className="text-8xl md:text-9xl font-normal text-[#660e14] leading-[0.7] tracking-tight" style={{ fontFamily: "'Last Dream', cursive" }}>
+            <h2 className="text-8xl md:text-9xl font-normal text-[#660e14] leading-[0.7] tracking-tight" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
               Viva a<br />
               <span className="italic text-[#ad2335]">Excelência</span>
               <span className="text-[#660e14]">.</span>
@@ -246,7 +246,7 @@ export default function AuthPage() {
                   >
                     <ChevronLeft className="size-3 group-hover:-translate-x-1 transition-transform" /> Voltar
                   </button>
-                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight leading-none" style={{ fontFamily: "'Last Dream', cursive" }}>
+                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight leading-none" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
                     Recuperar<span className="text-[#ad2335]">.</span>
                   </h1>
                   <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1">Enviaremos um link seguro</p>
@@ -311,7 +311,7 @@ export default function AuthPage() {
                   <div className="size-12 bg-[#ad2335]/10 rounded-2xl flex items-center justify-center mb-6">
                     <ShieldCheck className="size-6 text-[#ad2335]" />
                   </div>
-                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight uppercase leading-none" style={{ fontFamily: "'Last Dream', cursive" }}>
+                  <h1 className="text-6xl font-normal text-[#660e14] tracking-tight uppercase leading-none" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
                     Nova Senha<span className="text-[#ad2335]">.</span>
                   </h1>
                   <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1">Defina sua nova credencial</p>
@@ -376,7 +376,7 @@ export default function AuthPage() {
                   <Link to="/" className="text-[#660e14]/30 hover:text-[#ad2335] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6 group">
                     <ChevronLeft className="size-3 group-hover:-translate-x-1 transition-transform" /> Voltar para a Boutique
                   </Link>
-                  <h1 className="text-7xl font-normal text-[#660e14] tracking-tight leading-[0.8]" style={{ fontFamily: "'Last Dream', cursive" }}>
+                  <h1 className="text-7xl font-normal text-[#660e14] tracking-tight leading-[0.8]" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
                     Meu Acesso<span className="text-[#ad2335]">.</span>
                   </h1>
                   <p className="text-[#660e14]/30 text-[10px] font-black uppercase tracking-[0.4em] ml-1 mt-2">Bem-vindo de volta ao extraordinário</p>

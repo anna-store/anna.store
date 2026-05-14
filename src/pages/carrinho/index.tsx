@@ -100,7 +100,7 @@ export default function CarrinhoPage() {
               <EmptyMedia variant="icon" className="bg-[#660e14]/5 text-[#660e14]">
                 <ShoppingBag className="h-10 w-10" />
               </EmptyMedia>
-              <EmptyTitle className="text-4xl font-normal text-[#660e14]" style={{ fontFamily: "'Last Dream', cursive" }}>Seu carrinho está vazio</EmptyTitle>
+              <EmptyTitle className="text-4xl font-normal text-[#660e14]" style={{ fontFamily: "'Glamour Absolute', cursive" }}>Seu carrinho está vazio</EmptyTitle>
               <EmptyDescription className="text-[#660e14]/40 font-black uppercase tracking-widest text-[10px]">
                 Adicione produtos ao carrinho para continuar comprando.
               </EmptyDescription>
@@ -130,7 +130,7 @@ export default function CarrinhoPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-6xl font-normal text-[#660e14] leading-[0.8]" style={{ fontFamily: "'Last Dream', cursive" }}>Carrinho</h1>
+          <h1 className="text-6xl font-normal text-[#660e14] leading-[0.8]" style={{ fontFamily: "'Glamour Absolute', cursive" }}>Carrinho</h1>
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#660e14]/30 mt-1">{items.length} {items.length === 1 ? "Peça Encontrada" : "Peças Encontradas"}</p>
         </div>
       </div>

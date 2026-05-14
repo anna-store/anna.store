@@ -340,7 +340,7 @@ export default function CatalogoPage() {
 
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-6xl font-normal text-[#660e14] leading-[0.8] mb-2" style={{ fontFamily: "'Last Dream', cursive" }}>
+        <h1 className="text-6xl font-normal text-[#660e14] leading-[0.8] mb-2" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
           {isPromo ? "Promoções" : isNew ? "Novidades" : activeCategory !== "Todos" ? activeCategory : "Catálogo"}
         </h1>
         <p className="text-[#660e14]/40 text-xs font-black uppercase tracking-[0.3em]">{filtered.length} Peças Encontradas</p>
@@ -539,7 +539,7 @@ function ProductListItem({ product }: { product: Product }) {
         <p className="text-xs text-[#660e14]/40 font-bold line-clamp-2 italic">"{product.description}"</p>
         <div className="flex items-center justify-center sm:justify-start gap-4 mt-2">
           <span className="font-black text-[#660e14] text-2xl tracking-tighter">{formatPrice(product.price)}</span>
-          {product.originalPrice && (
+          {product.originalPrice > 0 && (
             <span className="text-sm text-[#660e14]/30 line-through font-bold">{formatPrice(product.originalPrice)}</span>
           )}
         </div>
