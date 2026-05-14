@@ -22,9 +22,12 @@ import PoliticaTrocas from "@/pages/info/politica-trocas";
 import PrazoDeEntrega from "@/pages/info/prazo-entrega";
 import ComoComprar from "@/pages/info/como-comprar";
 
+import ScrollToTop from "@/components/ScrollToTop";
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />

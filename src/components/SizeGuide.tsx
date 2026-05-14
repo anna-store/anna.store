@@ -28,46 +28,53 @@ export default function SizeGuide({ isOpen, onOpenChange }: SizeGuideProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0b0b0b] border-white/10 text-white max-w-md p-0 overflow-hidden">
-        <div className="bg-gradient-to-br from-[#ea3372]/20 to-transparent p-6 border-b border-white/5">
+      <DialogContent className="bg-[#fdf0e3] border-[#660e14]/10 text-[#660e14] max-w-md p-0 overflow-hidden rounded-[2.5rem]">
+        <div className="bg-[#660e14]/5 p-8 border-b border-[#660e14]/10">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-3">
-              <Ruler className="text-[#ea3372] size-6" />
+            <DialogTitle 
+              className="text-4xl font-normal tracking-tight flex items-center gap-4 text-[#660e14]"
+              style={{ fontFamily: "'Glamour Absolute', cursive" }}
+            >
+              <div className="size-12 rounded-2xl bg-[#660e14] flex items-center justify-center">
+                <Ruler className="text-[#fdf0e3] size-6" />
+              </div>
               Guia de Tamanhos
             </DialogTitle>
           </DialogHeader>
-          <p className="text-xs text-white/40 font-medium mt-2 leading-relaxed">
-            Meça o comprimento do seu pé em centímetros para encontrar o tamanho ideal. 
-            Recomendamos deixar uma folga de 0,5cm para maior conforto.
+          <p className="text-[11px] text-[#660e14]/50 font-black uppercase tracking-widest mt-6 leading-relaxed">
+            Meça o comprimento do seu pé em centímetros para encontrar o ajuste perfeito. 
+            Recomendamos deixar uma folga de 0,5cm.
           </p>
         </div>
 
-        <div className="p-6">
-          <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
+        <div className="p-8">
+          <div className="overflow-hidden rounded-[2rem] border border-[#660e14]/10 bg-white/50 backdrop-blur-sm shadow-sm">
             <table className="w-full text-center border-collapse">
               <thead>
-                <tr className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-[#38b6ff]">
-                  <th className="py-4 border-r border-white/5">Tamanho BR</th>
+                <tr className="bg-[#660e14] text-[9px] font-black uppercase tracking-[0.3em] text-[#fdf0e3]">
+                  <th className="py-4 border-r border-[#fdf0e3]/10">Tamanho BR</th>
                   <th className="py-4">Comprimento (CM)</th>
                 </tr>
               </thead>
-              <tbody className="text-sm font-bold">
+              <tbody className="text-xs font-bold">
                 {sizes.map((s, idx) => (
-                  <tr key={s.br} className={idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.01]"}>
-                    <td className="py-3 border-r border-white/5 text-[#ea3372]">{s.br}</td>
-                    <td className="py-3 text-white/60">{s.cm} cm</td>
+                  <tr key={s.br} className={idx % 2 === 0 ? "bg-transparent" : "bg-[#660e14]/5"}>
+                    <td className="py-4 border-r border-[#660e14]/5 text-[#ad2335] font-black">{s.br}</td>
+                    <td className="py-4 text-[#660e14]/70">{s.cm} cm</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <div className="mt-6 flex gap-4 p-4 rounded-2xl bg-[#38b6ff]/5 border border-[#38b6ff]/20">
-            <Info className="size-5 text-[#38b6ff] shrink-0" />
+          <div className="mt-8 flex gap-4 p-5 rounded-[1.5rem] bg-[#ad2335]/5 border border-[#ad2335]/10">
+            <div className="size-10 rounded-xl bg-[#ad2335]/10 flex items-center justify-center shrink-0">
+              <Info className="size-5 text-[#ad2335]" />
+            </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-[#38b6ff] mb-1">Como medir?</p>
-              <p className="text-[10px] text-white/60 leading-relaxed">
-                Pise em uma folha de papel, desenhe o contorno do seu pé e use uma régua para medir da ponta do calcanhar até o dedão.
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#ad2335] mb-1">Como medir?</p>
+              <p className="text-[10px] text-[#660e14]/60 leading-relaxed font-medium">
+                Pise em uma folha, desenhe o contorno do seu pé e meça da ponta do calcanhar até o dedão usando uma régua.
               </p>
             </div>
           </div>

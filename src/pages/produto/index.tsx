@@ -24,6 +24,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import SizeGuide from "@/components/SizeGuide.tsx";
+import LoadingScreen from "@/components/LoadingScreen.tsx";
 import {
   formatPrice,
   getDiscount,
@@ -57,13 +58,8 @@ export default function ProdutoPage() {
   const { addItem } = useCartStore();
   const { toggle, has } = useWishlistStore();
 
-  if (product === undefined) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="size-12 rounded-full border-4 border-[#ea3372] border-t-transparent animate-spin" />
-        <p className="text-sm font-medium text-white/40 uppercase tracking-widest">Carregando Produto...</p>
-      </div>
-    );
+  if (!product) {
+    return <LoadingScreen message="Buscando detalhes do produto..." />;
   }
 
   if (product === null) {
@@ -241,7 +237,7 @@ export default function ProdutoPage() {
           {product.colors && product.colors.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold">Cor</span>
+                <span className="text-sm font-semibold text-[#660e14]">Cor</span>
                 {selectedColor && <span className="text-sm text-muted-foreground">{selectedColor}</span>}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -265,10 +261,10 @@ export default function ProdutoPage() {
           {/* Size selector */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold">Tamanho</span>
+              <span className="text-sm font-semibold text-[#660e14]">Tamanho</span>
               <button 
                 onClick={() => setIsSizeGuideOpen(true)}
-                className="text-xs text-[#38b6ff] hover:underline cursor-pointer font-bold uppercase tracking-tighter"
+                className="text-xs text-[#ad2335] hover:underline cursor-pointer font-bold uppercase tracking-tighter"
               >
                 Guia de tamanhos
               </button>

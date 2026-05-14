@@ -2,11 +2,11 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { ConvexError } from "convex/values";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth.ts";
 import AdminDashboard from "./admin-dashboard.tsx";
+import LoadingScreen from "@/components/LoadingScreen.tsx";
 
 export default function AdminGuard() {
   const { user: localUser } = useAuth();
@@ -17,18 +17,8 @@ export default function AdminGuard() {
   // Verifica o usuário do banco ou da sessão local
   const activeUser = currentUser ?? localUser;
 
-  // Loading
   if (activeUser === undefined) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="space-y-4 w-full max-w-5xl px-6">
-          <Skeleton className="h-10 w-48" />
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-28" />)}
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Verificando credenciais administrativas..." />;
   }
 
   // Is admin — render dashboard

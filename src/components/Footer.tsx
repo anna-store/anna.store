@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#660e14] text-[#fdf0e3] py-24">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-16">
-        
+
         {/* Brand Column */}
         <div className="md:col-span-5 space-y-10">
           <img
@@ -16,13 +16,13 @@ export default function Footer() {
             className="h-24 w-auto brightness-0 invert opacity-100"
           />
           <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-[1.1] max-w-sm">
-            Curadoria definitiva de <span className="text-[#ad2335]">Sneakers Premium</span>. 
+            Curadoria definitiva de <span className="text-[#ad2335]">Sneakers Premium</span>.
             Estilo, autenticidade e luxo em cada passo.
           </h3>
           <div className="flex gap-4">
             {/* Instagram */}
-            <a 
-              href="https://www.instagram.com/anna__storez" 
+            <a
+              href="https://www.instagram.com/anna__storez"
               target="_blank"
               className="size-12 rounded-2xl border border-[#fdf0e3]/10 flex items-center justify-center transition-all duration-300 hover:bg-[#ad2335] hover:border-[#ad2335] hover:-translate-y-1"
               aria-label="Instagram"
@@ -32,8 +32,8 @@ export default function Footer() {
               </svg>
             </a>
             {/* Facebook */}
-            <a 
-              href="https://www.facebook.com/share/1LCS1UarXH" 
+            <a
+              href="https://www.facebook.com/share/1LCS1UarXH"
               target="_blank"
               className="size-12 rounded-2xl border border-[#fdf0e3]/10 flex items-center justify-center transition-all duration-300 hover:bg-[#ad2335] hover:border-[#ad2335] hover:-translate-y-1"
               aria-label="Facebook"
@@ -43,8 +43,8 @@ export default function Footer() {
               </svg>
             </a>
             {/* TikTok */}
-            <a 
-              href="https://www.tiktok.com/@anna__storez" 
+            <a
+              href="https://www.tiktok.com/@anna__shoes?_r=1&_t=ZS-96MSk7kUxVA"
               target="_blank"
               className="size-12 rounded-2xl border border-[#fdf0e3]/10 flex items-center justify-center transition-all duration-300 hover:bg-[#ad2335] hover:border-[#ad2335] hover:-translate-y-1"
               aria-label="TikTok"
@@ -88,7 +88,7 @@ export default function Footer() {
           <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#ad2335]">Contato</h4>
           <ul className="space-y-6">
             <li>
-              <a href="mailto:contato.annast@gmail.com" className="group flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#ffe5f0] hover:text-white transition-colors">
+              <a href="mailto:contato.asnnast@gmail.com" className="group flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-[#ffe5f0] hover:text-white transition-colors">
                 <div className="size-10 rounded-xl flex items-center justify-center transition-colors">
                   <Mail className="size-4" />
                 </div>

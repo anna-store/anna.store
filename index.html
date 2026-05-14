@@ -1,86 +1,64 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Anna Shoes | Onde o estilo encontra a sofisticação</title>
-    <meta name="description" content="Descubra a melhor curadoria de calçados e acessórios premium na Anna Shoes. Estilo, qualidade e sofisticação em um só lugar." />
-    <meta name="author" content="Anna Shoes" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23660e14'/><text y='78' x='50' font-family='serif' font-size='85' font-weight='900' fill='white' text-anchor='middle' style='font-style: italic;'>A</text></svg>"
-    />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/ientidade_visual/icone.png" />
-    <meta name="theme-color" content="#ad2335" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Anna Shoes" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta property="og:title" content="Anna Shoes | Premium Store" />
-    <meta
-      property="og:description"
-      content="Descubra a melhor curadoria de calçados e acessórios premium. Estilo, qualidade e sofisticação."
-    />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="/og-image.png"
-    />
-    <meta property="og:image:type" content="image/png" />
+  <title>Anna Shoes | Onde o estilo encontra a sofisticação</title>
+  <meta name="description"
+    content="Descubra a melhor curadoria de calçados e acessórios premium na Anna Shoes. Estilo, qualidade e sofisticação em um só lugar." />
+  <meta name="author" content="Anna Shoes" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/ientidade_visual/icone.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/ientidade_visual/icone.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/ientidade_visual/icone.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/ientidade_visual/icone.png" />
+  <meta name="theme-color" content="#660e14" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Anna Shoes" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="Anna Shoes"
-    />
-    <meta
-      name="twitter:description"
-      content="A melhor curadoria de moda premium."
-    />
+  <meta property="og:title" content="Anna Shoes | Premium Store" />
+  <meta property="og:description"
+    content="Descubra a melhor curadoria de calçados e acessórios premium. Estilo, qualidade e sofisticação." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Ole+Script:wght@400;700&display=swap"
-      rel="stylesheet"
-      crossorigin
-    />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anna Shoes" />
+  <meta name="twitter:description" content="A melhor curadoria de moda premium." />
 
-    <!-- Detect dark mode preference and set the class before next-themes loads. This avoids a flash of unstyled content (FOUC) when the page loads. -->
-    <script>
-      try {
-        let theme = localStorage.getItem("theme");
-        if (theme === "system" || !theme) {
-          let prefersDark = window.matchMedia(
-            "(prefers-color-scheme: dark)",
-          ).matches;
-          theme = prefersDark ? "dark" : "light";
-        }
-        document.documentElement.classList.add(theme);
-      } catch (e) {}
-    </script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ceviche+One&family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Ole+Script:wght@400;700&display=swap"
+    rel="stylesheet" crossorigin />
 
-    <link href="/src/index.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+  <!-- Detect dark mode preference and set the class before next-themes loads. This avoids a flash of unstyled content (FOUC) when the page loads. -->
+  <script>
+    try {
+      let theme = localStorage.getItem("theme");
+      if (theme === "system" || !theme) {
+        let prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        theme = prefersDark ? "dark" : "light";
+      }
+      document.documentElement.classList.add(theme);
+    } catch (e) { }
+  </script>
 
-    <!-- VLibras -->
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-      </div>
-    </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-      new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
-  </body>
+  <link href="/src/index.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+
+</body>
+
 </html>

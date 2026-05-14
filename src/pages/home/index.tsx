@@ -28,8 +28,20 @@ const stagger = {
   item: { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } } }
 };
 
+import { useEffect } from "react";
+import { toast } from "sonner";
+
 export default function Index() {
   const { items } = useCartStore();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      toast.success("Bem-vinda à Anna Shoes", {
+        description: "Sua curadoria de luxo está pronta para ser explorada.",
+      });
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Queries por faixa de preço contíguas para cobrir todo o catálogo
   const lineEntry = useQuery(api.products.getByPriceRange, { minPrice: 0, maxPrice: 219 }) || [];
@@ -195,9 +207,9 @@ export default function Index() {
                 className="absolute -top-10 -right-10 z-20"
               >
                 <img
-                  src="/ientidade_visual/logo-secundária.png"
+                  src="/ientidade_visual/icon-coracao.png"
                   alt="Heart Icon"
-                  className="size-40 md:size-50 object-contain drop-shadow-xl"
+                  className="size-30 md:size-40 object-contain drop-shadow-xl"
                 />
               </motion.div>
 
