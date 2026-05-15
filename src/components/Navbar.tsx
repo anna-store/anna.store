@@ -237,7 +237,7 @@ export default function Navbar({ onAccessClick }: { onAccessClick?: () => void }
                 </Link>
 
                 <Link
-                  to="/painel"
+                  to="/painel/pedidos"
                   className="flex items-center gap-3 text-lg font-bold text-[#660e14]/80"
                   onClick={() => setMobileOpen(false)}
                 >

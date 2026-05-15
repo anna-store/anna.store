@@ -205,9 +205,13 @@ export const createPayment = action({
     });
 
     const data = await response.json();
+    console.log("MP Response (createPayment):", JSON.stringify(data, null, 2));
+
     if (!response.ok) throw new Error(data.message || "Erro ao criar link de pagamento");
 
-    return { initPoint: data.init_point };
+    return { 
+      initPoint: data.init_point || data.sandbox_init_point 
+    };
   },
 });
 

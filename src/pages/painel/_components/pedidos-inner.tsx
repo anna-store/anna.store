@@ -116,24 +116,35 @@ export default function PedidosInner() {
     setTimeout(() => window.print(), 100);
   };
 
-  const handlePay = async (order: any) => {
-    if (!userId) return;
-    setIsPaying(order._id);
-    try {
-      const result = await createPayment({
-        orderId: order._id,
-        items: order.items,
-        appUrl: window.location.origin,
-        userId,
-      });
-      if (result.initPoint) window.location.href = result.initPoint;
-    } catch (error) {
-      toast.error("Erro ao iniciar pagamento");
-      console.error(error);
-    } finally {
-      setIsPaying(null);
-    }
-  };
+    const handlePay = async (order: any) => {
+      if (!userId) return;
+      setIsPaying(order._id);
+      try {
+        const result = await createPayment({
+          orderId: order._id,
+          items: order.items,
+          appUrl: window.location.origin,
+          userId,
+        });
+        
+        console.log("Pagamento iniciado:", result);
+
+        if (result && result.initPoint) {
+          window.location.href = result.initPoint;
+        } else {
+          toast.error("Link de pagamento não gerado", {
+            description: "Tente novamente em instantes."
+          });
+        }
+      } catch (error: any) {
+        toast.error("Erro ao iniciar pagamento", {
+          description: error.message || "Ocorreu um erro inesperado."
+        });
+        console.error(error);
+      } finally {
+        setIsPaying(null);
+      }
+    };
 
   const handleDelete = async (orderId: any) => {
     if (!userId) return;
