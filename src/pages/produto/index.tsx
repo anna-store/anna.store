@@ -66,7 +66,7 @@ export default function ProdutoPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-lg font-semibold">Produto não encontrado</p>
-        <Button onClick={() => navigate("/catalogo")} className="bg-[#ea3372] text-white cursor-pointer">
+        <Button onClick={() => navigate("/catalogo")} className="bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-widest text-[10px] h-12 px-10 rounded-2xl cursor-pointer">
           Ver catálogo
         </Button>
       </div>
@@ -640,8 +640,8 @@ function ReviewFormModal({ isOpen, onClose, productId, productName, productImage
       >
         <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-[#ea3372]/10 flex items-center justify-center">
-              <Star className="h-5 w-5 text-[#ea3372] fill-[#ea3372]" />
+            <div className="size-10 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+              <Star className="h-5 w-5 text-[#ad2335] fill-[#ad2335]" />
             </div>
             <h2 className="text-xl font-black italic uppercase tracking-tighter">Avaliar Produto</h2>
           </div>
@@ -664,7 +664,7 @@ function ReviewFormModal({ isOpen, onClose, productId, productName, productImage
             <div className="flex justify-center gap-3">
               {[1, 2, 3, 4, 5].map((s) => (
                 <button key={s} onClick={() => setRating(s)} className="transition-transform hover:scale-125 active:scale-95">
-                  <Star className={`size-8 transition-colors ${s <= rating ? "fill-[#ea3372] text-[#ea3372] drop-shadow-[0_0_10px_rgba(234,51,114,0.4)]" : "text-white/10 hover:text-white/30"}`} />
+                  <Star className={`size-8 transition-colors ${s <= rating ? "fill-[#ad2335] text-[#ad2335] drop-shadow-[0_0_10px_rgba(173,35,53,0.4)]" : "text-[#660e14]/10 hover:text-[#660e14]/30"}`} />
                 </button>
               ))}
             </div>
@@ -680,10 +680,7 @@ function ReviewFormModal({ isOpen, onClose, productId, productName, productImage
             />
           </div>
 
-          <Button 
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full h-14 bg-[#ea3372] hover:bg-[#c9295f] text-white font-black italic uppercase tracking-widest rounded-2xl shadow-lg shadow-[#ea3372]/20"
+            className="w-full h-14 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-widest text-[11px] rounded-2xl shadow-xl shadow-[#660e14]/10 transition-all duration-500"
           >
             {loading ? "Enviando..." : "Publicar Avaliação"}
           </Button>

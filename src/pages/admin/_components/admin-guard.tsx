@@ -61,7 +61,7 @@ export default function AdminGuard() {
       </div>
       <Button
         onClick={handleBootstrap}
-        className="gap-2 bg-[#ea3372] hover:bg-[#c9295f] text-white"
+        className="gap-2 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl shadow-xl shadow-[#660e14]/10"
       >
         <ShieldCheck className="h-4 w-4" />
         Tornar-me Administrador

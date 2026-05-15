@@ -17,22 +17,22 @@ const STATUS_CONFIG: Record<ReturnStatus, {
   iconBg: string;
 }> = {
   success: {
-    icon: <CheckCircle2 className="h-14 w-14 text-green-500" />,
+    icon: <CheckCircle2 className="h-14 w-14 text-[#660e14]" />,
     title: "Pagamento Aprovado!",
     description: "Seu pagamento foi confirmado com sucesso. Em breve seu pedido será preparado para envio.",
-    iconBg: "bg-green-100",
+    iconBg: "bg-[#660e14]/5",
   },
   failure: {
-    icon: <XCircle className="h-14 w-14 text-destructive" />,
+    icon: <XCircle className="h-14 w-14 text-[#ad2335]" />,
     title: "Pagamento Recusado",
     description: "Houve um problema ao processar seu pagamento. Você pode tentar novamente com outro método de pagamento.",
-    iconBg: "bg-destructive/10",
+    iconBg: "bg-[#ad2335]/5",
   },
   pending: {
     icon: <Clock className="h-14 w-14 text-yellow-500" />,
-    title: "Pagamento em Processamento",
-    description: "Seu pagamento está sendo processado. Assim que for confirmado, você será redirecionado.",
-    iconBg: "bg-yellow-100",
+    title: "Em Processamento",
+    description: "Seu pagamento está sendo analisado. Assim que for confirmado, você será redirecionado automaticamente.",
+    iconBg: "bg-yellow-500/5",
   },
 };
 
@@ -89,8 +89,8 @@ export default function CheckoutRetornoPage() {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-black">{config.title}</h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">{config.description}</p>
+          <h1 className="text-5xl md:text-6xl font-normal text-[#660e14] mb-4" style={{ fontFamily: "'Glamour Absolute', cursive" }}>{config.title}</h1>
+          <p className="text-[#660e14]/50 text-[10px] font-black uppercase tracking-widest leading-relaxed max-w-sm mx-auto">{config.description}</p>
         </div>
 
         {orderId && (
@@ -109,22 +109,22 @@ export default function CheckoutRetornoPage() {
         <div className="flex flex-col sm:flex-row gap-3 w-full">
           {status === "failure" ? (
             <>
-              <Button asChild variant="secondary" className="flex-1">
+              <Button asChild variant="secondary" className="flex-1 h-12 rounded-xl border-[#660e14]/10 text-[#660e14] font-black uppercase tracking-widest text-[10px]">
                 <Link to="/carrinho">Voltar ao carrinho</Link>
               </Button>
-              <Button asChild className="flex-1 bg-[#ea3372] hover:bg-[#c9295f] text-white">
+              <Button asChild className="flex-1 bg-[#ad2335] hover:bg-[#660e14] text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-lg shadow-[#ad2335]/20">
                 <Link to="/checkout">Tentar novamente</Link>
               </Button>
             </>
           ) : (
             <>
-              <Button asChild variant="secondary" className="flex-1">
+              <Button asChild variant="secondary" className="flex-1 h-12 rounded-xl border-[#660e14]/10 text-[#660e14] font-black uppercase tracking-widest text-[10px]">
                 <Link to="/painel/pedidos">
                   <Package className="mr-2 h-4 w-4" />
                   Meus Pedidos
                 </Link>
               </Button>
-              <Button asChild className="flex-1 bg-[#ea3372] hover:bg-[#c9295f] text-white">
+              <Button asChild className="flex-1 bg-[#ad2335] hover:bg-[#660e14] text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-lg shadow-[#ad2335]/20">
                 <Link to="/catalogo">
                   <ShoppingBag className="mr-2 h-4 w-4" />
                   Continuar comprando

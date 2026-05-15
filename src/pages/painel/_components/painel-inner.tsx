@@ -43,9 +43,9 @@ export default function PainelInner() {
         <div className="bg-yellow-500/10 h-20 w-20 rounded-full flex items-center justify-center mx-auto">
           <User className="h-10 w-10 text-yellow-600" />
         </div>
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter">Área de Cliente</h2>
+        <h2 className="text-2xl font-black italic uppercase tracking-tighter text-[#660e14]">Área de Cliente</h2>
         <p className="text-muted-foreground text-sm">Acesse sua conta para gerenciar seu perfil e pedidos.</p>
-        <Button asChild className="bg-[#ea3372] hover:bg-[#c9295f] text-white font-bold w-full">
+        <Button asChild className="bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-[0.2em] text-[11px] h-14 rounded-2xl w-full shadow-xl transition-all duration-500">
           <Link to="/auth">Entrar na Conta</Link>
         </Button>
       </div>
@@ -297,9 +297,17 @@ export default function PainelInner() {
         userId,
       });
 
-      if (result.init_point) {
-        window.location.href = result.init_point;
-      }
+        console.log("Pagamento iniciado:", result);
+
+        const checkoutLink = result?.initPoint || result?.init_point;
+
+        if (checkoutLink) {
+          window.location.href = checkoutLink;
+        } else {
+          toast.error("Link de pagamento não gerado", {
+            description: "Tente novamente em instantes."
+          });
+        }
     } catch (error) {
       toast.error("Erro ao iniciar pagamento");
       console.error(error);
@@ -693,7 +701,7 @@ export default function PainelInner() {
                 <Button
                   onClick={submitExchange}
                   disabled={exchangeLoading || !acceptedRules || exchangeItems.size === 0 || !exchangeReason.trim()}
-                  className="w-full h-12 gap-2 bg-primary hover:bg-primary/90"
+                  className="w-full h-12 gap-2 bg-[#660e14] hover:bg-[#ad2335]"
                 >
                   {exchangeLoading ? "Enviando..." : "Enviar Solicitação de Troca"}
                   {!exchangeLoading && <RefreshCw className="h-4 w-4" />}

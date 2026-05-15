@@ -47,11 +47,30 @@ export default function Index() {
   const lineEntry = useQuery(api.products.getByPriceRange, { minPrice: 0, maxPrice: 219 }) || [];
   const linePremium = useQuery(api.products.getByPriceRange, { minPrice: 220, maxPrice: 348 }) || [];
   const lineHype = useQuery(api.products.getByPriceRange, { minPrice: 349 }) || [];
+  const newArrivals = useQuery(api.products.getNewArrivals) || [];
 
   const normalize = (p: any) => ({ ...p, id: p._id || p.id });
-  const entryProducts = lineEntry.map(normalize).slice(0, 4);
-  const premiumProducts = linePremium.map(normalize).slice(0, 4);
-  const hypeProducts = lineHype.map(normalize).slice(0, 4);
+
+  // Lógica para evitar repetição de produtos entre as seções
+  const newsProducts = newArrivals.map(normalize).slice(0, 4);
+  const usedIds = new Set(newsProducts.map(p => p.id));
+
+  const entryProducts = lineEntry
+    .map(normalize)
+    .filter(p => !usedIds.has(p.id))
+    .slice(0, 4);
+  entryProducts.forEach(p => usedIds.add(p.id));
+
+  const premiumProducts = linePremium
+    .map(normalize)
+    .filter(p => !usedIds.has(p.id))
+    .slice(0, 4);
+  premiumProducts.forEach(p => usedIds.add(p.id));
+
+  const hypeProducts = lineHype
+    .map(normalize)
+    .filter(p => !usedIds.has(p.id))
+    .slice(0, 4);
 
   return (
     <div className="bg-[#fdf0e3] min-h-screen selection:bg-[#ad2335]/30 overflow-x-hidden">
@@ -301,6 +320,48 @@ export default function Index() {
           </motion.div>
         </section>
       )}
+
+      {/* ═══════════════ NOVIDADES: DROPS EXCLUSIVOS ═══════════════ */}
+      <section className="max-w-7xl mx-auto px-6 py-32 relative">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Badge className="bg-[#ad2335] text-white border-none hover:bg-[#ad2335] px-4 py-1 text-[8px] font-black uppercase tracking-[0.2em]">New In</Badge>
+              <span className="text-[10px] text-[#ad2335] font-black uppercase tracking-[0.5em]">Lançamentos da Semana</span>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-normal text-[#660e14] tracking-normal" style={{ fontFamily: "'Glamour Absolute', cursive" }}>
+              Novidades de Luxo<span className="text-[#ad2335]">.</span>
+            </h2>
+            <p className="text-sm text-[#660e14]/50 font-bold uppercase tracking-wider max-w-md">
+              Recém chegados à nossa curadoria. Estilo e autenticidade em primeira mão.
+            </p>
+          </div>
+          <Link to="/catalogo?new=true" className="group flex items-center gap-4 text-[10px] text-[#660e14] font-black uppercase tracking-[0.4em] hover:text-[#ad2335] transition-colors">
+            Explorar Novidades
+            <div className="size-10 rounded-full bg-[#ad2335]/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#ad2335]/20 transition-all">
+              <ChevronRight className="size-4" />
+            </div>
+          </Link>
+        </div>
+
+        <motion.div
+          variants={stagger.container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8"
+        >
+          {newsProducts.length > 0 ? newsProducts.map((product) => (
+            <motion.div key={product.id} variants={stagger.item}>
+              <ProductCard product={product} />
+            </motion.div>
+          )) : (
+            <div className="col-span-full text-center py-16">
+              <p className="text-[#660e14]/30 text-xs font-black uppercase tracking-widest">Sincronizando novas peças...</p>
+            </div>
+          )}
+        </motion.div>
+      </section>
 
       {/* ═══════════════ SELEÇÃO ESSENTIAL ═══════════════ */}
       <section className="max-w-7xl mx-auto px-6 py-32 relative">
