@@ -129,8 +129,10 @@ export default function PedidosInner() {
         
         console.log("Pagamento iniciado:", result);
 
-        if (result && result.initPoint) {
-          window.location.href = result.initPoint;
+        const checkoutLink = result?.initPoint || result?.init_point;
+
+        if (checkoutLink) {
+          window.location.href = checkoutLink;
         } else {
           toast.error("Link de pagamento não gerado", {
             description: "Tente novamente em instantes."
