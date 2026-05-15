@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAction, useQuery } from "convex/react";
+import { useAction, useQuery, useMutation } from "convex/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -51,6 +51,7 @@ export default function CheckoutInner() {
   const { items, clearCart, getTotal, getDiscount, getFinalTotal, appliedCoupon, isFreeShipping } = useCartStore();
   const currentUser = useQuery(api.users.getCurrentUser, { userId: localUser?._id });
   const createPreference = useAction(api.mercadopago.createPreference);
+  const updateProfile = useMutation(api.users.updateProfile);
 
   const [step, setStep] = useState<"address" | "confirm">("address");
   const [submitting, setSubmitting] = useState(false);
