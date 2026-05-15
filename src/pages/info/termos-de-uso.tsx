@@ -7,7 +7,7 @@ export default function TermosDeUso() {
       <div className="bg-[#0b0b0b] border-b border-white/5 py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 text-xs text-white/30 uppercase tracking-widest mb-6">
-            <Link to="/" className="hover:text-[#ea3372] transition-colors">Início</Link>
+            <Link to="/" className="hover:text-[#ad2335] transition-colors">Início</Link>
             <ChevronRight className="size-3" />
             <span>Termos de Uso</span>
           </div>

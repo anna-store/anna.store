@@ -115,7 +115,7 @@ export default function Receipt({ order, type }: ReceiptProps) {
         <div className="w-[140mm] mx-auto my-10 p-10 bg-white text-black border-[3px] border-black rounded-[32px] relative font-sans overflow-hidden shadow-2xl">
           
           {/* Decoração Lateral */}
-          <div className="absolute -top-10 -left-10 size-24 bg-[#ea3372]/10 rounded-full blur-2xl" />
+          <div className="absolute -top-10 -left-10 size-24 bg-[#ad2335]/10 rounded-full blur-2xl" />
           <div className="absolute top-8 right-8 flex flex-col items-end">
             <img src="/logo.png" alt="Anna Shoes" className="h-10 w-auto brightness-0 mb-1" />
             <span className="text-[6px] font-black tracking-[0.3em] uppercase opacity-40">Premium Logistics</span>
@@ -125,14 +125,14 @@ export default function Receipt({ order, type }: ReceiptProps) {
           <div className="mb-12 relative z-10">
             <div className="flex items-center gap-3 mb-8">
               <div className="bg-black text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] shadow-lg flex items-center gap-2">
-                <div className="size-1.5 rounded-full bg-[#ea3372]" />
+                <div className="size-1.5 rounded-full bg-[#ad2335]" />
                 Destinatário
               </div>
               <div className="flex-1 h-[2px] bg-black/5" />
             </div>
             
             <div className="pl-4 space-y-4">
-              <p className="text-4xl font-black uppercase tracking-tighter leading-none text-[#ea3372]">
+              <p className="text-4xl font-black uppercase tracking-tighter leading-none text-[#ad2335]">
                 {order.customerName || order.userName || "CLIENTE ESPECIAL"}
               </p>
               
@@ -145,7 +145,7 @@ export default function Receipt({ order, type }: ReceiptProps) {
                 </p>
                 
                 <div className="mt-8">
-                  <div className="inline-block bg-black text-white px-6 py-3 rounded-2xl shadow-xl border-4 border-[#ea3372]/20">
+                  <div className="inline-block bg-black text-white px-6 py-3 rounded-2xl shadow-xl border-4 border-[#ad2335]/20">
                     <p className="text-4xl font-black tracking-tighter">CEP: {order.address.zip}</p>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function Receipt({ order, type }: ReceiptProps) {
             <div className="text-right flex flex-col items-end">
               <div className="text-[7px] font-black italic opacity-20 uppercase tracking-[0.2em] mb-1">Handmade with Love</div>
               <div className="size-4 rounded-full border-2 border-black/5 flex items-center justify-center">
-                <div className="size-1 bg-[#ea3372] rounded-full animate-pulse" />
+                <div className="size-1 bg-[#ad2335] rounded-full animate-pulse" />
               </div>
             </div>
           </div>

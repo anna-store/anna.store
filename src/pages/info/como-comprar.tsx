@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { HelpCircle, ChevronRight, ShoppingBag, Search, CreditCard, Package } from "lucide-react";
 
 const STEPS = [
-  { icon: <Search className="size-6 text-[#ea3372]" />, title: "1. Escolha seu produto", desc: "Navegue pelo catálogo e escolha o modelo que mais combina com você. Confira as medidas e fotos reais." },
-  { icon: <ShoppingBag className="size-6 text-[#ea3372]" />, title: "2. Adicione ao carrinho", desc: "Escolha o tamanho e cor. Como trabalhamos com envio direto de fábrica, garanta que seu tamanho está correto." },
-  { icon: <CreditCard className="size-6 text-[#ea3372]" />, title: "3. Pagamento e Curadoria", desc: "Após o pagamento, realizamos a curadoria e o faturamento do seu par diretamente com nossos fabricantes parceiros em MG ou SP." },
-  { icon: <Package className="size-6 text-[#ea3372]" />, title: "4. Envio Direto", desc: "Seu produto sai da fábrica direto para sua casa. Você recebe o rastreio em 3 a 5 dias úteis após a aprovação." },
+  { icon: <Search className="size-6 text-[#ad2335]" />, title: "1. Escolha seu produto", desc: "Navegue pelo catálogo e escolha o modelo que mais combina com você. Confira as medidas e fotos reais." },
+  { icon: <ShoppingBag className="size-6 text-[#ad2335]" />, title: "2. Adicione ao carrinho", desc: "Escolha o tamanho e cor. Como trabalhamos com envio direto de fábrica, garanta que seu tamanho está correto." },
+  { icon: <CreditCard className="size-6 text-[#ad2335]" />, title: "3. Pagamento e Curadoria", desc: "Após o pagamento, realizamos a curadoria e o faturamento do seu par diretamente com nossos fabricantes parceiros em MG ou SP." },
+  { icon: <Package className="size-6 text-[#ad2335]" />, title: "4. Envio Direto", desc: "Seu produto sai da fábrica direto para sua casa. Você recebe o rastreio em 3 a 5 dias úteis após a aprovação." },
 ];
 
 const FAQS = [
@@ -22,16 +22,16 @@ export default function ComoComprar() {
       <div className="bg-[#0b0b0b] border-b border-white/5 py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 text-xs text-white/30 uppercase tracking-widest mb-6">
-            <Link to="/" className="hover:text-[#ea3372] transition-colors">Início</Link>
+            <Link to="/" className="hover:text-[#ad2335] transition-colors">Início</Link>
             <ChevronRight className="size-3" />
             <span>Como Comprar</span>
           </div>
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-12 w-12 rounded-xl bg-[#ea3372]/10 flex items-center justify-center">
-              <HelpCircle className="size-6 text-[#ea3372]" />
+            <div className="h-12 w-12 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+              <HelpCircle className="size-6 text-[#ad2335]" />
             </div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
-              Como <span className="text-[#ea3372]">Comprar</span>
+              Como <span className="text-[#ad2335]">Comprar</span>
             </h1>
           </div>
           <p className="text-white/40 text-sm">Simples, rápido e seguro</p>
@@ -41,11 +41,11 @@ export default function ComoComprar() {
       <div className="max-w-3xl mx-auto px-4 py-16 space-y-16">
         {/* Passo a passo */}
         <section className="space-y-6">
-          <h2 className="text-lg font-black uppercase tracking-widest text-[#ea3372]">Passo a Passo</h2>
+          <h2 className="text-lg font-black uppercase tracking-widest text-[#ad2335]">Passo a Passo</h2>
           <div className="space-y-4">
             {STEPS.map((step) => (
-              <div key={step.title} className="flex gap-5 bg-white/[0.02] border border-white/5 rounded-xl p-6 hover:border-[#ea3372]/20 transition-colors">
-                <div className="h-12 w-12 rounded-xl bg-[#ea3372]/10 flex items-center justify-center shrink-0">
+              <div key={step.title} className="flex gap-5 bg-white/[0.02] border border-white/5 rounded-xl p-6 hover:border-[#ad2335]/20 transition-colors">
+                <div className="h-12 w-12 rounded-xl bg-[#ad2335]/10 flex items-center justify-center shrink-0">
                   {step.icon}
                 </div>
                 <div>
@@ -59,7 +59,7 @@ export default function ComoComprar() {
 
         {/* FAQ */}
         <section className="space-y-6">
-          <h2 className="text-lg font-black uppercase tracking-widest text-[#ea3372]">Perguntas Frequentes</h2>
+          <h2 className="text-lg font-black uppercase tracking-widest text-[#ad2335]">Perguntas Frequentes</h2>
           <div className="space-y-4">
             {FAQS.map((faq) => (
               <div key={faq.q} className="border border-white/5 rounded-xl p-6">
@@ -71,12 +71,12 @@ export default function ComoComprar() {
         </section>
 
         {/* CTA */}
-        <div className="bg-[#ea3372]/10 border border-[#ea3372]/20 rounded-2xl p-8 text-center space-y-4">
+        <div className="bg-[#ad2335]/10 border border-[#ad2335]/20 rounded-2xl p-8 text-center space-y-4">
           <p className="font-black text-xl uppercase tracking-widest">Pronto para comprar?</p>
           <p className="text-white/50 text-sm">Acesse nosso catálogo e encontre o par perfeito</p>
           <Link
             to="/catalogo"
-            className="inline-flex items-center gap-2 bg-[#ea3372] hover:bg-[#c9295f] text-white font-black uppercase tracking-widest text-xs px-8 py-4 rounded-xl transition-colors"
+            className="inline-flex items-center gap-2 bg-[#ad2335] hover:bg-[#660e14] text-white font-black uppercase tracking-widest text-xs px-8 py-4 rounded-xl transition-colors"
           >
             Ver Catálogo <ChevronRight className="size-4" />
           </Link>

@@ -15,10 +15,10 @@
   --color-card-foreground: hsl(0 0% 100%);
   --color-popover: hsl(0 0% 5%);
   --color-popover-foreground: hsl(0 0% 100%);
-  --color-primary: hsl(341 82% 52%);
+  --color-primary: hsl(351 63% 41%);
   --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: hsl(201 100% 61%);
-  --color-secondary-foreground: hsl(0 0% 0%);
+  --color-secondary: hsl(0 75% 23%);
+  --color-secondary-foreground: hsl(0 0% 100%);
   --color-muted: hsl(240 5% 15%);
   --color-muted-foreground: hsl(240 5% 65%);
   --color-accent: hsl(240 5% 15%);
@@ -27,7 +27,7 @@
   --color-destructive-foreground: hsl(0 0% 100%);
   --color-border: hsl(240 5% 15%);
   --color-input: hsl(240 5% 15%);
-  --color-ring: hsl(341 82% 52%);
+  --color-ring: hsl(351 63% 41%);
 
   --radius-lg: 0.75rem;
   --radius-md: calc(0.75rem - 2px);
@@ -75,7 +75,7 @@ body {
 
 /* Premium Button (fallback for non-tailwind elements) */
 .btn-primary {
-  background: #ea3372;
+  background: #ad2335;
   color: white;
   padding: 0.85rem 2rem;
   border-radius: 12px;
@@ -83,7 +83,7 @@ body {
   border: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 20px -10px rgba(234, 51, 114, 0.4);
+  box-shadow: 0 10px 20px -10px rgba(173, 35, 53, 0.4);
 }
 
 .btn-primary:hover {

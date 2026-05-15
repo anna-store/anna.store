@@ -676,10 +676,13 @@ function ReviewFormModal({ isOpen, onClose, productId, productName, productImage
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="O que você achou da qualidade, conforto e estilo?"
-              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#ea3372]/50 transition-all resize-none"
+              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#ad2335]/50 transition-all resize-none"
             />
           </div>
 
+          <Button 
+            onClick={handleSubmit}
+            disabled={loading}
             className="w-full h-14 bg-[#660e14] hover:bg-[#ad2335] text-white font-black uppercase tracking-widest text-[11px] rounded-2xl shadow-xl shadow-[#660e14]/10 transition-all duration-500"
           >
             {loading ? "Enviando..." : "Publicar Avaliação"}

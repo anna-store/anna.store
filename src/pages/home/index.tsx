@@ -9,10 +9,10 @@ import { api } from "@/convex/_generated/api.js";
 import { useCartStore } from "@/hooks/use-cart.ts";
 
 const BENEFITS = [
-  { icon: Truck, title: "Envio Rápido", description: "Entrega em todo o Brasil", color: "#38b6ff" },
-  { icon: Shield, title: "Compra Segura", description: "Pagamento 100% protegido", color: "#ea3372" },
-  { icon: RotateCcw, title: "Troca Fácil", description: "Até 7 dias para troca", color: "#38b6ff" },
-  { icon: Star, title: "Qualidade Garantida", description: "Produtos selecionados e verificados", color: "#ea3372" }
+  { icon: Truck, title: "Envio Rápido", description: "Entrega em todo o Brasil", color: "#ad2335" },
+  { icon: Shield, title: "Compra Segura", description: "Pagamento 100% protegido", color: "#660e14" },
+  { icon: RotateCcw, title: "Troca Fácil", description: "Até 7 dias para troca", color: "#ad2335" },
+  { icon: Star, title: "Qualidade Garantida", description: "Produtos selecionados e verificados", color: "#660e14" }
 ];
 
 const TESTIMONIALS = [

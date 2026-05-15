@@ -7,16 +7,16 @@ export default function PoliticaTrocas() {
       <div className="bg-[#0b0b0b] border-b border-white/5 py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 text-xs text-white/30 uppercase tracking-widest mb-6">
-            <Link to="/" className="hover:text-[#ea3372] transition-colors">Início</Link>
+            <Link to="/" className="hover:text-[#ad2335] transition-colors">Início</Link>
             <ChevronRight className="size-3" />
             <span>Política de Trocas</span>
           </div>
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-12 w-12 rounded-xl bg-[#ea3372]/10 flex items-center justify-center">
-              <RotateCcw className="size-6 text-[#ea3372]" />
+            <div className="h-12 w-12 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+              <RotateCcw className="size-6 text-[#ad2335]" />
             </div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
-              Política de <span className="text-[#ea3372]">Trocas</span>
+              Política de <span className="text-[#ad2335]">Trocas</span>
             </h1>
           </div>
           <p className="text-white/40 text-sm">Trocas e devoluções sem complicação</p>
@@ -32,7 +32,7 @@ export default function PoliticaTrocas() {
             { label: "Erro de Tamanho", value: "Não trocamos" },
           ].map((item) => (
             <div key={item.label} className="bg-white/[0.03] border border-white/5 rounded-xl p-5 text-center">
-              <p className="text-2xl font-black text-[#ea3372]">{item.value}</p>
+              <p className="text-2xl font-black text-[#ad2335]">{item.value}</p>
               <p className="text-xs text-white/40 uppercase tracking-widest mt-1">{item.label}</p>
             </div>
           ))}
@@ -57,7 +57,7 @@ export default function PoliticaTrocas() {
           }
         ].map((section) => (
           <section key={section.title} className="space-y-4">
-            <h2 className="text-lg font-black uppercase tracking-widest text-[#ea3372]">{section.title}</h2>
+            <h2 className="text-lg font-black uppercase tracking-widest text-[#ad2335]">{section.title}</h2>
             <p className="text-white/60 leading-relaxed text-sm whitespace-pre-line">{section.content}</p>
           </section>
         ))}

@@ -84,7 +84,7 @@ export default function AdminDashboard() {
       <aside className="hidden md:flex flex-col w-56 bg-[#0b0b0b] text-white shrink-0">
         <div className="px-5 py-6 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-[#ea3372]" />
+            <Settings className="h-5 w-5 text-[#ad2335]" />
             <span className="font-bold text-sm tracking-wide">Admin Panel</span>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer",
                 tab === n.id
-                  ? "bg-[#ea3372] text-white"
+                  ? "bg-[#ad2335] text-white"
                   : "text-white/60 hover:text-white hover:bg-white/10",
               )}
             >
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                 key={n.id}
                 size="icon"
                 variant={tab === n.id ? "default" : "ghost"}
-                className={cn("h-8 w-8 cursor-pointer", tab === n.id && "bg-[#ea3372] hover:bg-[#c9295f]")}
+                className={cn("h-8 w-8 cursor-pointer", tab === n.id && "bg-[#ad2335] hover:bg-[#660e14]")}
                 onClick={() => setTab(n.id)}
               >
                 {n.icon}
@@ -155,14 +155,14 @@ export default function AdminDashboard() {
                   {
                     label: "Pedidos",
                     value: stats?.totalOrders?.toString() ?? null,
-                    icon: <ShoppingBag className="h-5 w-5 text-[#ea3372]" />,
-                    bg: "bg-[#ea3372]/10",
+                    icon: <ShoppingBag className="h-5 w-5 text-[#ad2335]" />,
+                    bg: "bg-[#ad2335]/10",
                   },
                   {
                     label: "Clientes",
                     value: stats?.totalUsers?.toString() ?? null,
-                    icon: <Users className="h-5 w-5 text-[#38b6ff]" />,
-                    bg: "bg-[#38b6ff]/10",
+                    icon: <Users className="h-5 w-5 text-[#660e14]" />,
+                    bg: "bg-[#660e14]/10",
                   },
                   {
                     label: "Aguardando",
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                             format(new Date(d + "T12:00:00"), "dd 'de' MMM", { locale: ptBR })
                           }
                         />
-                        <Bar dataKey="revenue" fill="#ea3372" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="revenue" fill="#ad2335" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   )}
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-sm font-semibold truncate">{u.name ?? "—"}</p>
                               {u.isAdmin && (
-                                <Badge className="bg-[#ea3372] text-white text-[10px] border-0 px-1.5 py-0">
+                                <Badge className="bg-[#ad2335] text-white text-[10px] border-0 px-1.5 py-0">
                                   Admin
                                 </Badge>
                               )}

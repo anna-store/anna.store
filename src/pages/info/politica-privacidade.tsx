@@ -8,16 +8,16 @@ export default function PoliticaPrivacidade() {
       <div className="bg-[#0b0b0b] border-b border-white/5 py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 text-xs text-white/30 uppercase tracking-widest mb-6">
-            <Link to="/" className="hover:text-[#ea3372] transition-colors">Início</Link>
+            <Link to="/" className="hover:text-[#ad2335] transition-colors">Início</Link>
             <ChevronRight className="size-3" />
             <span>Política de Privacidade</span>
           </div>
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-12 w-12 rounded-xl bg-[#ea3372]/10 flex items-center justify-center">
-              <Shield className="size-6 text-[#ea3372]" />
+            <div className="h-12 w-12 rounded-xl bg-[#ad2335]/10 flex items-center justify-center">
+              <Shield className="size-6 text-[#ad2335]" />
             </div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
-              Política de <span className="text-[#ea3372]">Privacidade</span>
+              Política de <span className="text-[#ad2335]">Privacidade</span>
             </h1>
           </div>
           <p className="text-white/40 text-sm">Última atualização: maio de 2026</p>
@@ -57,7 +57,7 @@ export default function PoliticaPrivacidade() {
           }
         ].map((section) => (
           <section key={section.title} className="space-y-4">
-            <h2 className="text-lg font-black uppercase tracking-widest text-[#ea3372]">{section.title}</h2>
+            <h2 className="text-lg font-black uppercase tracking-widest text-[#ad2335]">{section.title}</h2>
             <p className="text-white/60 leading-relaxed text-sm whitespace-pre-line">{section.content}</p>
           </section>
         ))}
